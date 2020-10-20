@@ -16,10 +16,9 @@
 		v-if="viewSrsSrsObj.tag"
 		:viewSrsTagArr="viewSrsTagArr">
 	</view-series-tags>
-	<div class="foot">
-		<button type="button" class="btnText def srs edt widLG"><span><i></i>編集</span></button>
-		<button type="button" class="btnText def nml rem widLG"><span><i></i>削除</span></button>
-	</div>
+	<view-series-foot
+		@EditSeriesClick="editSeries">
+	</view-series-foot>
 	<button type="button" class="icn" @click="closeView">消</button>
 </div>
 </template>
@@ -28,6 +27,7 @@
 import ViewSeriesContent from './ViewSeriesContent'
 import ViewSeriesSrsname from './ViewSeriesSrsname'
 import ViewSeriesTags from './ViewSeriesTags'
+import ViewSeriesFoot from './ViewSeriesFoot'
 
 export default {
 	name: "ViewSeriesContainer",
@@ -42,8 +42,18 @@ export default {
 		ViewSeriesContent,
 		ViewSeriesSrsname,
 		ViewSeriesTags,
+		ViewSeriesFoot,
 	},
     methods: {
+		editSeries() {
+			console.log(this.viewSrsTxtArr);
+			const obj = {
+				srs: this.viewSrsSrsObj,
+				txt: this.viewSrsTxtArr,
+				tag: this.viewSrsTagArr,
+			}
+			this.$emit("EditMarkSrsClick", obj);
+		},
         closeView() {
 			this.$emit("CloseViewSrsClick");
 		},

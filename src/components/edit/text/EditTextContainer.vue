@@ -18,18 +18,19 @@
 			<div contenteditable="true" @blur="changeEditTxtBody">{{ editTxtTxtObj.body }}</div>
 		</div>
 	</div>
-	<edit-text-foot
+	<edit-foot
+		:btnClass="'txt'"
 		@FootClickClose="$listeners['FootTxtClick']"
 		@FootClickSave="setSaveData"
-		@CallSwitchLoaderSave="$listeners['CallSwitchLoader']">
-	</edit-text-foot>
+		@CallSwitchLoaderClick="$listeners['CallSwitchLoader']">
+	</edit-foot>
 </div>
 </template>
 
 <script>
 import EditTextSrsname from './EditTextSrsname'
 import EditTextTags from './EditTextTags'
-import EditTextFoot from './EditTextFoot'
+import EditFoot from '../EditFoot'
 
 export default {
 	name: "EditTextContainer",
@@ -42,7 +43,7 @@ export default {
 	components: {
 		EditTextSrsname,
 		EditTextTags,
-		EditTextFoot,
+		EditFoot,
 	},
 	data() {
 		return {
@@ -56,7 +57,6 @@ export default {
 			const str = e.target.textContent;
 			this.DeditTxtTxtObj.head = str ? str : this.DeditTxtTxtObj.head;
 			e.target.textContent = this.DeditTxtTxtObj.head;
-			console.log(str, Boolean(str), this.DeditTxtTxtObj.head);
 		},
 		changeEditTxtBody(e) {
 			const str = e.target.textContent;

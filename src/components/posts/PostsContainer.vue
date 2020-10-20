@@ -8,6 +8,7 @@
 		</posts-text>
 		<posts-series
 			:markSrsArr="markSrsArr"
+			@PostsSrsEdit="openEditSrsMark"
 			@PostsSrsView="$listeners['ViewSrsMark']">
 		</posts-series>
 		<p v-if="!markTxtArr.length && !markSrsArr.length" class="note">登録されていません。</p>
@@ -60,7 +61,7 @@ export default {
 			that.db.srs.toArray().then((list) => {
 				for(let _data of list) {
 					let dtime = new Date(_data.date).getTime();
-					that.srsArr[_data["sid"]] = _data["color"];
+					that.srsArr[_data.sid] = _data.color;
 					if(_ctime === dtime) that.markSrsArr.push(_data);
 					that.markSrsArr = that.$parent.compileArrtoArr(that.markSrsArr);
 				}
@@ -70,7 +71,7 @@ export default {
 					let dtime = new Date(_data.date).getTime(),
 						ltime = new Date(_data.last).getTime(),
 						obj = _data;
-					obj["color"] = _data["sid"] ? that.srsArr[_data["sid"]] : "transparent";
+					obj.color = _data.sid ? that.srsArr[_data.sid] : "transparent";
 					if(_ctime === dtime) that.markTxtArr.push(obj);
 					if(_ctime === ltime) that.markTxtArr.push(obj);
 					that.markTxtArr = that.$parent.compileArrtoArr(that.markTxtArr);
@@ -103,6 +104,28 @@ export default {
 					}
 					obj.srs = await that.getDataSrs(data.sid);
 					that.$emit("EditTxtMark", obj);
+				}
+			}
+		},
+		getDataTxt(key) {
+			const that = this;
+			return new Promise(function(resolve){
+				that.db.txt.where({sid: key}).toArray().then(function(list){
+					resolve(list);
+				});
+			});
+		},
+		async openEditSrsMark(_id) {
+			const that = this,
+				id = Number(_id);
+			let obj = {txt: [], srs: {}, tag: []};
+			for(let data of that.markSrsArr) {
+				if(data.sid == id) {
+					obj.srs = data;
+					obj.srs.body = that.compileBrtoNl(data.body);
+					obj.tag = data.tag;
+					obj.txt = await that.getDataTxt(data.sid);
+					that.$emit("EditSrsMark", obj);
 				}
 			}
 		},

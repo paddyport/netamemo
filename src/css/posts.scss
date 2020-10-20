@@ -51,6 +51,9 @@
 	list-style: none;
 	> li {
 		display: block;
+		+ li {
+			margin-top: divceil(8, 16, "em");
+		}
 	}
 	.cardItem {
 		position: relative;

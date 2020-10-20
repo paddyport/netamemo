@@ -25,7 +25,8 @@
 		:postsFlg="postsFlg"
 		@CallCompileBrtoNl="compileBrtoNl"
 		@PostsCloseClick="closePosts"
-		@EditTxtMark="openEditMarkText"
+		@EditTxtMark="openEditTxtMark"
+		@EditSrsMark="openEditSrsMark"
 		@ViewTxtMark="openViewTxtMark"
 		@ViewSrsMark="openViewSrsMark"
 		@GetDataSrsPromise="getDataSrsPromise">
@@ -35,7 +36,8 @@
 		:db="db"
 		:viewFlg="viewFlg"
 		@ViewMarkText="openViewTxtMark"
-		@EditMarkText="openEditMarkText"
+		@EditMarkText="openEditTxtMark"
+		@EditMarkSeries="openEditSrsMark"
 		@switchViewClick="switchView">
 	</view-container>
 	<edit-container
@@ -157,26 +159,27 @@ export default Vue.extend({
 		createTable() {
 			this.db.version(1).stores({
 				txt: `++tid, sid, tag, date, last, head, body`,
-				srs: `++sid, tid, tag, date, color, head, body`,
-				tag: `++gid, tid, sid, head`,
+				srs: `++sid, tag, date, color, head, body`,
+				tag: `++gid, head`,
 			});
 			// tid: Number, sid: Number, tag: Array, date: Date, last: Date, head: String, body: String
-			// sid: Number, tid: Array, tag: Array, date: Date, color: #***, head: String, body: String
-			// gid: Number, tid: Array, sid: Array, head: String (サジェスト用)
+			// sid: Number, tag: Array, date: Date, color: #***, head: String, body: String
+			// gid: Number, head: String
 		},
 		addDataTxt() {
-			this.db.txt.put({sid: null, tag: ["日暮らし"], date: "2020/10/10", last: "2020/10/25", head: "徒然なるまゝに", body: "つれづれなるまゝに、日暮らし、硯にむかひて、心にうつりゆくよしなし事を、そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。つれづれなるまゝに、日暮らし、硯にむかひて、心にうつりゆくよしなし事を、そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。"});
+			this.db.txt.put({sid: 0, tag: ["日暮らし"], date: "2020/10/10", last: "2020/10/25", head: "徒然なるまゝに", body: "つれづれなるまゝに、日暮らし、硯にむかひて、心にうつりゆくよしなし事を、そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。つれづれなるまゝに、日暮らし、硯にむかひて、心にうつりゆくよしなし事を、そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。"});
 			this.db.txt.put({sid: 1, tag: ["徒然", "日暮らし"], date: "2020/10/20", last: "2020/10/21", head: "日暮らし", body: "いでや、この世に生れては、願はしかるべき事こそ多かンめれ。<br>御門(みかど)の御位は、いともかしこし。竹の園生(そのふ)の、末葉(すゑば)まで人間の種ならぬぞ、やんごとなき。一(いち)の人の御有様はさらなり、たゞ人(びと)も、舎人(とねり)など給はるきはは、ゆゝしと見ゆ。その子・孫(むまご)までは、はふれにたれど、なほなまめかし。それより下(しも)つかたは、ほどにつけつゝ、時にあひ、したり顔なるも、みづからはいみじと思ふらめど、いとくちをし。"});
 			this.db.txt.put({sid: 2, tag: [], date: "2020/10/30", last: "2020/10/30", head: "硯にむかひて", body: "因幡国(いなばのくに)に、何の入道とかやいふ者の娘、かたちよしと聞きて、人あまた言ひわたりけれども、この娘、たゞ、栗をのみ食ひて、更に、米(よね)の類を食はざりれば、「かゝる異様(ことやう)の者、人に見ゆべきにあらず」とて、親許さざりけり。"});
+			this.db.txt.put({sid: 2, tag: ["硯"], date: "2020/10/31", last: "2020/10/31", head: "因幡国", body: "因幡国(いなばのくに)に、何の入道とかやいふ者の娘、かたちよしと聞きて、人あまた言ひわたりけれども、この娘、たゞ、栗をのみ食ひて、更に、米(よね)の類を食はざりれば、「かゝる異様(ことやう)の者、人に見ゆべきにあらず」とて、親許さざりけり。"});
 		},
 		addDataSrs() {
-			this.db.srs.put({tid: [2], tag: ["徒然", "日暮らし"], date: "2020/10/22", color: "#fdcfdb", head: "心にうつりゆく", body: "公世(きんよ)の二位にゐのせうとに、良覚僧正(りやうがくそうじやう)と聞えしは、極(きは)めて腹あしき人なりけり。"});
-			this.db.srs.put({tid: [3], tag: ["硯"], date: "2020/10/20", color: "#145c8a", head: "よしなし事を", body: "能(のう)をつかんとする人、「よくせざらんほどは、なまじひに人に知(し)られじ。うちうちよく習ひ得(え)て、さし出(い)でたらんこそ、いと心にくからめ」と常に言ふめれど、かく言ふ人、一芸も習(なら)ひ得(う)ることなし。"});
+			this.db.srs.put({tag: ["徒然", "日暮らし"], date: "2020/10/22", color: "#fdcfdb", head: "心にうつりゆく", body: "公世(きんよ)の二位にゐのせうとに、良覚僧正(りやうがくそうじやう)と聞えしは、極(きは)めて腹あしき人なりけり。"});
+			this.db.srs.put({tag: ["硯"], date: "2020/10/20", color: "#145c8a", head: "よしなし事を", body: "能(のう)をつかんとする人、「よくせざらんほどは、なまじひに人に知(し)られじ。うちうちよく習ひ得(え)て、さし出(い)でたらんこそ、いと心にくからめ」と常に言ふめれど、かく言ふ人、一芸も習(なら)ひ得(う)ることなし。"});
 		},
 		addDataTag() {
-			this.db.tag.put({tid: [1, 2], sid: [1], head: "日暮らし"});
-			this.db.tag.put({tid: [2], sid: [1], head: "徒然"});
-			this.db.tag.put({tid: [], sid: [2], head: "硯"});
+			this.db.tag.put({head: "日暮らし"});
+			this.db.tag.put({head: "徒然"});
+			this.db.tag.put({head: "硯"});
 		},
 		getDataTxt(key) {
 			const that = this;
@@ -252,11 +255,12 @@ export default Vue.extend({
 			this.$refs.view.setSrsData(Number(id), true);
 			this.viewFlg = true;
 		},
-		openEditTxtMark(id) {
-			console.log(id);
-		},
-		openEditMarkText(obj) {
+		openEditTxtMark(obj) {
 			this.$refs.edit.setEditTxtData(obj);
+			this.editFlg = true;
+		},
+		openEditSrsMark(obj) {
+			this.$refs.edit.setEditSrsData(obj);
 			this.editFlg = true;
 		},
 		closeEdit(id) {

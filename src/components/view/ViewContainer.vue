@@ -7,7 +7,7 @@
 		:viewTxtSrsObj="viewTxtSrsObj"
 		:viewTxtTagArr="viewTxtTagArr"
 		:viewTxtBody="viewTxtBody"
-		@EditMarkTextClick="$listeners['EditMarkText']"
+		@EditMarkTxtClick="$listeners['EditMarkText']"
 		@CloseViewTxtClick="closeViewTxt">
 	</view-text-container>
 	<view-series-container
@@ -18,6 +18,7 @@
 		:viewSrsTagArr="viewSrsTagArr"
 		:viewSrsBody="viewSrsBody"
 		@ViewMarkTextClick="$listeners['ViewMarkText']"
+		@EditMarkSrsClick="$listeners['EditMarkSeries']"
 		@CloseViewSrsClick="closeViewSrs">
 	</view-series-container>
 </div>
@@ -60,7 +61,6 @@ export default {
 		setTxtData(id, flg) {
 			const that = this,
 				key = {tid: id};
-			console.log(flg);
 			that.db.txt.get(key).then((obj) => {
 				if(flg) {
 					that.viewTxtSrsObj = {};
@@ -75,14 +75,22 @@ export default {
 				}
 			});
 		},
-		setSrsData(id, flg) {
+		getSrsDataTxt(id) {
+			const that = this,
+				key = {sid: id};
+			that.viewSrsTxtArr = [];
+			return new Promise(function(resolve){
+				that.db.txt.where(key).toArray().then((list) => {
+					resolve(list);
+				});
+			});
+		},
+		async setSrsData(id, flg) {
 			const that = this,
 				key = {sid: id};
 			that.db.srs.get(key).then((obj) => {
 				if(flg) {
 					that.viewSrsTxtArr = [];
-					if(obj.tid) for(let idx of obj.tid) that.setTxtData(Number(idx));
-					console.log(obj);
 					that.viewSrsSrsObj = obj;
 					that.viewSrsBody = that.compileBrtoNl(obj.body);
 					that.viewSrsTagArr = obj.tag;
@@ -92,6 +100,7 @@ export default {
 					that.viewTxtSrsObj = obj;
 				}
 			});
+			that.viewSrsTxtArr = await that.getSrsDataTxt(id);
 		},
 		checkCloseView() {
 			if(!this.viewTxtFlg && !this.viewSrsFlg) {

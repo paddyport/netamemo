@@ -50,10 +50,9 @@ export default {
 				srs: this.viewTxtSrsObj,
 				tag: this.viewTxtTagArr,
 			}
-			this.$emit("EditMarkTextClick", obj);
+			this.$emit("EditMarkTxtClick", obj);
 		},
         closeView() {
-			console.log("a");
 			this.$emit("CloseViewTxtClick");
 		},
     },

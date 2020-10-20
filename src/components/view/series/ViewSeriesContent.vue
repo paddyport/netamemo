@@ -34,7 +34,6 @@ export default {
         onClickView(e) {
 			const btn = e.target,
 				id = btn.parentNode.getAttribute("data-tid");
-				console.log(id);
             this.$emit("ItemClickView", id);
         },
 	},
