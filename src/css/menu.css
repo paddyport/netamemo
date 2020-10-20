@@ -1,0 +1,78 @@
+.menu .list {
+  position: fixed;
+  background: #fff;
+  height: 100%;
+  left: 0;
+  right: 0;
+  top: 0;
+  margin: 0;
+  padding: 3.125em 0 0;
+  text-align: left;
+  -webkit-transform: translate(150%, 0);
+  transform: translate(150%, 0);
+  transition: -webkit-transform 300ms ease-out 0ms;
+  transition: transform 300ms ease-out 0ms;
+  transition: transform 300ms ease-out 0ms, -webkit-transform 300ms ease-out 0ms;
+  overflow-y: scroll;
+  z-index: 1250;
+  pointer-events: none; }
+  .menu .list.isShown {
+    -webkit-transform: translate(0, 0);
+    transform: translate(0, 0);
+    pointer-events: auto; }
+  .menu .list > li {
+    display: block; }
+    .menu .list > li:nth-child(even) {
+      background: #f9f9f9; }
+    .menu .list > li > a {
+      height: 3.125em;
+      padding: 0 1.5em 0 1.125em;
+      cursor: pointer; }
+      .menu .list > li > a > span {
+        pointer-events: none; }
+      .isMD .menu .list > li > a:hover {
+        background: #d8d8d8; }
+      .isMD .menu .list > li > a:active, .isTD .menu .list > li > a:active {
+        background: #606060;
+        color: #fff; }
+        .isMD .menu .list > li > a:active > strong, .isMD .menu .list > li > a:active > span, .isTD .menu .list > li > a:active > strong, .isTD .menu .list > li > a:active > span {
+          color: #fff; }
+      .menu .list > li > a.isNoActive {
+        pointer-events: none; }
+        .menu .list > li > a.isNoActive::before, .menu .list > li > a.isNoActive > span {
+          opacity: 0.25; }
+        .menu .list > li > a.isNoActive::after {
+          opacity: 0; }
+    .menu .list > li .child {
+      height: 0;
+      padding: 0;
+      overflow: hidden;
+      transition: height 200ms linear 0ms; }
+      .menu .list > li .child.lim > li:nth-child(n+6) {
+        display: none !important; }
+      .menu .list > li .child > li {
+        display: block; }
+        .menu .list > li .child > li > a {
+          justify-content: flex-start;
+          padding: 0 1.5em 0 2.5em;
+          height: 3.125em; }
+          .menu .list > li .child > li > a::after {
+            order: -10;
+            margin: 0 0.625em 0 0; }
+          .menu .list > li .child > li > a > p {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis; }
+          .isMD .menu .list > li .child > li > a:hover {
+            background: #d8d8d8; }
+          .isMD .menu .list > li .child > li > a:active, .isTD .menu .list > li .child > li > a:active {
+            background: #606060;
+            color: #fff; }
+            .isMD .menu .list > li .child > li > a:active > strong, .isMD .menu .list > li .child > li > a:active > span, .isTD .menu .list > li .child > li > a:active > strong, .isTD .menu .list > li .child > li > a:active > span {
+              color: #fff; }
+
+.menu .menuList {
+  position: fixed;
+  top: 0.5em;
+  right: 0.625em;
+  z-index: 1500; }

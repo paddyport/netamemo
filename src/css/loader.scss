@@ -1,0 +1,85 @@
+@charset "UTF-8";
+@import "_pseudo";
+@import "_mixin";
+
+// loader
+@keyframes txtSquare {
+    0%, 5% { transform: translate(0, 0); }
+    20%, 30% { transform: translate(#{divceil(-20, 16, "em")}, 0); }
+    45%, 55% { transform: translate(#{divceil(-20, 16, "em")}, #{divceil(20, 16, "em")}); }
+    70%, 80% { transform: translate(0, #{divceil(20, 16, "em")}); }
+    95%, 100% { transform: translate(0, 0); }
+}
+@keyframes srsSquare {
+    0%, 5% { transform: translate(0, 0); }
+    20%, 30% { transform: translate(0, #{divceil(-20, 16, "em")}); }
+    45%, 55% { transform: translate(#{divceil(-20, 16, "em")}, #{divceil(-20, 16, "em")}); }
+    70%, 80% { transform: translate(#{divceil(-20, 16, "em")}, 0); }
+    95%, 100% { transform: translate(0, 0); }
+}
+@keyframes tagSquare {
+    0%, 5% { transform: translate(0, 0); }
+    20%, 30% { transform: translate(#{divceil(20, 16, "em")}, 0); }
+    45%, 55% { transform: translate(#{divceil(20, 16, "em")}, #{divceil(-20, 16, "em")}); }
+    70%, 80% { transform: translate(0, #{divceil(-20, 16, "em")}); }
+    95%, 100% { transform: translate(0, 0); }
+}
+@keyframes square {
+    0%, 5% { transform: translate(0, 0); }
+    20%, 30% { transform: translate(0, #{divceil(20, 16, "em")}); }
+    45%, 55% { transform: translate(#{divceil(20, 16, "em")}, #{divceil(20, 16, "em")}); }
+    70%, 80% { transform: translate(#{divceil(20, 16, "em")}, 0); }
+    95%, 100% { transform: translate(0, 0); }
+}
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+	position: fixed;
+	background: rgba(#fff, 0.75);
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	visibility: visible;
+	z-index: 9500;
+	&.isHidden {
+		visibility: hidden;
+		pointer-events: none;
+    }
+	> div {
+        position: relative;
+        width: divceil(20*2, 16, "em");
+        height: divceil(20*2, 16, "em");
+        > div {
+            position: absolute;
+            border-radius: 2px;
+            width: divceil(16, 16, "em");
+            height: divceil(16, 16, "em");
+            &:nth-child(1) {
+                background: map-get($btn-txt, "side");
+                right: divceil((20-16)/2, 16, "em");
+                top: divceil((20-16)/2, 16, "em");
+                animation: txtSquare 2000ms linear 0ms infinite;
+            }
+            &:nth-child(2) {
+                background: map-get($btn-srs, "side");
+                right: divceil((20-16)/2, 16, "em");
+                bottom: divceil((20-16)/2, 16, "em");
+                animation: srsSquare 2000ms linear 0ms infinite;
+            }
+            &:nth-child(3) {
+                background: map-get($btn-tag, "side");
+                left: divceil((20-16)/2, 16, "em");
+                bottom: divceil((20-16)/2, 16, "em");
+                animation: tagSquare 2000ms linear 0ms infinite;
+            }
+            &:nth-child(4) {
+                background: $gray3;
+                left: divceil((20-16)/2, 16, "em");
+                top: divceil((20-16)/2, 16, "em");
+                animation: square 2000ms linear 0ms infinite;
+            }
+        }
+	}
+}

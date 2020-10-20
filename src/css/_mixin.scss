@@ -1,0 +1,131 @@
+@function divceil($that, $divid, $unit: "%") {
+    $result: 1; 
+    @if $unit=="%" {
+        $result: ceil($that*100000/$divid)/1000;
+        @return percentage($result/100);
+    } @else {
+        @if $unit=="em" {
+            $result: ceil($that*1000/$divid)/1000;
+        } @else {
+            $result: ceil($that*100000/$divid)/1000;
+        }
+        @return $result + unquote($unit); 
+    }
+}
+@mixin mq($breakpoint: "min-width: 768px") {
+    @media screen and ($breakpoint) {
+        @content;
+    }
+}
+@mixin btnColor($set) {
+	color: map-get($set, "font");
+	&::before {
+		background: map-get($set, "bgBase");
+	}
+	> span {
+//		color: map-get($set, "font");
+		&::after {
+			color: map-get($set, "font");
+		}
+	}
+//	.isMD &.isHover::before {
+	.isMD &:hover::before {
+		background: map-get($set, "side");
+	}
+//	.isMD &.isActive::before, .isTD &.isActive::before {
+	.isMD &:active::before, .isTD &:active::before {
+		background: map-get($set, "font");
+	}
+	&.isNoActive {
+		color: map-get($set, "bgActive");
+		> span {
+			color: map-get($set, "bgActive");
+			&::after {
+				color: map-get($set, "bgActive");
+			}
+		}
+	}
+}
+@mixin fontWeight($weight) {
+    @if $weight == "light" {
+        font-weight: 300;
+    } @else if $weight == "regular" {
+        font-weight: 400;
+    } @else if $weight == "medium" {
+        font-weight: 500;
+    } @else if $weight == "bold" {
+        font-weight: 700;
+    } @else {
+        font-weight: $weight;
+    }
+}
+@mixin endLeader() {
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+$ffIcons: "Font Awesome 5 Free";
+$ffBtn: "M PLUS Rounded 1c", sans-serif;
+
+$btn-nml: (
+	font: #3c3c3c,
+	bgBase: #e2e2e2,
+	bgActive: #d0d0d0,
+	side: #a3a3a3
+);
+$btn-txt: (
+	font: #1a4c86,
+	bgBase: #e8f1fc,
+	bgActive: #c2d6ef,
+	side: #75aae6
+);
+$btn-tag: (
+	font: #6d5d18,
+	bgBase: #faf3d3,
+	bgActive: #efe0a3,
+	side: #ddc560
+);
+$btn-srs: (
+	font: #842323,
+	bgBase: #ffe4e4,
+	bgActive: #ffc5c5,
+	side: #eb9494
+);
+//$types: txt, tag, srs;
+$types: txt, srs;
+$btn-font: (
+	txt: map-get($btn-txt, "font"),
+	tag: map-get($btn-tag, "font"),
+	srs: map-get($btn-srs, "font")
+);
+$btn-base: (
+	txt: map-get($btn-txt, "bgBase"),
+	tag: map-get($btn-tag, "bgBase"),
+	srs: map-get($btn-srs, "bgBase")
+);
+$btn-active: (
+	txt: map-get($btn-txt, "bgActive"),
+	tag: map-get($btn-tag, "bgActive"),
+	srs: map-get($btn-srs, "bgActive")
+);
+$btn-side: (
+	txt: map-get($btn-txt, "side"),
+	tag: map-get($btn-tag, "side"),
+	srs: map-get($btn-srs, "side")
+);
+$btn-icon: (
+	txt: $file-alt,
+	tag: $image,
+	srs: $clipboard-list
+);
+
+$black1: #1a1a1a;
+$black2: #434343;
+$gray1: #f9f9f9;
+$gray2: #606060;
+$gray3: #d8d8d8;
+$gray4: #a3a3a3;
+$gray5: #c4c4c4;
+$gray6: #eaeaea;
+$gray7: #f2f2f2;

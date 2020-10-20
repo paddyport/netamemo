@@ -1,0 +1,131 @@
+@charset "UTF-8";
+@import "_pseudo";
+@import "_mixin";
+
+.posts {
+	// display: none;
+	position: absolute;
+	background: #fff;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: divceil(50, 16, "em");
+	z-index: 9000;
+	// &.isShown {
+	// 	display: block;
+	// }
+> button {
+	position: absolute;
+	right: divceil((50-35)/2, 20, "em");
+	top: divceil((50-35)/2, 20, "em");
+	font-weight: normal;
+	font-size: divceil(20, 16, "em");
+}
+.head {
+	display: flex;
+	align-items: center;
+	position: absolute;
+	background: $gray1;
+	height: divceil(50, 16, "em");
+	left: 0;
+	right: 0;
+	top: 0;
+	@include fontWeight("bold");
+	> h1 {
+		margin: 0 0 0 divceil(10, 20, "em");
+		letter-spacing: 0.02em;
+		line-height: divceil(50, 20, "em");
+		font-size: divceil(20, 16, "em");
+	}
+}
+.content {
+	height: calc(100% - #{divceil(50+4+4, 16, "em")});
+	margin: divceil(50+4, 16, "em") 0 divceil(4, 16, "em");
+	padding: 0 divceil(16, 16, "em");
+	overflow-y: scroll;
+}
+.list {
+	margin: 0;
+	padding: divceil(10, 16, "em") 0 0;
+	text-align: left;
+	list-style: none;
+	> li {
+		display: block;
+	}
+	.cardItem {
+		position: relative;
+		background: $gray7;
+		padding: divceil(10-(22-18)/2, 16, "em") divceil(10, 16, "em") divceil(10, 16, "em");
+		> i {
+			position: absolute;
+			border-left: divceil(12, 16, "em") solid transparent;
+			border-right: divceil(12, 16, "em") solid;
+			border-top: divceil(12, 16, "em") solid;
+			border-bottom: divceil(12, 16, "em") solid transparent;
+			width: 0;
+			height: 0;
+			right: 0;
+			top: 0;
+			// color: transparent;
+			pointer-events: none;
+		}
+		> h2 {
+			margin: 0;
+			padding: 0 divceil(10, 18, "em") 0 0;
+//			letter-spacing: 0.03em;
+			line-height: divceil(22, 18, "em");
+			font-size: divceil(18, 16, "em");
+			@include fontWeight("bold");
+			text-align: justify;
+//			@include endLeader();
+			+ time {
+				margin-top: divceil(20, 16, "em");
+			}
+		}
+		> time {
+			display: block;
+			position: relative;
+			margin: divceil(10, 16, "em") 0 0;
+			padding: 0 0 0 divceil(22, 16, "em");
+			letter-spacing: 0.02em;
+			line-height: 1;
+			&::before {
+				position: absolute;
+				left: 0;
+				top: 50%;
+				font-family: $ffIcons;
+				color: $black2;
+				transform: translate(0, -50%);
+			}
+			&.date::before {
+				content: $history;
+			}
+			&.last::before {
+				content: $pen;
+			}
+		}
+		> p {
+			display: flex;
+			justify-content: flex-end;
+			align-items: flex-end;
+			position: absolute;
+			bottom: divceil(10-2, 16, "em");
+			right: divceil(10, 16, "em");
+			margin: 0;
+			line-height: 1;
+			> button {
+				display: block;
+				+ button {
+					margin-left: divceil(10, 16, "em");
+				}
+			}
+		}
+	}
+}
+.note {
+	margin: 0;
+	padding: divceil(10, 16, "em") 0 0;
+	line-height: divceil(24, 16, "em");
+	text-align: left;
+}
+}

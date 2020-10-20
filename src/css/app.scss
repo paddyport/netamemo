@@ -1,0 +1,763 @@
+@charset "UTF-8";
+@import "_pseudo";
+@import "_mixin";
+
+@font-face {
+    font-family: $ffIcons;
+    src: url("icons.woff2") format("woff2"),
+        url("icons.woff") format("woff");
+}
+* {
+	box-sizing: border-box;
+	&::before, &::after {
+		box-sizing: border-box;
+	}
+}
+body {
+    margin: 0;
+//	font-size: 16px;
+	font-size: divceil(32, 750, "vw");
+    font-family: "Noto Sans JP", sans-serif;
+    text-align: center;
+    color: $black1;
+//	visibility: hidden;
+	@include mq() {
+		font-size: 20px;
+	}
+	&.isInited {
+		visibility: visible;
+	}
+	&.isFixed {
+		position: fixed;
+		left: 0;
+		right: 0;
+	}
+}
+input, textarea {
+	background: #fff;
+	border: 1px solid map-get($btn-nml, "font");
+	border-radius: 2px;
+    line-height: 1;
+    font: inherit;
+	cursor: pointer;
+	&:focus {
+		outline: none;
+		box-shadow: 0 0 0 2px map-get($btn-nml, "side");
+	}
+}
+button {
+    position: relative;
+	background: transparent;
+    border: none;
+	padding: 0;
+    line-height: 1;
+    font: inherit;
+	@include fontWeight("bold");
+	font-family: $ffBtn;
+	appearance: unset;
+	-webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+	&:focus {
+		outline: none;
+	}
+	&.def {
+		&::before {
+			content: "";
+			position: absolute;
+			border: 2px solid;
+			border-radius: divceil(4, 16, "em");
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			z-index: 1;
+		}
+		> span {
+			position: absolute;
+			left: 0;
+			right: 0;
+			top: 0;
+			bottom: 0;
+			line-height: divceil(27, 16, "em");
+			pointer-events: none;
+			z-index: 5;
+		}
+		.isMD &:active > span, .isTD &:active > span {
+			color: #fff;
+			&::after {
+				color: #fff !important;
+			}
+		}
+		&.isNoActive {
+			pointer-events: none;
+		}
+	}
+	&.icn {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		background: map-get($btn-nml, "bgBase");
+		border-radius: 50%;
+		width: divceil(28, 16, "em");
+		height: divceil(28, 16, "em");
+		font-family: $ffIcons;
+		.isMD &:hover {
+			background: map-get($btn-nml, "side");
+		}
+		.isMD &:active, .isTD &:active {
+			background: map-get($btn-nml, "font");
+			color: #fff;
+		}
+		&.isNoActive {
+			color: map-get($btn-nml, "bgActive");
+			pointer-events: none;
+		}
+	}
+}
+
+button.btnIcon {
+	width: divceil(34, 16, "em");
+	height: divceil(34, 16, "em");
+	> span {
+		color: transparent !important;
+		overflow: hidden;
+		&::after {
+			position: absolute;
+			left: 50%;
+			top: 50%;
+			font-family: $ffIcons;
+			transform: translate(-48%, -50%);
+		}
+	}
+}
+button.btnText {
+	width: divceil(160, 16, "em");
+	height: divceil(34, 16, "em");
+	> span {
+		line-height: divceil(34-1*2, 16, "em");
+		> span {
+			line-height: divceil(34-1*2+3, 16, "em");
+		}
+		> i {
+			margin: 0 divceil(8, 16, "em") 0 0;
+			font-style: normal;
+			&::after {
+				display: inline-block;
+				font-family: $ffIcons;
+				transform: translate(0, 3%);
+			}
+		}
+	}
+}
+button.btnWord {
+	width: divceil(80, 16, "em");
+	height: divceil(34, 16, "em");
+	> span {
+		line-height: divceil(34-1*2, 16, "em");
+		> i {
+			margin: 0 divceil(8, 16, "em") 0 0;
+			font-style: normal;
+			&::after {
+				display: inline-block;
+				font-family: $ffIcons;
+				transform: translate(0, 3%);
+			}
+		}
+	}
+}
+
+button.widMN {
+	width: divceil(32, 16, "em");
+}
+button.widSM {
+	width: divceil(48, 16, "em");
+}
+button.widMD {
+	width: divceil(100, 16, "em");
+}
+button.widLG {
+	width: divceil(120, 16, "em");
+}
+button.heiMN {
+	height: divceil(32, 16, "em");
+	> span {
+		line-height: divceil(32, 16, "em");
+	}
+}
+
+button.txt {
+	@include btnColor($btn-txt);
+	&.btnIcon > span::after {
+		content: $file-alt;
+	}
+	&.btnText > span > i::after, &.btnWord > span > i::after {
+		content: $file-alt;
+	}
+	&.switchTab::after {
+		content: $file-alt;
+	}
+}
+button.img {
+	@include btnColor($btn-img);
+	&.btnIcon > span::after {
+		content: $image;
+	}
+	&.btnText > span > i::after, &.btnWord > span > i::after {
+		content: $image;
+	}
+	&.switchTab::after {
+		content: $image;
+	}
+}
+button.srs {
+	@include btnColor($btn-srs);
+	&.btnIcon > span::after {
+		content: $clipboard-list;
+	}
+	&.btnText > span > i::after, &.btnWord > span > i::after {
+		content: $clipboard-list;
+	}
+	&.switchTab::after {
+		content: $clipboard-list;
+	}
+}
+button.menuList {
+	&.btnIcon > span::after {
+		content: $ellipsis-v;
+	}
+}
+button.cng {
+	&.btnIcon > span::after {
+		content: $sort;
+	}
+}
+button.edt {
+	&.btnIcon > span::after {
+		content: $pen;
+	}
+	&.btnWord > span > i::after {
+		content: $pen;
+	}
+}
+button.sch {
+	&.btnIcon > span::after {
+		content: $search;
+	}
+	&.btnWord > span > i::after {
+		content: $search;
+	}
+}
+button.tag {
+	&.btnIcon > span::after {
+		content: $tag;
+	}
+	&.btnText > span > i::after, &.btnWord > span > i::after {
+		content: $tag;
+	}
+}
+button.cpr {
+	&.btnIcon > span::after {
+		content: $palette;
+	}
+	&.btnText > span > i::after, &.btnWord > span > i::after {
+		content: $palette;
+	}
+}
+button.viw {
+	&.btnIcon > span::after {
+		content: $eye;
+	}
+	&.btnText > span > i::after, &.btnWord > span > i::after {
+		content: $eye;
+	}
+}
+button.rem {
+	&.btnIcon > span::after {
+		content: $trash;
+	}
+	&.btnText > span > i::after, &.btnWord > span > i::after {
+		content: $trash;
+	}
+}
+button.cls {
+	&.btnIcon > span::after {
+		content: $times;
+	}
+	&.btnText > span > i::after, &.btnWord > span > i::after {
+		content: $times;
+	}
+}
+
+button.nml {
+	@include btnColor($btn-nml);
+}
+
+a.listItem {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	letter-spacing: 0.03em;
+	cursor: pointer;
+	&::before {
+		display: block;
+		margin: 0 divceil(8, 16, "em") 0 0;
+		font-family: $ffIcons;
+	}
+	&::after {
+		display: block;
+		margin: 0 0 0 auto;
+		font-family: $ffIcons;
+	}
+	&.trs {
+		&::after {
+			content: $caret-right;
+		}
+	}
+	&.acc {
+		&::after {
+			content: $caret-down;
+		}
+		&.isOpen::after {
+			content: $caret-up;
+		}
+	}
+}
+a.cardItem {
+	display: block;
+	position: relative;
+	color: map-get($btn-nml, "font");
+	cursor: pointer;
+	&::before {
+		content: "";
+		position: absolute;
+		background: $gray6;
+		border: 2px solid;
+		border-radius: divceil(4, 16, "em");
+		left: 0;
+		right: 0;
+		top: 0;
+		bottom: 0;
+		pointer-events: none;
+	}
+	.isMD &.isHover::before {
+		background: map-get($btn-nml, "side");
+	}
+	.isMD &, .isTD & {
+		&.isActive {
+			color: #fff;
+			&::before {
+				background: map-get($btn-nml, "font");
+				color: map-get($btn-nml, "font");
+			}
+		}
+	}
+	> * {
+		position: relative;
+	}
+	@each $type in $types {
+		.#{$type} & {
+			color: map-get($btn-font, $type);
+			&::before {
+				background: map-get($btn-base, $type);
+			}
+			.isMD &.isHover::before {
+				background: map-get($btn-side, $type);
+			}
+			.isMD &, .isTD & {
+				&.isActive {
+					&::before {
+						background: map-get($btn-font, $type);
+						color: map-get($btn-font, $type);
+					}
+				}
+			}
+		}
+	}
+}
+a.sch {
+	&.listItem::before {
+		content: $search;
+	}
+}
+a.tag {
+	&.listItem::before {
+		content: $tag;
+	}
+}
+a.hst {
+	&.listItem::before {
+		content: $history;
+	}
+}
+a.edt {
+	&.listItem::before {
+		content: $pen;
+	}
+}
+a.txt {
+	&.listItem::before {
+		content: $file-alt;
+		color: map-get($btn-txt, "side");
+	}
+}
+a.srs {
+	&.listItem::before {
+		content: $clipboard-list;
+		color: map-get($btn-srs, "side");
+	}
+}
+
+$swatch: 24;
+// palette
+.palette {
+//	display: flex;
+	background: $gray1;
+	.swatch {
+		display: grid;
+		grid-template-columns: repeat((10-1), 1fr);
+		grid-template-rows: repeat(6, 1fr);
+		grid-auto-flow: column;
+		> a {
+			display: block;
+			position: relative;
+			width: divceil($swatch*12/(10-1), 16, "em");
+			height: divceil($swatch*12/(10-1), 16, "em");
+			cursor: pointer;
+			&:hover {
+				&::after {
+					content: "";
+					position: absolute;
+					border: 4px solid map-get($btn-nml, "bgActive");
+					border-radius: 4px;
+					left: -2px;
+					right: -2px;
+					top: -2px;
+					bottom: -2px;
+					z-index: 10;
+					pointer-events: none;
+				}
+			}
+		}
+	}
+	.bar {
+		display: flex;
+//		flex-direction: column;
+		margin: divceil(10, 16, "em") 0 0;
+		> a {
+			display: block;
+			position: relative;
+			width: divceil($swatch, 16, "em");
+			height: divceil($swatch, 16, "em");
+			cursor: pointer;
+			&:hover {
+				&::after {
+					content: "";
+					position: absolute;
+					border: 4px solid map-get($btn-nml, "bgActive");
+					border-radius: 4px;
+					left: -2px;
+					right: -2px;
+					top: -2px;
+					bottom: -2px;
+					z-index: 10;
+					pointer-events: none;
+				}
+			}
+		}
+	}
+}
+
+// wrapper
+#App {
+	position: fixed;
+	width: 100%;
+	height: 100%;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+}
+
+// anew
+.anew {
+	display: none;
+	position: absolute;
+	background: #fff;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+//	padding: divceil(16, 16, "em");
+	z-index: 9000;
+	&.isShown {
+		display: block;
+	}
+.content {
+	height: calc(100% - #{divceil(50+16-4, 16, "em")});
+	margin: divceil(16-4, 16, "em") 0 divceil(50, 16, "em");
+	padding: divceil(4, 16, "em") divceil(16, 16, "em");
+	overflow-y: scroll;
+}
+.head {
+	font-size: divceil(20, 16, "em");
+	> div {
+		border: 1px solid map-get($btn-nml, "font");
+		border-radius: 2px;
+		width: 100%;
+		margin: 0;
+		padding: divceil((34-26)/2, 20, "em") divceil((34-20)/2, 20, "em");
+		line-height: divceil(26, 20, "em");
+		text-align: justify;
+		cursor: text;
+		&[data-placeholder]:empty::before {
+			content: attr(data-placeholder);
+			color: $gray4;
+		}
+		&:focus {
+			outline: none;
+			box-shadow: 0 0 0 2px map-get($btn-nml, "side");
+		}
+	}
+}
+.series {
+	display: flex;
+	position: relative;
+	padding: divceil(10, 16, "em") 0 0;
+	text-align: left;
+	> p {
+		position: relative;
+		width: calc(100% - #{divceil(34, 16, "em")});
+		margin: 0;
+		padding: 0 divceil(24, 16, "em") 0 divceil(10, 16, "em");
+		line-height: divceil(34, 16, "em");
+		@include endLeader();
+		.icn {
+			position: absolute;
+			right: 0;
+			top: 50%;
+			transform: translate(0, -50%);
+		}
+	}
+	.field {
+		position: relative;
+		width: calc(100% - #{divceil(34, 16, "em")});
+		padding: 0 0 0 divceil(10, 16, "em");
+		z-index: 1000;
+		> p {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			width: 100%;
+			margin: 0;
+			> input {
+				width: 100%;
+				height: divceil(34, 16, "em");
+				padding: divceil((34-20)/2, 16, "em");
+			}
+			> button {
+				flex-shrink: 0;
+				margin: 0 0 0 divceil(10, 16, "em");
+			}
+		}
+		> ul {
+			position: absolute;
+			left: divceil(10, 16, "em");
+			right: divceil(48+10, 16, "em");
+			top: 100%;
+			margin: -2px 0 0;
+			padding: 2px 0 0;
+			line-height: 1;
+			list-style: none;
+			> li {
+				display: block;
+				background: #fff;
+				border-left: 1px solid map-get($btn-nml, "font");
+				border-right: 1px solid map-get($btn-nml, "font");
+				+ li {
+					border-top: 1px solid map-get($btn-nml, "font");
+				}
+				&:last-child {
+					border-bottom: 1px solid map-get($btn-nml, "font");
+				}
+				> a {
+					display: block;
+					padding: divceil((32-16)/2, 16, "em");
+					color: $black2;
+					cursor: pointer;
+					.isMD &.isHover {
+						background: $gray3 !important;
+					}
+					.isMD &.isActive, .isTD &.isActive {
+						background: $gray2 !important;
+						color: #fff;
+					}
+				}
+			}
+		}
+	}
+}
+.color {
+	display: flex;
+	align-items: center;
+	position: relative;
+	padding: divceil(10, 16, "em") 0 0;
+	text-align: left;
+	.code {
+		display: flex;
+		align-items: center;
+		margin: 0 0 0 divceil(16, 16, "em");
+		letter-spacing: 0.03em;
+		> i {
+			display: block;
+			width: divceil(20, 16, "em");
+			height: divceil(20, 16, "em");
+			margin: 0 divceil(6, 16, "em") 0 0;
+		}
+	}
+	.palette {
+		position: absolute;
+		left: 0;
+		top: 100%;
+		padding: divceil(10, 16, "em");
+		z-index: 100;
+	}
+}
+.tags {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	padding: divceil(10, 16, "em") 0 0;
+	text-align: left;
+	> button {
+		+ .area {
+			padding: 0 0 0 divceil(10, 16, "em");
+		}
+	}
+	.field {
+		position: relative;
+		width: calc(100% - #{divceil(34, 16, "em")});
+		padding: 0 0 0 divceil(10, 16, "em");
+		> p {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			width: 100%;
+			margin: 0;
+			> input {
+				width: 100%;
+				height: divceil(34, 16, "em");
+				padding: divceil((34-20)/2, 16, "em");
+			}
+			> button {
+				flex-shrink: 0;
+				margin: 0 0 0 divceil(10, 16, "em");
+			}
+		}
+		> ul {
+			position: absolute;
+			left: divceil(10, 16, "em");
+			right: divceil(48+10, 16, "em");
+			top: 100%;
+			margin: -2px 0 0;
+			padding: 2px 0 0;
+			line-height: 1;
+			list-style: none;
+			> li {
+				display: block;
+				background: #fff;
+				border-left: 1px solid map-get($btn-nml, "font");
+				border-right: 1px solid map-get($btn-nml, "font");
+				+ li {
+					border-top: 1px solid map-get($btn-nml, "font");
+				}
+				&:last-child {
+					border-bottom: 1px solid map-get($btn-nml, "font");
+				}
+				> a {
+					display: block;
+					padding: divceil((32-16)/2, 16, "em");
+					color: $black2;
+					cursor: pointer;
+					.isMD &.isHover {
+						background: $gray3 !important;
+					}
+					.isMD &.isActive, .isTD &.isActive {
+						background: $gray2 !important;
+						color: #fff;
+					}
+				}
+			}
+		}
+	}
+	.area {
+		padding: divceil(8, 16, "em") 0 0 divceil(34+10, 16, "em");
+		> ul {
+			display: flex;
+			align-items: center;
+			margin: 0;
+			padding: 0;
+			> li {
+				display: block;
+				margin: 0 divceil(8, 16, "em") 0 0;
+				> a {
+					display: block;
+					background: $gray6;
+					border-radius: divceil(4, 14, "em");
+					padding: 0 divceil((28-14)/2, 14, "em");
+					line-height: divceil(24, 14, "em");
+					font-size: divceil(14, 16, "em");
+					cursor: pointer;
+					.isMD &.isHover {
+						background: $gray3 !important;
+					}
+					.isMD &.isActive, .isTD &.isActive {
+						background: $gray2 !important;
+						color: #fff;
+					}
+				}
+			}
+		}
+	}
+}
+.body {
+	padding: divceil(10, 16, "em") 0;
+	line-height: 0;
+	> div {
+		border: 1px solid map-get($btn-nml, "font");
+		border-radius: 2px;
+		width: 100%;
+		min-height: divceil(30*3+2*2+1*2, 16, "em");
+		margin: 0;
+		padding: divceil(2, 16, "em") divceil((30-16)/2, 16, "em");
+		line-height: divceil(30, 16, "em");
+		text-align: justify;
+		cursor: text;
+		&[data-placeholder]:empty::before {
+			content: attr(data-placeholder);
+			color: $gray4;
+		}
+		&:focus {
+			outline: none;
+			box-shadow: 0 0 0 2px map-get($btn-nml, "side");
+		}
+	}
+}
+.foot {
+	flex-shrink: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: $gray1;
+	height: divceil(50, 16, "em");
+	padding: 0 divceil((50-34)/2, 16, "em");
+	> button {
+		margin: 0 divceil(6, 16, "em");
+	}
+}
+}

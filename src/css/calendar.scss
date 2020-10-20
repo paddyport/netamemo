@@ -1,0 +1,227 @@
+@charset "UTF-8";
+@import "_pseudo";
+@import "_mixin";
+
+.calendar {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: stretch;
+	position: relative;
+	height: 100%;
+	padding: 0 0 divceil(50, 16, "em");
+.head {
+	flex-shrink: 0;
+	display: flex;
+	position: relative;
+	background: $gray1;
+	height: divceil(50, 16, "em");
+	top: 0;
+	padding: 0 0 0 divceil(10, 16, "em");
+	@include fontWeight("bold");
+	text-align: left;
+	z-index: 1500;
+	> button {
+		margin: divceil(8, 16, "em") 0 0;
+	}
+	> h1 {
+		margin: 0 0 0 divceil(10, 20, "em");
+		letter-spacing: 0.02em;
+		line-height: divceil(50, 20, "em");
+		font-size: divceil(20, 16, "em");
+	}
+}
+.body {
+	height: 100%;
+	overflow: hidden;
+}
+.month {
+	display: grid;
+	grid-template-columns: repeat(7, 1fr);
+	grid-auto-rows: 1fr;
+	height: 100%;
+	> div {
+		&:nth-child(odd) {
+				background: #fff;
+		}
+		&:nth-child(even) {
+				background: $gray1;
+		}
+		&.isEmpty {
+			background: $gray7;
+		}
+	}
+}
+.day {
+	position: relative;
+	width: 100%;
+//	height: divceil(10, 16, "em");
+	&.isCurrent {
+		background: $gray6;
+		> * {
+			background: transparent !important;
+		}
+	}
+	.index {
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: divceil(12, 20, "em");
+		letter-spacing: 0.03em;
+		line-height: 1;
+		font-size: divceil(20, 16, "em");
+		@include fontWeight("bold");
+		text-align: center;
+		color: $black2;
+		pointer-events: none;
+	}
+	.content {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		width: 100%;
+		height: 100%;
+		padding: divceil(24, 16, "em") 0 0;
+//		font-size: divceil(14, 16, "em");
+		cursor: pointer;
+		> p {
+			position: relative;
+			margin: 0 divceil(2, 18, "em");
+			font-size: divceil(18, 16, "em");
+			font-family: $ffIcons;
+			pointer-events: none;
+			&.txt {
+				color: map-get($btn-txt, "side");
+			}
+			&.srs {
+				color: map-get($btn-srs, "side");
+			}
+		}
+		.isMD &:hover {
+			background: $gray3 !important;
+		}
+		.isMD &:active, .isTD &:active {
+			background: $gray2 !important;
+			+ .index {
+				color: #fff;
+			}
+		}
+	}
+}
+.footer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	background: $gray1;
+	height: divceil(50, 16, "em");
+	left: 0;
+	right: 0;
+	bottom: 0;
+	padding: 0 divceil((50-34)/2, 16, "em");
+	> button {
+		margin: 0 divceil(12, 16, "em");
+	}
+}
+.change {
+	position: fixed;
+	background: #fff;
+	height: calc(100% - #{divceil(50, 16, "em")});
+	left: 0;
+	right: 0;
+	top: divceil(50, 16, "em");
+	transform: translate(0, -150%);
+	transition: transform 300ms ease-out 0ms;
+	overflow-y: scroll;
+	z-index: 1250;
+	pointer-events: none;
+	&.isShown {
+		transform: translate(0, 0);
+		pointer-events: auto;
+	}
+	> ul {
+		margin: 0;
+		padding: 0;
+		> li {
+			display: block;
+			text-align: left;
+			&:nth-child(even) {
+				background: $gray1;
+			}
+			> a {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				padding: divceil(14, 16, "em") divceil(20, 16, "em");
+				line-height: 1;
+				cursor: pointer;
+				> i {
+					display: block;
+					margin: 0 divceil(8, 16, "em") 0 0;
+					line-height: divceil(20, 16, "em");
+					font-family: $ffIcons;
+					font-style: normal;
+				}
+				> strong {
+					display: block;
+					margin: 0 auto 0 0;
+					letter-spacing: 0.02em;
+					line-height: divceil(20, 16, "em");
+					font-size: divceil(16, 16, "em");
+					@include fontWeight("bold");
+//					font-family: $ffBtn;
+					color: $black2;
+				}
+				> span {
+					display: block;
+					position: relative;
+					margin: 0 0 0 divceil(14, 14, "em");
+					padding: 0 0 0 divceil(14+2, 14, "em");
+					font-size: divceil(14, 16, "em");
+					@include fontWeight("medium");
+					&::before {
+						position: absolute;
+						left: 0;
+						top: 46%;
+						font-family: $ffIcons;
+						transform: translate(0, -50%);
+					}
+					@each $type in $types {
+						&.#{$type} {
+							color: map-get($btn-font, $type);
+							&::before {
+								content: map-get($btn-icon, $type);
+							}
+						}
+					}
+				}
+				.isMD &:hover {
+					background: $gray3;
+				}
+				.isMD &:active, .isTD &:active {
+					background: $gray2;
+					color: #fff;
+					> strong, > span {
+						color: #fff;
+					}
+				}
+				&.isCurrent {
+					background: $gray4;
+					color: #fff;
+					pointer-events: none;
+					> strong {
+						color: #fff;
+					}
+					> span {
+						@each $type in $types {
+							&.#{$type} {
+								color: map-get($btn-base, $type);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}
+}
