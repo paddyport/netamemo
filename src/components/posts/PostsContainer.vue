@@ -1,32 +1,35 @@
 <template>
 <div id="Posts" v-if="postsFlg" class="posts">
 	<div class="content">
-		<posts-text
-			:markTxtArr="markTxtArr"
-			@PostsTxtEdit="openEditTxtMark"
-			@PostsTxtView="$listeners['ViewTxtMark']">
-		</posts-text>
-		<posts-series
-			:markSrsArr="markSrsArr"
-			@PostsSrsEdit="openEditSrsMark"
-			@PostsSrsView="$listeners['ViewSrsMark']">
-		</posts-series>
-		<p v-if="!markTxtArr.length && !markSrsArr.length" class="note">登録されていません。</p>
+		<posts-document
+			:markDcmArr="markDcmArr"
+			@GPopenEditDcm="openEditDcm"
+			@GPCallopenViewDcm="$listeners['ANopenViewDcm']"
+			@GPCallswitchLoader="$listeners['ANswitchLoader']">
+		</posts-document>
+		<posts-category
+			:markCtgArr="markCtgArr"
+			@GPopenEditCtg="openEditCtg"
+			@GPCallopenViewCtg="$listeners['ANopenViewCtg']"
+			@GPCallswitchLoader="$listeners['ANswitchLoader']">
+		</posts-category>
+		<p v-if="!markDcmArr.length && !markCtgArr.length" class="note">登録されていません。</p>
 	</div>
 	<posts-head
 		:currentYYMM="currentYYMM"
         :markDate="markDate">
 	</posts-head>
-	<button type="button" class="icn" @click="onClick">消</button>
+	<button type="button" class="icn" @click="callclosePosts">消</button>
 </div>
 </template>
 
 <script>
-import PostsText from './PostsText'
-import PostsSeries from './PostsSeries'
 import PostsHead from './PostsHead'
+import PostsDocument from './PostsDocument'
+import PostsCategory from './PostsCategory'
 
 export default {
+// GP Component
 	name: "PostsContainer",
 	props: {
         db: Object,
@@ -36,15 +39,15 @@ export default {
 	data() {
 		return {
 			markDate: 0,
-            markTxtArr: [],
-			markSrsArr: [],
-			srsArr: {},
+            markDcmArr: [],
+			markCtgArr: [],
+			ctgArr: {},
 		}
 	},
 	components: {
-		PostsText,
-		PostsSeries,
         PostsHead,
+		PostsDocument,
+		PostsCategory,
 	},
 	methods: {
 		compileBrtoNl(_str) {
@@ -53,79 +56,79 @@ export default {
 		},
 		setPostsData(date) {
 			this.markDate = date;
-			this.markTxtArr = [];
-			this.markSrsArr = [];
-			this.srsArr = {};
+			this.markDcmArr = [];
+			this.markCtgArr = [];
+			this.ctgArr = {};
 			let that = this,
 				_ctime = new Date(that.currentYYMM.year, that.currentYYMM.month, that.markDate).getTime();
-			that.db.srs.toArray().then((list) => {
+			that.db.ctg.toArray().then((list) => {
 				for(let _data of list) {
 					let dtime = new Date(_data.date).getTime();
-					that.srsArr[_data.sid] = _data.color;
-					if(_ctime === dtime) that.markSrsArr.push(_data);
-					that.markSrsArr = that.$parent.compileArrtoArr(that.markSrsArr);
+					that.ctgArr[_data.cid] = _data.color;
+					if(_ctime === dtime) that.markCtgArr.push(_data);
+					that.markCtgArr = that.$parent.compileArrtoArr(that.markCtgArr);
 				}
 			});
-			that.db.txt.toArray().then((list) => {
+			that.db.dcm.toArray().then((list) => {
 				for(let _data of list) {
 					let dtime = new Date(_data.date).getTime(),
 						ltime = new Date(_data.last).getTime(),
 						obj = _data;
-					obj.color = _data.sid ? that.srsArr[_data.sid] : "transparent";
-					if(_ctime === dtime) that.markTxtArr.push(obj);
-					if(_ctime === ltime) that.markTxtArr.push(obj);
-					that.markTxtArr = that.$parent.compileArrtoArr(that.markTxtArr);
+					obj.color = _data.cid ? that.ctgArr[_data.cid] : "transparent";
+					if(_ctime === dtime) that.markDcmArr.push(obj);
+					if(_ctime === ltime) that.markDcmArr.push(obj);
+					that.markDcmArr = that.$parent.compileArrtoArr(that.markDcmArr);
 				}
 			});
 		},
-		onClick() {
-			this.$emit("PostsCloseClick");
+		callclosePosts() {
+			this.$emit("ANclosePosts");
 		},
-		getDataSrs(key) {
+		getDataCtg(key) {
 			const that = this;
 			return new Promise(function(resolve){
-				that.db.srs.get(key).then(function(obj){
+				that.db.ctg.get(key).then(function(obj){
 					resolve(obj);
 				});
 			});
 		},
-		async openEditTxtMark(_id) {
+		async openEditDcm(_id) {
 			const that = this,
 				id = Number(_id);
-			let obj = {txt: {}, srs: {}, tag: []};
-			for(let data of that.markTxtArr) {
-				if(data.tid == id) {
-					obj.txt = data;
-					obj.txt.body = that.compileBrtoNl(data.body);
+			let obj = {dcm: {}, ctg: {}, tag: []};
+			for(let data of that.markDcmArr) {
+				if(data.did == id) {
+					obj.dcm = data;
+					obj.dcm.body = that.compileBrtoNl(data.body);
 					obj.tag = data.tag;
-					if(!data.sid) {
-						that.$emit("EditTxtMark", obj);
+					if(!data.cid) {
+						that.$emit("ANopenEditDcm", obj);
 						return;
 					}
-					obj.srs = await that.getDataSrs(data.sid);
-					that.$emit("EditTxtMark", obj);
+					obj.ctg = await that.getDataCtg(data.cid);
+					that.$emit("ANopenEditDcm", obj);
 				}
 			}
 		},
-		getDataTxt(key) {
+		getDataDcm(key) {
 			const that = this;
 			return new Promise(function(resolve){
-				that.db.txt.where({sid: key}).toArray().then(function(list){
+				that.db.dcm.where({cid: key}).toArray().then(function(list){
 					resolve(list);
 				});
 			});
 		},
-		async openEditSrsMark(_id) {
+		async openEditCtg(_id) {
 			const that = this,
 				id = Number(_id);
-			let obj = {txt: [], srs: {}, tag: []};
-			for(let data of that.markSrsArr) {
-				if(data.sid == id) {
-					obj.srs = data;
-					obj.srs.body = that.compileBrtoNl(data.body);
+			let obj = {dcm: [], ctg: {}, tag: []};
+			for(let data of that.markCtgArr) {
+				if(data.cid == id) {
+					obj.ctg = data;
+					obj.ctg.body = that.compileBrtoNl(data.body);
 					obj.tag = data.tag;
-					obj.txt = await that.getDataTxt(data.sid);
-					that.$emit("EditSrsMark", obj);
+					obj.dcm = await that.getDataDcm(data.cid);
+					that.$emit("ANopenEditCtg", obj);
 				}
 			}
 		},

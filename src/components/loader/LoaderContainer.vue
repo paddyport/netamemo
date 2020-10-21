@@ -11,5 +11,5 @@ export default {
 </script>
 
 <style scoped>
-@import "../css/loader.css";
+@import "../../css/loader.css";
 </style>

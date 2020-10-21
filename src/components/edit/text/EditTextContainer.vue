@@ -1,89 +1,93 @@
 <template>
-<div class="txt" :data-tid="editTxtTxtObj.tid">
+<div class="dcm" :data-did="editDcmDcmObj.did">
     <div class="content">
 		<div class="head">
-			<div contenteditable="true" @blur="changeEditTxtHead">{{ editTxtTxtObj.head }}</div>
+			<div contenteditable="true" @blur="changeEditDcmHead">{{ editDcmDcmObj.head }}</div>
 		</div>
-		<edit-text-srsname
+		<edit-text-ctgname
 			:db="db"
-			:editTxtSrsObj="editTxtSrsObj"
-			@SelectEditTxtSrsObj="selectEditTxtSrs">
-		</edit-text-srsname>
+			:editDcmCtgObj="editDcmCtgObj"
+			@PTselectEditDcmCtg="selectEditDcmCtg">
+		</edit-text-ctgname>
 		<edit-text-tags
 			:db="db"
-			:editTxtTagArr="editTxtTagArr"
-			@SelectEditTxtTagArr="selectEditTxtTag">
+			:editDcmTagArr="editDcmTagArr"
+			@PTselectEditDcmTag="selectEditDcmTag">
 		</edit-text-tags>
 		<div class="body">
-			<div contenteditable="true" @blur="changeEditTxtBody">{{ editTxtTxtObj.body }}</div>
+			<div contenteditable="true" @blur="changeEditDcmBody">{{ editDcmDcmObj.body }}</div>
 		</div>
 	</div>
 	<edit-foot
-		:btnClass="'txt'"
-		@FootClickClose="$listeners['FootTxtClick']"
-		@FootClickSave="setSaveData"
-		@CallSwitchLoaderClick="$listeners['CallSwitchLoader']">
+		:btnClass="'dcm'"
+		@PTcloseEdit="$listeners['GPcloseEditDcm']"
+		@PTsaveEdit="setSaveData"
+		@PTCallswitchLoader="$listeners['GPCallswitchLoader']">
 	</edit-foot>
 </div>
 </template>
 
 <script>
-import EditTextSrsname from './EditTextSrsname'
+import EditTextCtgname from './EditTextCtgname'
 import EditTextTags from './EditTextTags'
 import EditFoot from '../EditFoot'
 
 export default {
+// PT Component
 	name: "EditTextContainer",
 	props: {
 		db: Object,
-		editTxtTxtObj: Object,
-		editTxtSrsObj: Object,
-		editTxtTagArr: Array,
+		editDcmDcmObj: Object,
+		editDcmCtgObj: Object,
+		editDcmTagArr: Array,
 	},
 	components: {
-		EditTextSrsname,
+		EditTextCtgname,
 		EditTextTags,
 		EditFoot,
 	},
 	data() {
 		return {
-			DeditTxtTxtObj: this.editTxtTxtObj,
-			DeditTxtSrsObj: this.editTxtSrsObj,
-			DeditTxtTagArr: this.editTxtTagArr,
+			DeditDcmDcmObj: this.editDcmDcmObj,
+			DeditDcmCtgObj: this.editDcmCtgObj,
+			DeditDcmTagArr: this.editDcmTagArr,
 		}
 	},
 	methods: {
-		changeEditTxtHead(e) {
+		changeEditDcmHead(e) {
 			const str = e.target.textContent;
-			this.DeditTxtTxtObj.head = str ? str : this.DeditTxtTxtObj.head;
-			e.target.textContent = this.DeditTxtTxtObj.head;
+			this.DeditDcmDcmObj.head = str ? str : this.DeditDcmDcmObj.head;
+			e.target.textContent = this.DeditDcmDcmObj.head;
 		},
-		changeEditTxtBody(e) {
+		changeEditDcmBody(e) {
 			const str = e.target.textContent;
-			this.DeditTxtTxtObj.body = str ? str : this.DeditTxtTxtObj.body;
-			e.target.textContent = this.DeditTxtTxtObj.body;
+			this.DeditDcmDcmObj.body = str ? str : this.DeditDcmDcmObj.body;
+			e.target.textContent = this.DeditDcmDcmObj.body;
 		},
-		selectEditTxtSrs(obj) {
-			this.DeditTxtSrsObj = obj;
+		selectEditDcmCtg(obj) {
+			this.DeditDcmCtgObj = obj;
 		},
-		selectEditTxtTag(arr) {
-			this.DeditTxtTagArr = arr;
+		selectEditDcmTag(arr) {
+			let _arr = this.DeditDcmTagArr.concat(arr);
+			_arr = new Set(_arr);
+			this.DeditDcmTagArr = Array.from(_arr);
 		},
 		setSaveData() {
 			const that = this,
 				_d = new Date();
-			// srsとtagもputする
-			that.db.txt.put({
-				tid: that.DeditTxtTxtObj.tid,
-				sid: that.DeditTxtSrsObj.sid ? that.DeditTxtSrsObj.sid : null,
-				tag: that.DeditTxtTagArr,
-				date: that.DeditTxtTxtObj.date,
+			// tagもputする -> 多分できた
+			that.db.dcm.put({
+				did: that.DeditDcmDcmObj.did,
+				cid: that.DeditDcmCtgObj.cid ? that.DeditDcmCtgObj.cid : null,
+				tag: that.DeditDcmTagArr,
+				date: that.DeditDcmDcmObj.date,
 				last: _d.getFullYear()+"/"+(_d.getMonth()+1)+"/"+_d.getDate(),
-				head: that.DeditTxtTxtObj.head,
-				body: that.DeditTxtTxtObj.body,
+				head: that.DeditDcmDcmObj.head,
+				body: that.DeditDcmDcmObj.body,
 			}).then(() => {
-				that.$emit("FootTxtClick", "sav", that.DeditTxtTxtObj.tid);
-				that.$emit("CallSwitchLoader");
+				that.$parent.setSaveTagPromise(that.DeditDcmTagArr);
+				that.$emit("GPcloseEditDcm", that.DeditDcmDcmObj.did);
+				that.$emit("GPCallswitchLoader");
 			});
 		},
 	},

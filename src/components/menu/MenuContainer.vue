@@ -3,22 +3,23 @@
     <ul :class="['list', menuListFlg ? 'isShown' : '']">
 		<li><a class="listItem sch trs"><span>フリーワード検索</span></a></li>
 		<li><a class="listItem tag trs"><span>タグ検索</span></a></li>
-        <menu-anew :txtNewArr="txtNewArr"></menu-anew>
-        <menu-edit :txtEdtArr="txtEdtArr"></menu-edit>
-        <menu-text :txtArr="txtArr"></menu-text>
-        <menu-series :srsArr="srsArr"></menu-series>
+        <menu-anew :dcmNewArr="dcmNewArr"></menu-anew>
+        <menu-edit :dcmEdtArr="dcmEdtArr"></menu-edit>
+        <menu-document :dcmArr="dcmArr"></menu-document>
+        <menu-category :ctgArr="ctgArr"></menu-category>
 	</ul>
-	<button type="button" :class="['btnIcon', 'def', 'nml', 'menuList', menuListBtnFlg ? '' : 'isNoActive']" @click="onClick"><span>メニュー</span></button>
+	<button type="button" :class="['btnIcon', 'def', 'nml', 'menuList', menuListBtnFlg ? '' : 'isNoActive']" @click="callswitchMenuList"><span>メニュー</span></button>
 </div>
 </template>
 
 <script>
 import MenuAnew from './MenuAnew'
 import MenuEdit from './MenuEdit'
-import MenuText from './MenuText'
-import MenuSeries from './MenuSeries'
+import MenuDocument from './MenuDocument'
+import MenuCategory from './MenuCategory'
 
 export default {
+// GP Component
 	name: "MenuContainer",
 	props: {
         db: Object,
@@ -27,17 +28,17 @@ export default {
 	},
 	data() {
 		return {
-            txtNewArr: [],
-            txtEdtArr: [],
-            txtArr: [],
-            srsArr: [],
+            dcmNewArr: [],
+            dcmEdtArr: [],
+            dcmArr: [],
+            ctgArr: [],
 		}
 	},
 	components: {
 		MenuAnew,
 		MenuEdit,
-		MenuText,
-		MenuSeries,
+		MenuDocument,
+		MenuCategory,
 	},
 	created: function(){
 		this.setMenuData();
@@ -57,30 +58,30 @@ export default {
 		},
 		setMenuData() {
 			let that = this;
-			that.db.txt.toArray().then((list) => {
+			that.db.dcm.toArray().then((list) => {
 				for(let _data of list) {
                     let obj = _data;
-                    that.txtArr.push(_data);
+                    that.dcmArr.push(_data);
                     obj.datetime = new Date(_data.date).getTime();
                     obj.lasttime = new Date(_data.last).getTime();
-					that.txtNewArr.push(obj);
-					that.txtNewArr.sort(that.$parent.sortDESC("datetime"));
-					that.txtEdtArr.push(obj);
-					that.txtEdtArr.sort(that.$parent.sortDESC("lasttime"));
+					that.dcmNewArr.push(obj);
+					that.dcmNewArr.sort(that.$parent.sortDESC("datetime"));
+					that.dcmEdtArr.push(obj);
+					that.dcmEdtArr.sort(that.$parent.sortDESC("lasttime"));
 				}
-				if(list.length === that.txtArr.length) {
-					that.txtNewArr.slice(0, 4);
-					that.txtEdtArr.slice(0, 4);
+				if(list.length === that.dcmArr.length) {
+					that.dcmNewArr.slice(0, 4);
+					that.dcmEdtArr.slice(0, 4);
 				}
 			});
-			that.db.srs.toArray().then((list) => {
+			that.db.ctg.toArray().then((list) => {
 				for(let _data of list) {
-                    that.srsArr.push(_data);
+                    that.ctgArr.push(_data);
                 }
 			});
 		},
-		onClick() {
-			this.$emit("MenuBtnClick");
+		callswitchMenuList() {
+			this.$emit("ANswitchMenuList");
 		},
 	},
 }

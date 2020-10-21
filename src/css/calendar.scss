@@ -90,11 +90,12 @@
 			font-size: divceil(18, 16, "em");
 			font-family: $ffIcons;
 			pointer-events: none;
-			&.txt {
-				color: map-get($btn-txt, "side");
+			&.dcm {
+				color: map-get($btn-dcm, "side");
 			}
-			&.srs {
-				color: map-get($btn-srs, "side");
+			&.ctg {
+				// font-size: divceil(18, 16, "em");
+				color: map-get($btn-ctg, "side");
 			}
 		}
 		.isMD &:hover {
@@ -173,18 +174,20 @@
 					color: $black2;
 				}
 				> span {
-					display: block;
+					display: flex;
+					align-items: center;
 					position: relative;
-					margin: 0 0 0 divceil(14, 14, "em");
-					padding: 0 0 0 divceil(14+2, 14, "em");
-					font-size: divceil(14, 16, "em");
+					margin: 0 0 0 divceil(20, 16, "em");
+					// padding: 0 0 0 divceil(14+2, 14, "em");
+					font-size: divceil(16, 16, "em");
 					@include fontWeight("medium");
 					&::before {
-						position: absolute;
-						left: 0;
-						top: 46%;
+						// position: absolute;
+						// left: 0;
+						// top: 46%;
+						margin: 0 divceil(5, 16, "em") 0 0;
 						font-family: $ffIcons;
-						transform: translate(0, -50%);
+						// transform: translate(0, -50%);
 					}
 					@each $type in $types {
 						&.#{$type} {

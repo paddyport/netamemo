@@ -1,16 +1,17 @@
 <template>
 <footer class="footer">
-	<button type="button" class="btnText def txt widLG" @click="onClick('txt')"><span><i></i>新規作成</span></button>
-	<button type="button" class="btnText def srs widLG" @click="onClick('srs')"><span><i></i>新規作成</span></button>
+	<button type="button" class="btnText def dcm widLG" @click="callopenAnewField('dcm')"><span><i></i>新規作成</span></button>
+	<button type="button" class="btnText def ctg widLG" @click="callopenAnewField('ctg')"><span><i></i>新規作成</span></button>
 </footer>
 </template>
 
 <script>
 export default {
+// PT Component
 	name: "CalendarFoot",
 	methods: {
-		onClick(val) {
-			this.$emit("FootClick", val);
+		callopenAnewField(val) {
+			this.$emit("GPCallopenAnewField", val);
 		},
 	},
 }

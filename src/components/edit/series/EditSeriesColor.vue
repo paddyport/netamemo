@@ -1,41 +1,45 @@
 <template>
 <div class="color">
-	<button type="button" :class="[!selectSrsColorFlg&&!selectSrsColor ? 'btnWord' : 'btnIcon', 'def', 'cpr', 'nml']" @click="switchSrsPalette">
-		<span v-if="!selectSrsColorFlg&&!selectSrsColor"><i></i>選択</span>
+	<button type="button" :class="[!selectCtgColorFlg&&!selectCtgColor ? 'btnWord' : 'btnIcon', 'def', 'cpr', 'nml']" @click="switchCtgPalette">
+		<span v-if="!selectCtgColorFlg&&!selectCtgColor"><i></i>選択</span>
 		<span v-else><i></i></span>
 	</button>
-	<p class="code"><i v-show="selectSrsColor" :style="{background: selectSrsColor}"></i>{{ selectSrsColor }}</p>
-    <colorpicker-container
-        v-show="selectSrsColorFlg"
-        @ChangeSwatch="changeSrsSwatch">
-    </colorpicker-container>
+	<p class="code"><i v-show="selectCtgColor" :style="{background: selectCtgColor}"></i>{{ selectCtgColor }}</p>
+    <color-picker
+        ref="picker"
+        v-show="selectCtgColorFlg"
+        @EXchangeSwatch="changeCtgSwatch">
+    </color-picker>
 </div>
 </template>
 
 <script>
-import ColorpickerContainer from '../../ColorpickerContainer'
+import ColorPicker from '../../parts/ColorPicker'
 
 export default {
     name: "EditSeriesColor",
     props: {
-        srsColor: String,
+        ctgColor: String,
     },
 	components: {
-        ColorpickerContainer,
+        ColorPicker,
     },
 	data() {
 		return {
-            selectSrsColorFlg: false,
-            selectSrsColor: this.srsColor,
+            selectCtgColorFlg: false,
+            selectCtgColor: this.ctgColor,
+            selectCtgPalette: "",
 		}
     },
 	methods: {
-		switchSrsPalette() {
-			this.selectSrsColorFlg = this.selectSrsColorFlg ? false : true;
+		switchCtgPalette() {
+            this.selectCtgColorFlg = this.selectCtgColorFlg ? false : true;
+            if(this.selectCtgColorFlg) this.$refs.picker.getPaletteSwatch(this.selectCtgPalette);
         },
-        changeSrsSwatch(val) {
-            this.selectSrsColor = val;
-            this.$emit("ChangeSrsSwatchClick", this.selectSrsColor);
+        changeCtgSwatch(val) {
+            this.selectCtgColor = val;
+            this.switchCtgPalette();
+            this.$emit("PTchangeCtgColor", this.selectCtgColor);
         },
 	},
 }

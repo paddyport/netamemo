@@ -1,4 +1,4 @@
-@-webkit-keyframes txtSquare {
+@-webkit-keyframes dcmSquare {
   0%, 5% {
     -webkit-transform: translate(0, 0);
     transform: translate(0, 0); }
@@ -15,7 +15,7 @@
     -webkit-transform: translate(0, 0);
     transform: translate(0, 0); } }
 
-@keyframes txtSquare {
+@keyframes dcmSquare {
   0%, 5% {
     -webkit-transform: translate(0, 0);
     transform: translate(0, 0); }
@@ -32,7 +32,7 @@
     -webkit-transform: translate(0, 0);
     transform: translate(0, 0); } }
 
-@-webkit-keyframes srsSquare {
+@-webkit-keyframes ctgSquare {
   0%, 5% {
     -webkit-transform: translate(0, 0);
     transform: translate(0, 0); }
@@ -49,7 +49,7 @@
     -webkit-transform: translate(0, 0);
     transform: translate(0, 0); } }
 
-@keyframes srsSquare {
+@keyframes ctgSquare {
   0%, 5% {
     -webkit-transform: translate(0, 0);
     transform: translate(0, 0); }
@@ -162,14 +162,14 @@
         background: #75aae6;
         right: 0.125em;
         top: 0.125em;
-        -webkit-animation: txtSquare 2000ms linear 0ms infinite;
-        animation: txtSquare 2000ms linear 0ms infinite; }
+        -webkit-animation: dcmSquare 2000ms linear 0ms infinite;
+        animation: dcmSquare 2000ms linear 0ms infinite; }
       .loader > div > div:nth-child(2) {
         background: #eb9494;
         right: 0.125em;
         bottom: 0.125em;
-        -webkit-animation: srsSquare 2000ms linear 0ms infinite;
-        animation: srsSquare 2000ms linear 0ms infinite; }
+        -webkit-animation: ctgSquare 2000ms linear 0ms infinite;
+        animation: ctgSquare 2000ms linear 0ms infinite; }
       .loader > div > div:nth-child(3) {
         background: #ddc560;
         left: 0.125em;

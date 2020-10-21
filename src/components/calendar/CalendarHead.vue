@@ -7,6 +7,7 @@
 
 <script>
 export default {
+// PT Component
 	name: 'CalendarHead',
 	props: {
 		currentYYMM: Object,
@@ -14,7 +15,7 @@ export default {
 	},
 	methods: {
 		onClick() {
-			this.$emit("HeadClick");
+			this.$emit("GPCallswitchChangeMonth");
 		},
 	},
 }

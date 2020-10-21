@@ -1,34 +1,37 @@
 <template>
 <div id="View" v-if="viewFlg" class="view">
-	<view-text-container
-		v-if="viewTxtFlg"
-		:viewClass="frontFlg=='txt'&&viewSrsFlg ? 'front' : ''"
-		:viewTxtTxtObj="viewTxtTxtObj"
-		:viewTxtSrsObj="viewTxtSrsObj"
-		:viewTxtTagArr="viewTxtTagArr"
-		:viewTxtBody="viewTxtBody"
-		@EditMarkTxtClick="$listeners['EditMarkText']"
-		@CloseViewTxtClick="closeViewTxt">
-	</view-text-container>
-	<view-series-container
-		v-if="viewSrsFlg"
-		:viewClass="frontFlg=='srs'&&viewTxtFlg ? 'front' : ''"
-		:viewSrsSrsObj="viewSrsSrsObj"
-		:viewSrsTxtArr="viewSrsTxtArr"
-		:viewSrsTagArr="viewSrsTagArr"
-		:viewSrsBody="viewSrsBody"
-		@ViewMarkTextClick="$listeners['ViewMarkText']"
-		@EditMarkSrsClick="$listeners['EditMarkSeries']"
-		@CloseViewSrsClick="closeViewSrs">
-	</view-series-container>
+	<view-document-container
+		v-if="viewDcmFlg"
+		:viewClass="frontFlg=='dcm'&&viewCtgFlg ? 'front' : ''"
+		:viewDcmDcmObj="viewDcmDcmObj"
+		:viewDcmCtgObj="viewDcmCtgObj"
+		:viewDcmTagArr="viewDcmTagArr"
+		:viewDcmBody="viewDcmBody"
+		@GPCallopenEditDcm="$listeners['ANopenEditDcm']"
+		@GPcloseViewDcm="closeViewDcm"
+		@GPCallswitchLoader="$listeners['ANswitchLoader']">
+	</view-document-container>
+	<view-category-container
+		v-if="viewCtgFlg"
+		:viewClass="frontFlg=='ctg'&&viewDcmFlg ? 'front' : ''"
+		:viewCtgCtgObj="viewCtgCtgObj"
+		:viewCtgDcmArr="viewCtgDcmArr"
+		:viewCtgTagArr="viewCtgTagArr"
+		:viewCtgBody="viewCtgBody"
+		@GPCallopenViewDcm="$listeners['ANopenViewDcm']"
+		@GPCallopenEditCtg="$listeners['ANopenEditCtg']"
+		@GPcloseViewCtg="closeViewCtg"
+		@GPCallswitchLoader="$listeners['ANswitchLoader']">
+	</view-category-container>
 </div>
 </template>
 
 <script>
-import ViewTextContainer from './text/ViewTextContainer'
-import ViewSeriesContainer from './series/ViewSeriesContainer'
+import ViewDocumentContainer from './document/ViewDocumentContainer'
+import ViewCategoryContainer from './category/ViewCategoryContainer'
 
 export default {
+// GP Component
 	name: "ViewContainer",
 	props: {
 		db: Object,
@@ -37,92 +40,89 @@ export default {
 	data() {
 		return {
 			frontFlg: "",
-			viewTxtFlg: false,
-			viewTxtTxtObj: {},
-			viewTxtSrsObj: {},
-			viewTxtTagArr: [],
-			viewTxtBody: "",
-			viewSrsFlg: false,
-			viewSrsSrsObj: {},
-			viewSrsTxtArr: [],
-			viewSrsTagArr: [],
-			viewSrsBody: "",
+			viewDcmFlg: false,
+			viewDcmDcmObj: {},
+			viewDcmCtgObj: {},
+			viewDcmTagArr: [],
+			viewDcmBody: "",
+			viewCtgFlg: false,
+			viewCtgCtgObj: {},
+			viewCtgDcmArr: [],
+			viewCtgTagArr: [],
+			viewCtgBody: "",
 		}
 	},
 	components: {
-		ViewTextContainer,
-		ViewSeriesContainer,
+		ViewDocumentContainer,
+		ViewCategoryContainer,
 	},
 	methods: {
 		compileBrtoNl(_str) {
 			let str = String(_str);
 			return str.replace(/<br>/, "\r\n");
 		},
-		setTxtData(id, flg) {
+		setDcmData(id, flg) {
 			const that = this,
-				key = {tid: id};
-			that.db.txt.get(key).then((obj) => {
+				key = {did: id};
+			that.db.dcm.get(key).then((obj) => {
 				if(flg) {
-					that.viewTxtSrsObj = {};
-					if(obj.sid) that.setSrsData(Number(obj.sid));
-					that.viewTxtTxtObj = obj;
-					that.viewTxtBody = that.compileBrtoNl(obj.body);
-					that.viewTxtTagArr = obj.tag;
-					that.viewTxtFlg = true;
-					that.frontFlg = "txt";
+					that.viewDcmCtgObj = {};
+					if(obj.cid) that.setCtgData(Number(obj.cid));
+					that.viewDcmDcmObj = obj;
+					that.viewDcmBody = that.compileBrtoNl(obj.body);
+					that.viewDcmTagArr = obj.tag;
+					that.viewDcmFlg = true;
+					that.frontFlg = "dcm";
 				} else {
-					that.viewSrsTxtArr.push(obj);
+					that.viewCtgDcmArr.push(obj);
 				}
 			});
 		},
-		getSrsDataTxt(id) {
+		getCtgDataDcm(id) {
 			const that = this,
-				key = {sid: id};
-			that.viewSrsTxtArr = [];
+				key = {cid: id};
+			that.viewCtgDcmArr = [];
 			return new Promise(function(resolve){
-				that.db.txt.where(key).toArray().then((list) => {
+				that.db.dcm.where(key).toArray().then((list) => {
 					resolve(list);
 				});
 			});
 		},
-		async setSrsData(id, flg) {
+		async setCtgData(id, flg) {
 			const that = this,
-				key = {sid: id};
-			that.db.srs.get(key).then((obj) => {
+				key = {cid: id};
+			that.db.ctg.get(key).then((obj) => {
 				if(flg) {
-					that.viewSrsTxtArr = [];
-					that.viewSrsSrsObj = obj;
-					that.viewSrsBody = that.compileBrtoNl(obj.body);
-					that.viewSrsTagArr = obj.tag;
-					that.viewSrsFlg = true;
-					that.frontFlg = "srs";
+					that.viewSCtgDcmArr = [];
+					that.viewCtgCtgObj = obj;
+					that.viewCtgBody = that.compileBrtoNl(obj.body);
+					that.viewCtgTagArr = obj.tag;
+					that.viewCtgFlg = true;
+					that.frontFlg = "ctg";
 				} else {
-					that.viewTxtSrsObj = obj;
+					that.viewDcmCtgObj = obj;
 				}
 			});
-			that.viewSrsTxtArr = await that.getSrsDataTxt(id);
+			that.viewCtgDcmArr = await that.getCtgDataDcm(id);
 		},
 		checkCloseView() {
-			if(!this.viewTxtFlg && !this.viewSrsFlg) {
+			if(!this.viewDcmFlg && !this.viewCtgFlg) {
 				this.frontFlg = "";
-				this.$emit("switchViewClick");
+				this.$emit("ANcloseView");
 			}
 		},
-		closeViewTxt() {
-			this.viewTxtTxtObj = {};
-			this.viewTxtFlg = false;
-			this.frontFlg = "srs";
+		closeViewDcm() {
+			this.viewDcmDcmObj = {};
+			this.viewDcmFlg = false;
+			this.frontFlg = "ctg";
 			this.checkCloseView();
 		},
-		closeViewSrs() {
-			this.viewSrsSrsObj = {};
-			this.viewSrsFlg = false;
-			this.frontFlg = "txt";
+		closeViewCtg() {
+			this.viewCtgCtgObj = {};
+			this.viewCtgFlg = false;
+			this.frontFlg = "dcm";
 			this.checkCloseView();
 		},
-		// viewMarkSrsText(id) {
-		// 	this.$emit("", id);
-		// },
 	},
 }
 </script>

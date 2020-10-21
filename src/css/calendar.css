@@ -74,9 +74,9 @@
         font-size: 1.125em;
         font-family: "Font Awesome 5 Free";
         pointer-events: none; }
-        .calendar .day .content > p.txt {
+        .calendar .day .content > p.dcm {
           color: #75aae6; }
-        .calendar .day .content > p.srs {
+        .calendar .day .content > p.ctg {
           color: #eb9494; }
       .isMD .calendar .day .content:hover {
         background: #d8d8d8 !important; }
@@ -146,27 +146,23 @@
             font-weight: 700;
             color: #434343; }
           .calendar .change > ul > li > a > span {
-            display: block;
+            display: flex;
+            align-items: center;
             position: relative;
-            margin: 0 0 0 1em;
-            padding: 0 0 0 1.143em;
-            font-size: 0.875em;
+            margin: 0 0 0 1.25em;
+            font-size: 1em;
             font-weight: 500; }
             .calendar .change > ul > li > a > span::before {
-              position: absolute;
-              left: 0;
-              top: 46%;
-              font-family: "Font Awesome 5 Free";
-              -webkit-transform: translate(0, -50%);
-              transform: translate(0, -50%); }
-            .calendar .change > ul > li > a > span.txt {
+              margin: 0 0.313em 0 0;
+              font-family: "Font Awesome 5 Free"; }
+            .calendar .change > ul > li > a > span.dcm {
               color: #1a4c86; }
-              .calendar .change > ul > li > a > span.txt::before {
+              .calendar .change > ul > li > a > span.dcm::before {
                 content: "文"; }
-            .calendar .change > ul > li > a > span.srs {
+            .calendar .change > ul > li > a > span.ctg {
               color: #842323; }
-              .calendar .change > ul > li > a > span.srs::before {
-                content: "連"; }
+              .calendar .change > ul > li > a > span.ctg::before {
+                content: "類"; }
           .isMD .calendar .change > ul > li > a:hover {
             background: #d8d8d8; }
           .isMD .calendar .change > ul > li > a:active, .isTD .calendar .change > ul > li > a:active {
@@ -180,7 +176,7 @@
             pointer-events: none; }
             .calendar .change > ul > li > a.isCurrent > strong {
               color: #fff; }
-            .calendar .change > ul > li > a.isCurrent > span.txt {
+            .calendar .change > ul > li > a.isCurrent > span.dcm {
               color: #e8f1fc; }
-            .calendar .change > ul > li > a.isCurrent > span.srs {
+            .calendar .change > ul > li > a.isCurrent > span.ctg {
               color: #ffe4e4; }

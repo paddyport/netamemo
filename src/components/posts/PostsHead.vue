@@ -6,6 +6,7 @@
 
 <script>
 export default {
+// PT Component
 	name: "PostsHead",
 	props: {
         currentYYMM: Object,

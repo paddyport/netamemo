@@ -185,8 +185,8 @@ button.heiMN {
 	}
 }
 
-button.txt {
-	@include btnColor($btn-txt);
+button.dcm {
+	@include btnColor($btn-dcm);
 	&.btnIcon > span::after {
 		content: $file-alt;
 	}
@@ -209,16 +209,16 @@ button.img {
 		content: $image;
 	}
 }
-button.srs {
-	@include btnColor($btn-srs);
+button.ctg {
+	@include btnColor($btn-ctg);
 	&.btnIcon > span::after {
-		content: $clipboard-list;
+		content: $folder;
 	}
 	&.btnText > span > i::after, &.btnWord > span > i::after {
-		content: $clipboard-list;
+		content: $folder;
 	}
 	&.switchTab::after {
-		content: $clipboard-list;
+		content: $folder;
 	}
 }
 button.menuList {
@@ -312,6 +312,7 @@ a.listItem {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
+	position: relative;
 	width: 100%;
 	height: 100%;
 	letter-spacing: 0.03em;
@@ -338,6 +339,11 @@ a.listItem {
 		&.isOpen::after {
 			content: $caret-up;
 		}
+	}
+	> span {
+		display: block;
+		line-height: 1;
+		pointer-events: none;
 	}
 }
 a.cardItem {
@@ -412,16 +418,16 @@ a.edt {
 		content: $pen;
 	}
 }
-a.txt {
+a.dcm {
 	&.listItem::before {
 		content: $file-alt;
-		color: map-get($btn-txt, "side");
+		color: map-get($btn-dcm, "side");
 	}
 }
-a.srs {
+a.ctg {
 	&.listItem::before {
-		content: $clipboard-list;
-		color: map-get($btn-srs, "side");
+		content: $folder;
+		color: map-get($btn-ctg, "side");
 	}
 }
 

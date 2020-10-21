@@ -26,10 +26,13 @@
       background: #f9f9f9; }
     .menu .list > li > a {
       height: 3.125em;
-      padding: 0 1.5em 0 1.125em;
+      padding: 0 1.5em 0 2.75em;
       cursor: pointer; }
-      .menu .list > li > a > span {
-        pointer-events: none; }
+      .menu .list > li > a::before {
+        position: absolute;
+        left: 1.563em;
+        -webkit-transform: translate(-50%, 0);
+        transform: translate(-50%, 0); }
       .isMD .menu .list > li > a:hover {
         background: #d8d8d8; }
       .isMD .menu .list > li > a:active, .isTD .menu .list > li > a:active {
@@ -54,7 +57,7 @@
         display: block; }
         .menu .list > li .child > li > a {
           justify-content: flex-start;
-          padding: 0 1.5em 0 2.5em;
+          padding: 0 1.5em 0 2.875em;
           height: 3.125em; }
           .menu .list > li .child > li > a::after {
             order: -10;

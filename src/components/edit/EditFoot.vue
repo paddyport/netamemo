@@ -1,23 +1,24 @@
 <template>
 <div class="foot">
-	<button type="button" class="btnText def nml widLG" @click="onClickClose"><span><span>キャンセル</span></span></button>
+	<button type="button" class="btnText def nml widLG" @click="closeEdit"><span><span>キャンセル</span></span></button>
 	<button type="button" :class="['btnText', 'def', btnClass, 'widLG']" @click="onClickSave"><span><i></i>保存</span></button>
 </div>
 </template>
 
 <script>
 export default {
+// CH Component
     name: "EditFoot",
     props: {
         btnClass: String,
     },
 	methods: {
-        onClickClose() {
-            this.$emit("FootClickClose", "cls");
+        closeEdit() {
+            this.$emit("PTcloseEdit");
         },
         onClickSave() {
-			this.$emit("CallSwitchLoaderClick");
-            this.$emit("FootClickSave", "sav");
+			this.$emit("PTCallswitchLoader");
+            this.$emit("PTsaveEdit");
         },
 	},
 }

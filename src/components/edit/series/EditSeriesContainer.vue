@@ -1,34 +1,34 @@
 <template>
-<div class="srs" :data-tid="editSrsSrsObj.sid">
+<div class="ctg" :data-did="editCtgCtgObj.cid">
     <div class="content">
 		<div class="head">
-			<div contenteditable="true" @blur="changeEditSrsHead">{{ editSrsSrsObj.head }}</div>
+			<div contenteditable="true" @blur="changeEditCtgHead">{{ editCtgCtgObj.head }}</div>
 		</div>
         <edit-series-color
-            :srsColor="editSrsSrsObj.color"
-            @ChangeSrsSwatchClick="changeSrsColor">
+            :ctgColor="editCtgCtgObj.color"
+            @PTchangeCtgColor="changeCtgColor">
         </edit-series-color>
 		<edit-series-tags
 			:db="db"
-			:editSrsTagArr="editSrsTagArr"
-			@SelectEditSrsTagArr="selectEditSrsTag">
+			:editCtgTagArr="editCtgTagArr"
+			@PTselectEditCtgTag="selectEditCtgTag">
 		</edit-series-tags>
 		<div class="body">
-			<div contenteditable="true" @blur="changeEditSrsBody">{{ editSrsSrsObj.body }}</div>
+			<div contenteditable="true" @blur="changeEditCtgBody">{{ editCtgCtgObj.body }}</div>
 		</div>
         <edit-series-list
             :db="db"
-			:srsid="editSrsSrsObj.sid"
-            :srsColor="editSrsSrsObj.color"
-            :editSrsTxtArr="editSrsTxtArr"
-            @CallSwitchLoader="$listeners['CallSwitchLoader']">
+			:ctgid="editCtgCtgObj.cid"
+            :ctgColor="editCtgCtgObj.color"
+            :editCtgDcmArr="editCtgDcmArr"
+            @PTCallswitchLoader="$listeners['GPCallswitchLoader']">
         </edit-series-list>
 	</div>
 	<edit-foot
-        :btnClass="'srs'"
-		@FootClickClose="$listeners['FootSrsClick']"
-		@FootClickSave="setSaveData"
-		@CallSwitchLoaderClick="$listeners['CallSwitchLoader']">
+        :btnClass="'ctg'"
+		@PTcloseEdit="$listeners['GPcloseEditCtg']"
+		@PTsaveEdit="setSaveData"
+		@PTCallswitchLoader="$listeners['GPCallswitchLoader']">
 	</edit-foot>
 </div>
 </template>
@@ -40,12 +40,13 @@ import EditSeriesList from './EditSeriesList'
 import EditFoot from '../EditFoot'
 
 export default {
+// PT Component
 	name: "EditSeriesContainer",
 	props: {
 		db: Object,
-		editSrsTxtArr: Array,
-		editSrsSrsObj: Object,
-		editSrsTagArr: Array,
+		editCtgDcmArr: Array,
+		editCtgCtgObj: Object,
+		editCtgTagArr: Array,
 	},
 	components: {
         EditSeriesColor,
@@ -55,44 +56,44 @@ export default {
 	},
 	data() {
 		return {
-            DeditSrsSrsObj: this.editSrsSrsObj,
-            DeditSrsTagArr: this.editSrsTagArr,
-            EeditSrsSrsColor: this.editSrsSrsObj.color,
-            EeditSrsTxtArr: this.editSrsTxtArr,
-            EeditSrsTagArr: this.editSrsTagArr,
+            DeditCtgCtgObj: this.editCtgCtgObj,
+            DeditCtgTagArr: this.editCtgTagArr,
+			EeditCtgCtgColor: this.editCtgCtgObj.color,
+			editCtgSgTagFlg: false,
 		}
 	},
 	methods: {
-		changeEditSrsHead(e) {
+		changeEditCtgHead(e) {
 			const str = e.target.textContent;
-			this.DeditSrsSrsObj.head = str ? str : this.DeditSrsSrsObj.head;
-			e.target.textContent = this.DeditSrsSrsObj.head;
+			this.DeditCtgCtgObj.head = str ? str : this.DeditCtgCtgObj.head;
+			e.target.textContent = this.DeditCtgCtgObj.head;
 		},
-		changeEditSrsBody(e) {
+		changeEditCtgBody(e) {
 			const str = e.target.textContent;
-			this.DeditSrsSrsObj.body = str ? str : this.DeditSrsSrsObj.body;
-			e.target.textContent = this.DeditSrsSrsObj.body;
+			this.DeditCtgCtgObj.body = str ? str : this.DeditCtgCtgObj.body;
+			e.target.textContent = this.DeditCtgCtgObj.body;
         },
-        changeSrsColor(val) {
-            this.EeditSrsSrsColor = val;
+        changeCtgColor(val) {
+            this.EeditCtgCtgColor = val;
         },
-        selectEditSrsTag(arr) {
-            this.EeditSrsTagArr = arr;
+        selectEditCtgTag(arr) {
+            this.DeditCtgTagArr = arr;
         },
         setSaveData() {
 			const that = this;
-            // txtとtagもputする
-			that.db.srs.put({
-                sid: that.DeditSrsSrsObj.sid,
-				tid: that.EeditSrsTxtArr,
-				tag: that.EeditSrsTagArr,
-				date: that.DeditSrsSrsObj.date,
-				head: that.DeditSrsSrsObj.head,
-                body: that.DeditSrsSrsObj.body,
-                color: that.EeditSrsSrsColor,
+            // dcmもputする
+			// tagもputする -> 多分できた
+			that.db.ctg.put({
+                cid: that.DeditCtgCtgObj.cid,
+				tag: that.DeditCtgTagArr,
+				date: that.DeditCtgCtgObj.date,
+				head: that.DeditCtgCtgObj.head,
+                body: that.DeditCtgCtgObj.body,
+                color: that.EeditCtgCtgColor,
 			}).then(() => {
-				that.$emit("FootSrsClick", "sav", that.DeditSrsSrsObj.sid);
-				that.$emit("CallSwitchLoader");
+				that.$parent.setSaveTagPromise(that.DeditCtgTagArr);
+				that.$emit("GPcloseEditCtg", that.DeditCtgCtgObj.cid);
+				that.$emit("GPCallswitchLoader");
             });
         },
 	},

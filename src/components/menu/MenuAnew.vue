@@ -1,10 +1,10 @@
 <template>
 <li>
-	<a :class="['listItem', 'hst', 'acc', txtNewArr.length ? '' : 'isNoActive']" @click="onClickNew"><span>最近新規作成したテキスト</span></a>
-	<ul v-if="txtNewArr.length" class="child">
-		<li v-for="(tn, tnidx) in txtNewArr" :key="tnidx">
-			<a class="listItem trs" :data-tid="tn['tid']">
-				<p>{{ tn["head"] }}</p>
+	<a :class="['listItem', 'hst', 'acc', dcmNewArr.length ? '' : 'isNoActive']" @click="callaccordionNext"><span>最近新規作成したテキスト</span></a>
+	<ul v-if="dcmNewArr.length" class="child">
+		<li v-for="(tn, tnidx) in dcmNewArr" :key="tnidx">
+			<a class="listItem trs" :data-did="tn.did">
+				<p>{{ tn.head }}</p>
 			</a>
 		</li>
 	</ul>
@@ -13,12 +13,13 @@
 
 <script>
 export default {
+// PT Component
 	name: "MenuAnew",
 	props: {
-		txtNewArr: Array,
+		dcmNewArr: Array,
 	},
 	methods: {
-		onClickNew(e) {
+		callaccordionNext(e) {
 			this.$parent.accordionNext(e);
 		},
 	},

@@ -1,0 +1,375 @@
+@charset "UTF-8";
+@import "_pseudo";
+@import "_mixin";
+
+.edit {
+	position: absolute;
+	background: #fff;
+	left: 0;
+	right: 0;
+	top: 0;
+	bottom: 0;
+	z-index: 9000;
+> div {
+	height: 100%;
+}
+.content {
+	height: calc(100% - #{divceil(50+16-4, 16, "em")});
+	margin: divceil(16-4, 16, "em") 0 divceil(50, 16, "em");
+	padding: divceil(4, 16, "em") divceil(16, 16, "em") divceil(8, 16, "em");
+	overflow-y: scroll;
+}
+.head {
+	font-size: divceil(20, 16, "em");
+	> div {
+		border: 1px solid map-get($btn-nml, "font");
+		border-radius: 2px;
+		width: 100%;
+		margin: 0;
+		padding: divceil((34-26)/2, 20, "em") divceil((34-20)/2, 20, "em");
+		line-height: divceil(26, 20, "em");
+		text-align: left;
+		white-space: pre-line;
+		cursor: text;
+		&[data-placeholder]:empty::before {
+			content: attr(data-placeholder);
+			color: $gray4;
+		}
+		&:focus {
+			outline: none;
+			box-shadow: 0 0 0 2px map-get($btn-nml, "side");
+		}
+	}
+}
+.series {
+	display: flex;
+	position: relative;
+	padding: divceil(16, 16, "em") 0 0;
+	text-align: left;
+	> button {
+		flex-shrink: 0;
+	}
+	> p {
+		position: relative;
+		width: calc(100% - #{divceil(34, 16, "em")});
+		margin: 0;
+		padding: 0 divceil(24, 16, "em") 0 divceil(10, 16, "em");
+		line-height: divceil(34, 16, "em");
+		@include endLeader();
+		.icn {
+			position: absolute;
+			right: 0;
+			top: 50%;
+			transform: translate(0, -50%);
+		}
+	}
+	.field {
+		position: relative;
+		width: calc(100% - #{divceil(34, 16, "em")});
+		padding: 0 0 0 divceil(10, 16, "em");
+		z-index: 1000;
+		> p {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			width: 100%;
+			margin: 0;
+			> input {
+				width: 100%;
+				height: divceil(34, 16, "em");
+				padding: divceil((34-20)/2, 16, "em");
+			}
+			> button {
+				flex-shrink: 0;
+				margin: 0 0 0 divceil(10, 16, "em");
+			}
+		}
+		> ul {
+			position: absolute;
+			left: divceil(10, 16, "em");
+			right: divceil(48+10, 16, "em");
+			top: 100%;
+			margin: -2px 0 0;
+			padding: 2px 0 0;
+			line-height: 1;
+			list-style: none;
+			> li {
+				display: block;
+				background: #fff;
+				border-left: 1px solid map-get($btn-nml, "font");
+				border-right: 1px solid map-get($btn-nml, "font");
+				+ li {
+					border-top: 1px solid map-get($btn-nml, "font");
+				}
+				&:last-child {
+					border-bottom: 1px solid map-get($btn-nml, "font");
+				}
+				> a {
+					display: block;
+					padding: divceil((32-16)/2, 16, "em");
+					color: $black2;
+					cursor: pointer;
+					.isMD &:hover {
+						background: $gray3 !important;
+					}
+					.isMD &:active, .isTD &:active {
+						background: $gray2 !important;
+						color: #fff;
+					}
+				}
+			}
+		}
+	}
+}
+.color {
+	display: flex;
+	align-items: center;
+	position: relative;
+	padding: divceil(10, 16, "em") 0 0;
+	text-align: left;
+	.code {
+		display: flex;
+		align-items: center;
+		margin: 0 0 0 divceil(16, 16, "em");
+		letter-spacing: 0.03em;
+		> i {
+			display: block;
+			width: divceil(20, 16, "em");
+			height: divceil(20, 16, "em");
+			margin: 0 divceil(6, 16, "em") 0 0;
+		}
+	}
+	.palette {
+		position: absolute;
+		left: 0;
+		top: 100%;
+		padding: divceil(10, 16, "em");
+		z-index: 100;
+	}
+}
+.tags {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	padding: divceil(16, 16, "em") 0 0;
+	text-align: left;
+	> button {
+		flex-shrink: 0;
+		+ .area {
+			padding: 0 0 0 divceil(10, 16, "em");
+		}
+	}
+	.field {
+		position: relative;
+		width: calc(100% - #{divceil(34, 16, "em")});
+		padding: 0 0 0 divceil(10, 16, "em");
+		> p {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			width: 100%;
+			margin: 0;
+			> input {
+				width: 100%;
+				height: divceil(34, 16, "em");
+				padding: divceil((34-20)/2, 16, "em");
+			}
+			> button {
+				flex-shrink: 0;
+				margin: 0 0 0 divceil(10, 16, "em");
+			}
+		}
+		> ul {
+			position: absolute;
+			left: divceil(10, 16, "em");
+			right: divceil(48+10, 16, "em");
+			top: 100%;
+			margin: -2px 0 0;
+			padding: 2px 0 0;
+			line-height: 1;
+			list-style: none;
+			> li {
+				display: block;
+				background: #fff;
+				border-left: 1px solid map-get($btn-nml, "font");
+				border-right: 1px solid map-get($btn-nml, "font");
+				+ li {
+					border-top: 1px solid map-get($btn-nml, "font");
+				}
+				&:last-child {
+					border-bottom: 1px solid map-get($btn-nml, "font");
+				}
+				> a {
+					display: block;
+					padding: divceil((32-16)/2, 16, "em");
+					color: $black2;
+					cursor: pointer;
+					.isMD &.isHover {
+						background: $gray3 !important;
+					}
+					.isMD &.isActive, .isTD &.isActive {
+						background: $gray2 !important;
+						color: #fff;
+					}
+				}
+			}
+		}
+	}
+	.area {
+		padding: divceil(8, 16, "em") 0 0;
+		> ul {
+			display: flex;
+			align-items: center;
+			margin: 0;
+			padding: 0;
+			> li {
+				display: block;
+				margin: 0 divceil(8, 16, "em") 0 0;
+				> a {
+					display: block;
+					background: $gray6;
+					border-radius: divceil(4, 14, "em");
+					padding: 0 divceil((28-14)/2, 14, "em");
+					line-height: divceil(24, 14, "em");
+					font-size: divceil(14, 16, "em");
+					cursor: pointer;
+					.isMD &.isHover {
+						background: $gray3 !important;
+					}
+					.isMD &.isActive, .isTD &.isActive {
+						background: $gray2 !important;
+						color: #fff;
+					}
+				}
+			}
+		}
+	}
+}
+.body {
+	padding: divceil(16, 16, "em") 0;
+	line-height: 0;
+	> div {
+		border: 1px solid map-get($btn-nml, "font");
+		border-radius: 2px;
+		width: 100%;
+		min-height: divceil(30*3+2*2+1*2, 16, "em");
+		margin: 0;
+		padding: divceil(2, 16, "em") divceil((30-16)/2, 16, "em");
+		line-height: divceil(30, 16, "em");
+		text-align: left;
+		white-space: pre-line;
+		cursor: text;
+		&[data-placeholder]:empty::before {
+			content: attr(data-placeholder);
+			color: $gray4;
+		}
+		&:focus {
+			outline: none;
+			box-shadow: 0 0 0 2px map-get($btn-nml, "side");
+		}
+	}
+}
+.list {
+	padding: divceil(10, 16, "em") 0 0;
+	text-align: left;
+	list-style: none;
+	> ul {
+		margin: 0;
+		padding: 0;
+		> li {
+			display: block;
+			+ li {
+				margin-top: divceil(8, 16, "em");
+			}
+		}
+	}
+	.cardItem {
+		position: relative;
+		background: $gray7;
+		padding: divceil(10-(22-18)/2, 16, "em") divceil(10, 16, "em") divceil(10, 16, "em");
+		> i {
+			position: absolute;
+			border-left: divceil(12, 16, "em") solid transparent;
+			border-right: divceil(12, 16, "em") solid;
+			border-top: divceil(12, 16, "em") solid;
+			border-bottom: divceil(12, 16, "em") solid transparent;
+			width: 0;
+			height: 0;
+			right: 0;
+			top: 0;
+			// color: transparent;
+			pointer-events: none;
+		}
+		> h2 {
+			margin: 0;
+			padding: 0 divceil(10, 18, "em") 0 0;
+//			letter-spacing: 0.03em;
+			line-height: divceil(22, 18, "em");
+			font-size: divceil(18, 16, "em");
+			@include fontWeight("bold");
+			text-align: justify;
+//			@include endLeader();
+			+ time {
+				margin-top: divceil(20, 16, "em");
+			}
+		}
+		> time {
+			display: block;
+			position: relative;
+			margin: divceil(10, 16, "em") 0 0;
+			padding: 0 0 0 divceil(22, 16, "em");
+			letter-spacing: 0.02em;
+			line-height: 1;
+			&::before {
+				position: absolute;
+				left: 0;
+				top: 50%;
+				font-family: $ffIcons;
+				color: $black2;
+				transform: translate(0, -50%);
+			}
+			&.date::before {
+				content: $history;
+			}
+			&.last::before {
+				content: $pen;
+			}
+		}
+		> p {
+			display: flex;
+			justify-content: flex-end;
+			align-items: flex-end;
+			position: absolute;
+			bottom: divceil(10-2, 16, "em");
+			right: divceil(10, 16, "em");
+			margin: 0;
+			line-height: 1;
+			> button {
+				display: block;
+				+ button {
+					margin-left: divceil(10, 16, "em");
+				}
+			}
+		}
+	}
+}
+.foot {
+	flex-shrink: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: $gray1;
+	height: divceil(50, 16, "em");
+	padding: 0 divceil((50-34)/2, 16, "em");
+	> button {
+		margin: 0 divceil(6, 16, "em");
+		&:nth-child(2):last-child {
+			margin-left: divceil(12*2-6, 16, "em");
+		}
+	}
+}
+}

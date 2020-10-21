@@ -3,14 +3,14 @@
 @import "_mixin";
 
 // loader
-@keyframes txtSquare {
+@keyframes dcmSquare {
     0%, 5% { transform: translate(0, 0); }
     20%, 30% { transform: translate(#{divceil(-20, 16, "em")}, 0); }
     45%, 55% { transform: translate(#{divceil(-20, 16, "em")}, #{divceil(20, 16, "em")}); }
     70%, 80% { transform: translate(0, #{divceil(20, 16, "em")}); }
     95%, 100% { transform: translate(0, 0); }
 }
-@keyframes srsSquare {
+@keyframes ctgSquare {
     0%, 5% { transform: translate(0, 0); }
     20%, 30% { transform: translate(0, #{divceil(-20, 16, "em")}); }
     45%, 55% { transform: translate(#{divceil(-20, 16, "em")}, #{divceil(-20, 16, "em")}); }
@@ -57,16 +57,16 @@
             width: divceil(16, 16, "em");
             height: divceil(16, 16, "em");
             &:nth-child(1) {
-                background: map-get($btn-txt, "side");
+                background: map-get($btn-dcm, "side");
                 right: divceil((20-16)/2, 16, "em");
                 top: divceil((20-16)/2, 16, "em");
-                animation: txtSquare 2000ms linear 0ms infinite;
+                animation: dcmSquare 2000ms linear 0ms infinite;
             }
             &:nth-child(2) {
-                background: map-get($btn-srs, "side");
+                background: map-get($btn-ctg, "side");
                 right: divceil((20-16)/2, 16, "em");
                 bottom: divceil((20-16)/2, 16, "em");
-                animation: srsSquare 2000ms linear 0ms infinite;
+                animation: ctgSquare 2000ms linear 0ms infinite;
             }
             &:nth-child(3) {
                 background: map-get($btn-tag, "side");

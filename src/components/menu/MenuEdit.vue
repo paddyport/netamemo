@@ -1,10 +1,10 @@
 <template>
 <li>
-	<a :class="['listItem', 'edt', 'acc', txtEdtArr.length ? '' : 'isNoActive']" @click="onClickEdt"><span>最近編集したテキスト</span></a>
-	<ul v-if="txtEdtArr.length" class="child">
-		<li v-for="(te, teidx) in txtEdtArr" :key="teidx">
-			<a class="listItem trs" :data-tid="te['tid']">
-				<p>{{ te["head"] }}</p>
+	<a :class="['listItem', 'edt', 'acc', dcmEdtArr.length ? '' : 'isNoActive']" @click="callaccordionNext"><span>最近編集したテキスト</span></a>
+	<ul v-if="dcmEdtArr.length" class="child">
+		<li v-for="(de, deidx) in dcmEdtArr" :key="deidx">
+			<a class="listItem trs" :data-did="de.did">
+				<p>{{ de.head }}</p>
 			</a>
 		</li>
 	</ul>
@@ -13,12 +13,13 @@
 
 <script>
 export default {
+// PT Component
 	name: "MenuEdit",
 	props: {
-		txtEdtArr: Array,
+		dcmEdtArr: Array,
 	},
 	methods: {
-		onClickEdt(e) {
+		callaccordionNext(e) {
 			this.$parent.accordionNext(e);
 		},
 	},

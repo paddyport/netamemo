@@ -3,28 +3,31 @@
 	<calendar-head
 		:currentYYMM="currentYYMM"
 		:changeMonthBtnFlg="changeMonthBtnFlg"
-		@HeadFlg="$listeners['CalendarHeadFlg']"
-		@HeadClick="$listeners['CalendarHeadClick']">
+		@GPCallswitchChangeMonth="$listeners['ANswitchChangeMonth']">
 	</calendar-head>
-	<calendar-change-month
+	<calendar-change
 		:changeMonthFlg="changeMonthFlg"
 		:changeMonthList="changeMonthList">
-	</calendar-change-month>
+	</calendar-change>
 	<calendar-body
 		:currentDates="currentDates"
 		:currentFirstDay="currentFirstDay"
-		@BodyClick="$listeners['CalendarBodyClick']"></calendar-body>
-	<calendar-foot @FootClick="$listeners['CalendarFootClick']"></calendar-foot>
+		@GPCallopenPosts="$listeners['ANopenPosts']"
+		@GPCallswitchLoader="$listeners['ANswitchLoader']"></calendar-body>
+	<calendar-foot
+		@GPCallopenAnewField="$listeners['ANopenAnewField']">
+	</calendar-foot>
 </div>
 </template>
 
 <script>
 import CalendarHead from './CalendarHead'
-import CalendarChangeMonth from './CalendarChangeMonth'
+import CalendarChange from './CalendarChange'
 import CalendarBody from './CalendarBody'
 import CalendarFoot from './CalendarFoot'
 
 export default {
+// GP Component
 	name: "CalendarContainer",
 	props: {
 		db: Object,
@@ -44,7 +47,7 @@ export default {
 	},
 	components: {
 		CalendarHead,
-		CalendarChangeMonth,
+		CalendarChange,
 		CalendarBody,
 		CalendarFoot,
 	},
@@ -71,10 +74,10 @@ export default {
 						"date": _d,
 						"number": !_d ? null : this.$parent.zeroPad(_d, 2),
 						"time": _t,
-						"txt": [],
-						"srs": [],
-						"dtid": [],
-						"ltid": [],
+						"dcm": [],
+						"ctg": [],
+						"ddid": [],
+						"ldid": [],
 					};
 					result.push(obj);
 				}
@@ -85,7 +88,7 @@ export default {
 			let that = this,
 				_cstime = new Date(that.currentYYMM.year, that.currentYYMM.month).getTime(),
 				_cetime = new Date(that.currentYYMM.year, that.currentYYMM.month+1).getTime();
-			that.db.txt.toArray().then((list) => {
+			that.db.dcm.toArray().then((list) => {
 				for(let _data of list) {
 					const _d = new Date(_data.date),
 						_date = _d.getTime(),
@@ -96,41 +99,41 @@ export default {
 						dym = dy+"-"+dm;
 					if(_cstime<=_date && _date<_cetime) {
 						let _i = _d.getDate()+that.currentFirstDay-1;
-						that.currentDates[_i].txt.push(_data.tid);
-						that.currentDates[_i].txt = that.$parent.compileArrtoArr(that.currentDates[_i].txt);
-						that.currentDates[_i].dtid.push(_data.tid);
-						that.currentDates[_i].dtid = that.$parent.compileArrtoArr(that.currentDates[_i].dtid);
+						that.currentDates[_i].dcm.push(_data.did);
+						that.currentDates[_i].dcm = that.$parent.compileArrtoArr(that.currentDates[_i].dcm);
+						that.currentDates[_i].ddid.push(_data.did);
+						that.currentDates[_i].ddid = that.$parent.compileArrtoArr(that.currentDates[_i].ddid);
 					}
 					if(_cstime<=_last && _last<_cetime) {
 						let _i = _l.getDate()+that.currentFirstDay-1;
-						that.currentDates[_i].txt.push(_data.tid);
-						that.currentDates[_i].txt = that.$parent.compileArrtoArr(that.currentDates[_i].txt);
-						that.currentDates[_i].ltid.push(_data.tid);
-						that.currentDates[_i].ltid = that.$parent.compileArrtoArr(that.currentDates[_i].ltid);
+						that.currentDates[_i].dcm.push(_data.did);
+						that.currentDates[_i].dcm = that.$parent.compileArrtoArr(that.currentDates[_i].dcm);
+						that.currentDates[_i].ldid.push(_data.did);
+						that.currentDates[_i].ldid = that.$parent.compileArrtoArr(that.currentDates[_i].ldid);
 					}
 					if(that.changeMonthList[dym]) {
-						if(that.changeMonthList[dym].tid) {
-							that.changeMonthList[dym].tid.push(_data.tid);
-							that.changeMonthList[dym].tid = that.$parent.compileArrtoArr(that.changeMonthList[dym].tid);
+						if(that.changeMonthList[dym].did) {
+							that.changeMonthList[dym].did.push(_data.did);
+							that.changeMonthList[dym].did = that.$parent.compileArrtoArr(that.changeMonthList[dym].did);
 						} else {
-							that.changeMonthList[dym] = {tid: [_data.tid]};
-							if(!that.changeMonthList[dym].sid) {
-								that.changeMonthList[dym] = {sid: []};
+							that.changeMonthList[dym] = {did: [_data.did]};
+							if(!that.changeMonthList[dym].cid) {
+								that.changeMonthList[dym] = {cid: []};
 							}
 						}
 					} else {
 						that.changeMonthList = {
 							[dym] : {
-								tid: [_data.tid],
-								sid: []
+								did: [_data.did],
+								cid: []
 							}
 						};
 					}
 				}
-				that.$emit("tableDates", that.currentDates);
-				that.$emit("changeMonthData", that.changeMonthList);
+				that.$emit("ANsetCalendarData", that.currentDates);
+				that.$emit("ANsetChangeMonth", that.changeMonthList);
 			});
-			that.db.srs.toArray().then((list) => {
+			that.db.ctg.toArray().then((list) => {
 				for(let _data of list) {
 					const _d = new Date(_data.date),
 						_date = _d.getTime(),
@@ -139,31 +142,31 @@ export default {
 						dym = dy+"-"+dm;
 					if(_cstime<=_date && _date<_cetime) {
 						let _i = _d.getDate()+that.currentFirstDay-1;
-						if(that.currentDates[_i].srs.indexOf(_data.sid)<0) {
-							that.currentDates[_i].srs.push(_data.sid);
+						if(that.currentDates[_i].ctg.indexOf(_data.cid)<0) {
+							that.currentDates[_i].ctg.push(_data.cid);
 						}
 					}
 					if(that.changeMonthList[dym]) {
-						if(that.changeMonthList[dym].sid) {
-							that.changeMonthList[dym].sid.push(_data.sid);
-							that.changeMonthList[dym].sid = that.$parent.compileArrtoArr(that.changeMonthList[dym].sid);
+						if(that.changeMonthList[dym].cid) {
+							that.changeMonthList[dym].cid.push(_data.cid);
+							that.changeMonthList[dym].cid = that.$parent.compileArrtoArr(that.changeMonthList[dym].cid);
 						} else {
-							that.changeMonthList[dym] = {sid: [_data.sid]};
-							if(!that.changeMonthList[dym].tid) {
-								that.changeMonthList[dym] = {tid: []};
+							that.changeMonthList[dym] = {cid: [_data.cid]};
+							if(!that.changeMonthList[dym].did) {
+								that.changeMonthList[dym] = {did: []};
 							}
 						}
 					} else {
 						that.changeMonthList = {
 							[dym] : {
-								sid: [_data.sid],
-								tid: []
+								cid: [_data.cid],
+								did: []
 							}
 						};
 					}
 				}
-				that.$emit("tableData", that.currentDates);
-				that.$emit("changeMonthData", that.changeMonthList);
+				that.$emit("ANsetCalendarData", that.currentDates);
+				that.$emit("ANsetChangeMonth", that.changeMonthList);
 			});
 		},
 	},

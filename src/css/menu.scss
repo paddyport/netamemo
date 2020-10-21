@@ -29,10 +29,12 @@
 			}
 			> a {
 				height: divceil(50, 16, "em");
-				padding: 0 divceil(24, 16, "em") 0 divceil(18, 16, "em");
+				padding: 0 divceil(24, 16, "em") 0 divceil(18+16+10, 16, "em");
 				cursor: pointer;
-				> span {
-					pointer-events: none;
+				&::before {
+					position: absolute;
+					left: divceil(18/2+16, 16, "em");
+					transform: translate(-50%, 0);
 				}
 				.isMD &:hover {
 					background: $gray3;
@@ -68,7 +70,7 @@
 					display: block;
 					> a {
 						justify-content: flex-start;
-						padding: 0 divceil(24, 16, "em") 0 divceil(40, 16, "em");
+						padding: 0 divceil(24, 16, "em") 0 divceil(18+16+10+2, 16, "em");
 						height: divceil(50, 16, "em");
 						&::after {
 							order: -10;

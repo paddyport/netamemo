@@ -1,22 +1,22 @@
 <template>
 <div v-if="editFlg" id="Edit" class="edit">
 	<edit-text-container
-		v-if="editTxtFlg"
+		v-if="editDcmFlg"
 		:db="db"
-		:editTxtTxtObj="editTxtTxtObj"
-        :editTxtSrsObj="editTxtSrsObj"
-        :editTxtTagArr="editTxtTagArr"
-        @FootTxtClick="editTxtFootClick"
-		@CallSwitchLoader="$listeners['SwitchLoader']">
+		:editDcmDcmObj="editDcmDcmObj"
+        :editDcmCtgObj="editDcmCtgObj"
+        :editDcmTagArr="editDcmTagArr"
+        @GPcloseEditDcm="closeEditDcm"
+		@GPCallswitchLoader="$listeners['ANswitchLoader']">
 	</edit-text-container>
 	<edit-series-container
-		v-if="editSrsFlg"
+		v-if="editCtgFlg"
 		:db="db"
-		:editSrsTxtArr="editSrsTxtArr"
-        :editSrsSrsObj="editSrsSrsObj"
-        :editSrsTagArr="editSrsTagArr"
-		@FootSrsClick="editSrsFootClick"
-		@CallSwitchLoader="$listeners['SwitchLoader']">
+		:editCtgDcmArr="editCtgDcmArr"
+        :editCtgCtgObj="editCtgCtgObj"
+        :editCtgTagArr="editCtgTagArr"
+        @GPcloseEditCtg="closeEditCtg"
+		@GPCallswitchLoader="$listeners['ANswitchLoader']">
 	</edit-series-container>
 </div>
 </template>
@@ -26,22 +26,23 @@ import EditTextContainer from './text/EditTextContainer'
 import EditSeriesContainer from './series/EditSeriesContainer'
 
 export default {
+// GP Component
 	name: "EditContainer",
 	props: {
 		db: Object,
 		editFlg: Boolean,
-		editTxtObj: Object,
+		editDcmObj: Object,
 	},
 	data() {
 		return {
-			editTxtFlg: false,
-			editTxtTxtObj: {},
-			editTxtSrsObj: {},
-			editTxtTagArr: [],
-			editSrsFlg: false,
-			editSrsTxtArr: {},
-			editSrsSrsObj: {},
-			editSrsTagArr: [],
+			editDcmFlg: false,
+			editDcmDcmObj: {},
+			editDcmCtgObj: {},
+			editDcmTagArr: [],
+			editCtgFlg: false,
+			editCtgDcmArr: {},
+			editCtgCtgObj: {},
+			editCtgTagArr: [],
 		}
 	},
 	components: {
@@ -49,39 +50,50 @@ export default {
 		EditSeriesContainer,
 	},
 	methods: {
-		setEditTxtData(obj) {
-			this.editTxtFlg = true;
-			this.editTxtTxtObj = obj.txt;
-			this.editTxtSrsObj = obj.srs;
-			this.editTxtTagArr = obj.tag;
+		setEditDcmData(obj) {
+			this.editDcmFlg = true;
+			this.editDcmDcmObj = obj.dcm;
+			this.editDcmCtgObj = obj.ctg;
+			this.editDcmTagArr = obj.tag;
 		},
-		setEditSrsData(obj) {
-			this.editSrsFlg = true;
-			this.editSrsTxtArr = obj.txt;
-			this.editSrsSrsObj = obj.srs;
-			this.editSrsTagArr = obj.tag;
+		setEditCtgData(obj) {
+			this.editCtgFlg = true;
+			this.editCtgDcmArr = obj.dcm;
+			this.editCtgCtgObj = obj.ctg;
+			this.editCtgTagArr = obj.tag;
 		},
-		editTxtFootClick(...args) {
-			const [val, id] = args;
-			if(val=="cls" || val=="sav") {
-				this.editTxtFlg = false;
-				this.editTxtTxtObj = {};
-				this.editTxtSrsObj = {};
-				this.editTxtTagArr = [];
-				if(val=="cls") this.$emit("CloseEditClick");
-                if(val=="sav") this.$emit("CloseEditClick", id);
-			}
+		closeEditDcm(id) {
+			this.editDcmFlg = false;
+			this.editDcmDcmObj = {};
+			this.editDcmCtgObj = {};
+			this.editDcmTagArr = [];
+			this.$emit("ANcloseEditDcm", id);
 		},
-		editSrsFootClick(...args) {
-			const [val, id] = args;
-			if(val=="cls" || val=="sav") {
-				this.editTxtFlg = false;
-				this.editTxtTxtObj = {};
-				this.editTxtSrsObj = {};
-				this.editTxtTagArr = [];
-				if(val=="cls") this.$emit("CloseEditClick");
-                if(val=="sav") this.$emit("CloseEditClick", id);
-			}
+		closeEditCtg(id) {
+			this.editCtgFlg = false;
+			this.editCtgDcmArr = [];
+			this.editCtgCtgObj = {};
+			this.editCtgTagArr = [];
+            this.$emit("ANcloseEditCtg", id);
+		},
+		setSaveTag(arr) {
+			let arr1 = [],
+				arr2 = [];
+			const that = this;
+			return new Promise(function(resolve){
+				that.db.tag.toArray().then(function(list){
+					for(let obj of list) arr1.push(obj.head);
+					for(let str of arr) if(arr1.indexOf(str)<0) arr2.push(str);
+					resolve(arr2);
+				});
+			});
+		},
+		async setSaveTagPromise(arr) {
+			const arr1 = await this.setSaveTag(arr);
+			const arr2 = arr1.map(function(item){
+				return {head: item};
+			});
+			if(arr2.length) this.db.tag.bulkPut(arr2);
 		},
 	},
 }

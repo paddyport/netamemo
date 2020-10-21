@@ -74,7 +74,7 @@ $btn-nml: (
 	bgActive: #d0d0d0,
 	side: #a3a3a3
 );
-$btn-txt: (
+$btn-dcm: (
 	font: #1a4c86,
 	bgBase: #e8f1fc,
 	bgActive: #c2d6ef,
@@ -92,38 +92,38 @@ $btn-tag: (
 	bgActive: #efe0a3,
 	side: #ddc560
 );
-$btn-srs: (
+$btn-ctg: (
 	font: #842323,
 	bgBase: #ffe4e4,
 	bgActive: #ffc5c5,
 	side: #eb9494
 );
-//$types: txt, tag, srs;
-$types: txt, srs;
+//$types: dcm, tag, ctg;
+$types: dcm, ctg;
 $btn-font: (
-	txt: map-get($btn-txt, "font"),
+	dcm: map-get($btn-dcm, "font"),
 	tag: map-get($btn-tag, "font"),
-	srs: map-get($btn-srs, "font")
+	ctg: map-get($btn-ctg, "font")
 );
 $btn-base: (
-	txt: map-get($btn-txt, "bgBase"),
+	dcm: map-get($btn-dcm, "bgBase"),
 	tag: map-get($btn-tag, "bgBase"),
-	srs: map-get($btn-srs, "bgBase")
+	ctg: map-get($btn-ctg, "bgBase")
 );
 $btn-active: (
-	txt: map-get($btn-txt, "bgActive"),
+	dcm: map-get($btn-dcm, "bgActive"),
 	tag: map-get($btn-tag, "bgActive"),
-	srs: map-get($btn-srs, "bgActive")
+	ctg: map-get($btn-ctg, "bgActive")
 );
 $btn-side: (
-	txt: map-get($btn-txt, "side"),
+	dcm: map-get($btn-dcm, "side"),
 	tag: map-get($btn-tag, "side"),
-	srs: map-get($btn-srs, "side")
+	ctg: map-get($btn-ctg, "side")
 );
 $btn-icon: (
-	txt: $file-alt,
+	dcm: $file-alt,
 	tag: $image,
-	srs: $clipboard-list
+	ctg: $folder
 );
 
 $black1: #1a1a1a;

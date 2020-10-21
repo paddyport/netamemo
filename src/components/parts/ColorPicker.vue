@@ -1,25 +1,22 @@
 <template>
 <div class="palette">
 	<div class="swatch">
-		<a v-for="(ps, psidx) in paletteSwatchArr" :style="{background: paletteSwatchArr[psidx]['color']}" :data-cid="psidx" :key="psidx" @click="selectSwatch"></a>
+		<a v-for="(ps, psidx) in paletteSwatchArr" :style="{background: paletteSwatchArr[psidx]['color']}" :data-pid="psidx" :key="psidx" @click="selectSwatch"></a>
 	</div>
 	<div class="bar">
-		<a v-for="(pb, pbidx) in paletteBarArr" :style="{background: paletteBarArr[pbidx]['color']}" :data-cid="pbidx" :key="pbidx" @click="switchPaletteSwatch"></a>
+		<a v-for="(pb, pbidx) in paletteBarArr" :style="{background: paletteBarArr[pbidx]['color']}" :data-pid="pbidx" :key="pbidx" @click="switchPaletteSwatch"></a>
 	</div>
 </div>
 </template>
 
 <script>
 export default {
-	name: "ColorpickerContainer",
+	name: "ColorPicker",
 	data() {
 		return {
 			paletteBarArr: [{color: "#f50f4b"}, {color: "#ef15bc"}, {color: "#ce37ff"}, {color: "#623ae8"}, {color: "#095eef"}, {color: "#2099e5"}, {color: "#11e0c8"}, {color: "#10e051"}, {color: "#d5ef12"}, {color: "#f5da0e"}, {color: "#f5810c"}, {color: "#f4430d"}],
 			paletteSwatchArr: [],
 		}
-    },
-    created: function(){
-		this.getPaletteSwatch(this.paletteBarArr[0].color);
     },
 	methods: {
 		zeroPad(num, len) {
@@ -47,7 +44,7 @@ export default {
 		},
 		getPaletteSwatch(color) {
 			this.paletteSwatchArr = [];
-            const base = this.changeHexRgb(color),
+            const base = this.changeHexRgb(color ? color : this.paletteBarArr[0].color),
 				per = 1/10;
             for(let col=0;col<10;col++) {
                 const wh = 255*(10-col)*per,
@@ -65,18 +62,18 @@ export default {
 		},
 		switchPaletteSwatch(e) {
 			const btn = e.target,
-				idx = btn.getAttribute("data-cid");
+				idx = Number(btn.getAttribute("data-pid"));
 			this.getPaletteSwatch(this.paletteBarArr[idx].color);
         },
         selectSwatch(e) {
             const btn = e.target,
-				idx = btn.getAttribute("data-cid");
-            this.$emit("ChangeSwatch", this.paletteSwatchArr[idx].color);
+				idx = Number(btn.getAttribute("data-pid"));
+            this.$emit("EXchangeSwatch", this.paletteSwatchArr[idx].color);
         }
 	},
 }
 </script>
 
 <style scoped>
-@import "../css/color.css";
+@import "../../css/colorpicker.css";
 </style>
