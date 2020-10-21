@@ -34,7 +34,7 @@ import EditFoot from '../EditFoot'
 
 export default {
 // PT Component
-	name: "EditTextContainer",
+	name: "EditDocumentContainer",
 	props: {
 		db: Object,
 		editDcmDcmObj: Object,

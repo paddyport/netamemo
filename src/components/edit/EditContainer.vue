@@ -1,6 +1,6 @@
 <template>
 <div v-if="editFlg" id="Edit" class="edit">
-	<edit-text-container
+	<edit-document-container
 		v-if="editDcmFlg"
 		:db="db"
 		:editDcmDcmObj="editDcmDcmObj"
@@ -8,8 +8,8 @@
         :editDcmTagArr="editDcmTagArr"
         @GPcloseEditDcm="closeEditDcm"
 		@GPCallswitchLoader="$listeners['ANswitchLoader']">
-	</edit-text-container>
-	<edit-series-container
+	</edit-document-container>
+	<edit-category-container
 		v-if="editCtgFlg"
 		:db="db"
 		:editCtgDcmArr="editCtgDcmArr"
@@ -17,13 +17,13 @@
         :editCtgTagArr="editCtgTagArr"
         @GPcloseEditCtg="closeEditCtg"
 		@GPCallswitchLoader="$listeners['ANswitchLoader']">
-	</edit-series-container>
+	</edit-category-container>
 </div>
 </template>
 
 <script>
-import EditTextContainer from './text/EditTextContainer'
-import EditSeriesContainer from './series/EditSeriesContainer'
+import EditDocumentContainer from './document/EditDocumentContainer'
+import EditCategoryContainer from './category/EditCategoryContainer'
 
 export default {
 // GP Component
@@ -46,8 +46,8 @@ export default {
 		}
 	},
 	components: {
-		EditTextContainer,
-		EditSeriesContainer,
+		EditDocumentContainer,
+		EditCategoryContainer,
 	},
 	methods: {
 		setEditDcmData(obj) {

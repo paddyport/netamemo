@@ -20,7 +20,7 @@
 <script>
 export default {
 // CH Component
-	name: "EditSeriesList",
+	name: "EditCategoryList",
 	props: {
 		db: Object,
 		ctgid: Number,

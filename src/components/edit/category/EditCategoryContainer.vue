@@ -4,25 +4,25 @@
 		<div class="head">
 			<div contenteditable="true" @blur="changeEditCtgHead">{{ editCtgCtgObj.head }}</div>
 		</div>
-        <edit-series-color
+        <edit-category-color
             :ctgColor="editCtgCtgObj.color"
             @PTchangeCtgColor="changeCtgColor">
-        </edit-series-color>
-		<edit-series-tags
+        </edit-category-color>
+		<edit-category-tags
 			:db="db"
 			:editCtgTagArr="editCtgTagArr"
 			@PTselectEditCtgTag="selectEditCtgTag">
-		</edit-series-tags>
+		</edit-category-tags>
 		<div class="body">
 			<div contenteditable="true" @blur="changeEditCtgBody">{{ editCtgCtgObj.body }}</div>
 		</div>
-        <edit-series-list
+        <edit-category-list
             :db="db"
 			:ctgid="editCtgCtgObj.cid"
             :ctgColor="editCtgCtgObj.color"
             :editCtgDcmArr="editCtgDcmArr"
             @PTCallswitchLoader="$listeners['GPCallswitchLoader']">
-        </edit-series-list>
+        </edit-category-list>
 	</div>
 	<edit-foot
         :btnClass="'ctg'"
@@ -34,14 +34,14 @@
 </template>
 
 <script>
-import EditSeriesColor from './EditSeriesColor'
-import EditSeriesTags from './EditSeriesTags'
-import EditSeriesList from './EditSeriesList'
+import EditCategoryColor from './EditCategoryColor'
+import EditCategoryTags from './EditCategoryTags'
+import EditCategoryList from './EditCategoryList'
 import EditFoot from '../EditFoot'
 
 export default {
 // PT Component
-	name: "EditSeriesContainer",
+	name: "EditCategoryContainer",
 	props: {
 		db: Object,
 		editCtgDcmArr: Array,
@@ -49,9 +49,9 @@ export default {
 		editCtgTagArr: Array,
 	},
 	components: {
-        EditSeriesColor,
-        EditSeriesTags,
-        EditSeriesList,
+        EditCategoryColor,
+        EditCategoryTags,
+        EditCategoryList,
         EditFoot,
 	},
 	data() {

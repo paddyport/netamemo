@@ -1,48 +1,37 @@
 <template>
-<div class="dcm" :data-did="editDcmDcmObj.did">
+<div class="dcm">
     <div class="content">
 		<div class="head">
-			<div contenteditable="true"></div>
+			<div contenteditable="true" data-placeholder="新規作成タイトル"></div>
 		</div>
-		<edit-text-ctgname
-			:db="db"
-			:editDcmCtgObj="editDcmCtgObj"
-			@PTselectEditDcmCtg="selectEditDcmCtg">
-		</edit-text-ctgname>
-		<edit-text-tags
-			:db="db"
-			:editDcmTagArr="editDcmTagArr"
-			@PTselectEditDcmTag="selectEditDcmTag">
-		</edit-text-tags>
 		<div class="body">
-			<div contenteditable="true" @blur="changeEditDcmBody">{{ editDcmDcmObj.body }}</div>
+			<div contenteditable="true" data-placeholder="新規作成コンテンツ"></div>
 		</div>
 	</div>
-	<edit-foot
-		:btnClass="'dcm'"
-		@PTcloseEdit="$listeners['GPcloseEditDcm']"
-		@PTsaveEdit="setSaveData"
-		@PTCallswitchLoader="$listeners['GPCallswitchLoader']">
-	</edit-foot>
+    <anew-foot
+        :btnClass="'dcm'"
+        @PTcloseAnew="$listeners['GPcloseAnewDcm']"
+        @PTCallswitchLoader="$listeners['GPCallswitchLoader']">
+    </anew-foot>
 </div>
 </template>
 
 <script>
 // import EditTextCtgname from './EditTextCtgname'
 // import EditTextTags from './EditTextTags'
-// import EditFoot from '../EditFoot'
+import AnewFoot from '../AnewFoot'
 
 export default {
 // PT Component
-	name: "AnewTextContainer",
+	name: "AnewDocumentContainer",
 	props: {
 		db: Object,
 	},
-	// components: {
+	components: {
 	// 	EditTextCtgname,
 	// 	EditTextTags,
-	// 	EditFoot,
-	// },
+		AnewFoot,
+	},
 	data() {
 		return {
 		}

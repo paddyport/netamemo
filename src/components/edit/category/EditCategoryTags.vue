@@ -27,7 +27,7 @@
 
 <script>
 export default {
-	name: "EditSeriesTags",
+	name: "EditCategoryTags",
 	props: {
         db: Object,
 		editCtgTagArr: Array,

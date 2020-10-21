@@ -9,7 +9,8 @@
 		@ANsetChangeMonth="setChangeMonth"
 		@ANswitchChangeMonth="switchChangeMonth"
 		@ANopenPosts="openPosts"
-		@ANopenAnewField="openAnewField"
+		@ANopenAnewDcm="openAnewDcm"
+		@ANopenAnewCtg="openAnewCtg"
 		@ANswitchLoader="switchLoader">
 	</calendar-container>
 	<menu-container
@@ -48,6 +49,13 @@
 		@ANcloseEditCtg="closeEditCtg"
 		@ANswitchLoader="switchLoader">
 	</edit-container>
+	<anew-container
+		ref="anew"
+		:db="db"
+		:anewFlg="anewFlg"
+		@ANcloseAnewDcm="closeAnewDcm"
+		@ANswitchLoader="switchLoader">
+	</anew-container>
 	<loader-container v-if="loaderFlg"></loader-container>
 </div>
 </template>
@@ -61,6 +69,7 @@ import MenuContainer from "./components/menu/MenuContainer"
 import PostsContainer from "./components/posts/PostsContainer"
 import ViewContainer from "./components/view/ViewContainer"
 import EditContainer from "./components/edit/EditContainer"
+import AnewContainer from "./components/anew/AnewContainer"
 
 export default Vue.extend({
 // AN Component
@@ -90,7 +99,7 @@ export default Vue.extend({
 			editFlg: false,
 			currentField: "",
 			currentEdit: "",
-			anewFieldFlg: false,
+			anewFlg: false,
 		}
 	},
 	components: {
@@ -100,6 +109,7 @@ export default Vue.extend({
 		PostsContainer,
 		ViewContainer,
 		EditContainer,
+		AnewContainer,
 	},
 	created: function(){
 		this.checkDevice();
@@ -281,11 +291,22 @@ export default Vue.extend({
 			if(this.postsFlg) this.$refs.posts.setPostsData(this.markDate);
 			if(id && this.viewFlg) this.$refs.view.setCtgData(Number(id), true);
 		},
-		openAnewField(val) {
-			this.currentField = "anew";
-			this.anewFieldFlg = true;
-			this.currentEdit = val;
+		openAnew() {
+			this.anewFlg = true;
 			console.log("anew", this.currentEdit);
+		},
+		openAnewDcm() {
+			this.currentEdit = "dcm";
+			this.$refs.anew.setAnewDcm();
+			this.openAnew();
+		},
+		openAnewCtg() {
+			this.currentEdit = "ctg";
+			this.openAnew();
+		},
+		closeAnewDcm() {
+			this.anewFlg = false;
+			this.currentEdit = "";
 		},
 	},
 	computed: {

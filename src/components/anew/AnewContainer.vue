@@ -1,14 +1,11 @@
 <template>
 <div v-if="anewFlg" id="Anew" class="anew">
-	<anew-text-container
+	<anew-document-container
 		v-if="anewDcmFlg"
 		:db="db"
-		:anewDcmDcmObj="anewDcmDcmObj"
-        :anewDcmCtgObj="anewDcmCtgObj"
-        :anewDcmTagArr="anewDcmTagArr"
         @GPcloseAnewDcm="closeAnewDcm"
-		@GPCallswitchLoader="$listeners['ANswitchLoader']">
-	</anew-text-container>
+        @GPCallswitchLoader="$listeners['ANswitchLoader']">
+	</anew-document-container>
 </div>
 </template>
 
@@ -24,12 +21,19 @@ export default {
 	},
 	data() {
 		return {
+            anewDcmFlg: false,
 		}
 	},
 	components: {
-		EditTextContainer,
+		AnewDocumentContainer,
 	},
 	methods: {
+        setAnewDcm() {
+            this.anewDcmFlg = true;
+        },
+        closeAnewDcm() {
+            this.$emit("ANcloseAnewDcm");
+        },
 	},
 }
 </script>

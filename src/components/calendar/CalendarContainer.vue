@@ -15,7 +15,8 @@
 		@GPCallopenPosts="$listeners['ANopenPosts']"
 		@GPCallswitchLoader="$listeners['ANswitchLoader']"></calendar-body>
 	<calendar-foot
-		@GPCallopenAnewField="$listeners['ANopenAnewField']">
+		@GPCallopenAnewDcm="$listeners['ANopenAnewDcm']"
+		@GPCallopenAnewCtg="$listeners['ANopenAnewCtg']">
 	</calendar-foot>
 </div>
 </template>

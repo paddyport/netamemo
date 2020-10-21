@@ -17,7 +17,7 @@
 import ColorPicker from '../../parts/ColorPicker'
 
 export default {
-    name: "EditSeriesColor",
+    name: "EditCategoryColor",
     props: {
         ctgColor: String,
     },
