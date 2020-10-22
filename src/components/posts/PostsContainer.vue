@@ -5,12 +5,14 @@
 			:markDcmArr="markDcmArr"
 			@GPopenEditDcm="openEditDcm"
 			@GPCallopenViewDcm="$listeners['ANopenViewDcm']"
+			@GPCallconfirmRem="$listeners['ANconfirmRem']"
 			@GPCallswitchLoader="$listeners['ANswitchLoader']">
 		</posts-document>
 		<posts-category
 			:markCtgArr="markCtgArr"
 			@GPopenEditCtg="openEditCtg"
 			@GPCallopenViewCtg="$listeners['ANopenViewCtg']"
+			@GPCallconfirmRem="$listeners['ANconfirmRem']"
 			@GPCallswitchLoader="$listeners['ANswitchLoader']">
 		</posts-category>
 		<p v-if="!markDcmArr.length && !markCtgArr.length" class="note">登録されていません。</p>

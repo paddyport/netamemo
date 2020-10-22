@@ -1,7 +1,7 @@
 <template>
 <div class="foot">
 	<button type="button" class="btnText def nml widLG" @click="callcloseAnew"><span><span>キャンセル</span></span></button>
-	<button type="button" :class="['btnText', 'def', btnClass, 'widLG']" @click="clickSave"><span><i></i>保存</span></button>
+	<button type="button" :class="['btnText', 'def', btnClass, 'widLG', AsaveFlg ? '' : 'isNoActive']" @click="clickSave"><span><i></i>保存</span></button>
 </div>
 </template>
 
@@ -11,6 +11,7 @@ export default {
     name: "AnewFoot",
     props: {
         btnClass: String,
+        AsaveFlg: Boolean,
     },
 	methods: {
         callcloseAnew() {

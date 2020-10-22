@@ -8,6 +8,7 @@
 		:viewDcmTagArr="viewDcmTagArr"
 		:viewDcmBody="viewDcmBody"
 		@GPCallopenEditDcm="$listeners['ANopenEditDcm']"
+		@GPCallconfirmRem="$listeners['ANconfirmRem']"
 		@GPcloseViewDcm="closeViewDcm"
 		@GPCallswitchLoader="$listeners['ANswitchLoader']">
 	</view-document-container>
@@ -20,6 +21,7 @@
 		:viewCtgBody="viewCtgBody"
 		@GPCallopenViewDcm="$listeners['ANopenViewDcm']"
 		@GPCallopenEditCtg="$listeners['ANopenEditCtg']"
+		@GPCallconfirmRem="$listeners['ANconfirmRem']"
 		@GPcloseViewCtg="closeViewCtg"
 		@GPCallswitchLoader="$listeners['ANswitchLoader']">
 	</view-category-container>

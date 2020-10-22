@@ -3,7 +3,7 @@
 	<a :class="['listItem', 'dcm', 'acc', dcmArr.length ? '' : 'isNoActive']" @click="callaccordionNext"><span>テキスト一覧</span></a>
 	<ul v-if="dcmArr.length" class="child">
 		<li v-for="(dcm, dcmidx) in dcmArr" :key="dcmidx">
-			<a class="listItem trs" :data-did="dcm.did">
+			<a class="listItem trs" :data-did="dcm.did" @click="callopenViewDcm">
 				<p>{{ dcm.head }}</p>
 			</a>
 		</li>
@@ -21,6 +21,13 @@ export default {
 	methods: {
 		callaccordionNext(e) {
 			this.$parent.accordionNext(e);
+		},
+		callopenViewDcm(e) {
+			const btn = e.target,
+				id = Number(btn.dataset.did);
+			this.$emit("GPCallopenViewDcm", id);
+			this.$emit("GPCallswitchMenuList");
+			this.$emit("GPCallswitchLoader");
 		},
 	},
 }

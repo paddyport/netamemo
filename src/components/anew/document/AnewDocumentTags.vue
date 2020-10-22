@@ -69,8 +69,8 @@ export default {
 		},
 		addSelectTag(e) {
 			const btn = e.target,
-				flg = btn.getAttribute("data-tag"),
-				val = flg ? btn.textContent : btn.previousElementSibling.value;
+				flg = btn.dataset.tag,
+				val = flg ? btn.innerText : btn.previousElementSibling.value;
 			if(!val || this.editDcmTagArr.indexOf(val)>-1) return;
 			this.editDcmTagArr.push(val);
 			if(!flg) {
@@ -81,7 +81,7 @@ export default {
 		},
 		remSelectTag(e) {
 			const btn = e.target,
-				val = btn.textContent;
+				val = btn.innerText;
 			this.editDcmTagArr.splice(this.editDcmTagArr.indexOf(val), 1);
 			console.log(val, this.editDcmTagArr.indexOf(val));
 			this.$emit("PTselectAnewDcmTag", this.editDcmTagArr);

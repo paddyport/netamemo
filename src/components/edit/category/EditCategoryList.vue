@@ -70,7 +70,7 @@ export default {
 		addDcmArr(e) {
 			const that = this,
 				btn = e.target,
-				id = Number(btn.parentNode.getAttribute("data-did"));
+				id = Number(btn.parentNode.dataset.did);
 			that.db.dcm.get(id).then((obj) => {
 				that.DeditCtgDcmArr.push(obj);
 			});
@@ -85,7 +85,7 @@ export default {
 		},
 		remDcmArr(e) {
 			const btn = e.target,
-				id = Number(btn.parentNode.getAttribute("data-did"));
+				id = Number(btn.parentNode.dataset.did);
 			for(let idx in this.DeditCtgDcmArr) {
 				const did = this.DeditCtgDcmArr[idx].did;
 				if(did==id) this.DeditCtgDcmArr.splice(idx, 1);

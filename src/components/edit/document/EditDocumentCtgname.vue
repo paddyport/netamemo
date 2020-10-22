@@ -62,9 +62,9 @@ export default {
 		},
         selectCtgName(e) {
 			const btn = e.target,
-				flg = btn.getAttribute("data-cid"),
-				id = flg ? Number(btn.getAttribute("data-cid")) : this.ctgLength+1,
-				val = flg ? btn.textContent : btn.previousElementSibling.value;
+				flg = btn.dataset.cid,
+				id = flg ? Number(btn.dataset.cid) : this.ctgLength+1,
+				val = flg ? btn.innerText : btn.previousElementSibling.value;
 			this.DeditDcmCtgObj.cid = id;
 			this.DeditDcmCtgObj.head = val;
 			for(let obj of this.suggestCtgnameArr) {

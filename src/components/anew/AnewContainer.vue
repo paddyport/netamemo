@@ -3,12 +3,14 @@
 	<anew-document-container
 		v-if="anewDcmFlg"
 		:db="db"
+		:saveFlg="saveFlg"
         @GPCallcloseAnew="$listeners['ANcloseAnew']"
         @GPCallswitchLoader="$listeners['ANswitchLoader']">
 	</anew-document-container>
 	<anew-category-container
 		v-if="anewCtgFlg"
 		:db="db"
+		:saveFlg="saveFlg"
         @GPCallcloseAnew="$listeners['ANcloseAnew']"
         @GPCallswitchLoader="$listeners['ANswitchLoader']">
 	</anew-category-container>
@@ -29,7 +31,8 @@ export default {
 	data() {
 		return {
             anewDcmFlg: false,
-            anewCtgFlg: false,
+			anewCtgFlg: false,
+			saveFlg: false,
 		}
 	},
 	components: {
@@ -37,11 +40,18 @@ export default {
 		AnewCategoryContainer,
 	},
 	methods: {
-        setAnewDcm() {
-            this.anewDcmFlg = true;
-        },
-        setAnewCtg() {
-            this.anewCtgFlg = true;
+		compileNltoBr(_str) {
+			let str = String(_str);
+			return str.replace(/<div>/, "\r\n").replace(/<\/div>/, "");
+		},
+		compileBrtoNl(_str) {
+			let str = String(_str);
+			return str.replace(/<br>/, "\r\n");
+		},
+        setAnew(str) {
+			this.anewDcmFlg = str=="dcm" ? true : false;
+            this.anewCtgFlg =  str=="ctg" ? true : false;
+			this.saveFlg = false;
         },
 		setSaveTag(arr) {
 			let arr1 = [],

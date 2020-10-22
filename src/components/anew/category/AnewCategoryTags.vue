@@ -71,8 +71,8 @@ export default {
         },
         addSelectTag(e) {
 			const btn = e.target,
-				flg = btn.getAttribute("data-tag"),
-				val = flg ? btn.textContent : btn.previousElementSibling.value;
+				flg = btn.dataset.tag,
+				val = flg ? btn.innerText : btn.previousElementSibling.value;
             if(!val || this.anewCtgTagArr.indexOf(val)>-1) return;
             this.anewCtgTagArr.push(val);
 			if(!flg) {
@@ -83,7 +83,7 @@ export default {
         },
         remSelectTag(e) {
             const btn = e.target,
-                val = btn.textContent;
+                val = btn.innerText;
             this.anewCtgTagArr.splice(this.anewCtgTagArr.indexOf(val), 1);
 			this.$emit("PTselectAnewCtgTag", this.anewCtgTagArr);
         },

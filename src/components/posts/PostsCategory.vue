@@ -8,7 +8,7 @@
 			<p :data-cid="ms.cid">
 				<button type="button" class="btnIcon def ctg edt" @click="callopenEditCtg"><span>編集</span></button>
 				<button type="button" class="btnIcon def ctg viw" @click="callopenViewCtg"><span>確認</span></button>
-				<button type="button" class="btnIcon def ctg rem"><span>削除</span></button>
+				<button type="button" class="btnIcon def ctg rem" @click="callconfirmRem"><span>削除</span></button>
 			</p>
 		</div>
 	</li>
@@ -34,6 +34,11 @@ export default {
 				id = Number(btn.parentNode.dataset.cid);
 			this.$emit("GPCallswitchLoader");
 			this.$emit("GPCallopenViewCtg", id);
+		},
+		callconfirmRem(e) {
+			const btn = e.target;
+			btn.parentNode.classList.add("isRemove");
+			this.$emit("GPCallconfirmRem", "ctg");
 		},
 	},
 }

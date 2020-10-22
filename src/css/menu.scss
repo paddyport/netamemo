@@ -79,6 +79,7 @@
 						> p {
 //							margin: 0 divceil(8, 16, "em") 0 0;
 							@include endLeader();
+							pointer-events: none;
 						}
 						.isMD &:hover {
 							background: $gray3;

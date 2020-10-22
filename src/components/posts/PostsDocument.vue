@@ -9,7 +9,7 @@
 			<p :data-did="mt.did">
 				<button type="button" class="btnIcon def dcm edt" @click="callopenEditDcm"><span>編集</span></button>
 				<button type="button" class="btnIcon def dcm viw" @click="callopenViewDcm"><span>確認</span></button>
-				<button type="button" class="btnIcon def dcm rem"><span>削除</span></button>
+				<button type="button" class="btnIcon def dcm rem" @click="callconfirmRem"><span>削除</span></button>
 			</p>
 		</div>
 	</li>
@@ -26,15 +26,20 @@ export default {
 	methods: {
 		callopenEditDcm(e) {
 			const btn = e.target,
-				id = btn.parentNode.dataset.did;
+				id = Number(btn.parentNode.dataset.did);
 			this.$emit("GPCallswitchLoader");
 			this.$parent.openEditDcm(id);
 		},
 		callopenViewDcm(e) {
 			const btn = e.target,
-				id = btn.parentNode.dataset.did;
+				id = Number(btn.parentNode.dataset.did);
 			this.$emit("GPCallswitchLoader");
 			this.$emit("GPCallopenViewDcm", id);
+		},
+		callconfirmRem(e) {
+			const btn = e.target;
+			btn.parentNode.classList.add("isRemove");
+			this.$emit("GPCallconfirmRem", "dcm");
 		},
 	},
 }

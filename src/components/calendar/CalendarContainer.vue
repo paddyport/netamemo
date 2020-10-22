@@ -7,7 +7,7 @@
 	</calendar-head>
 	<calendar-change
 		:changeMonthFlg="changeMonthFlg"
-		:changeMonthList="changeMonthList">
+		:changeMonthObj="changeMonthObj">
 	</calendar-change>
 	<calendar-body
 		:currentDates="currentDates"
@@ -43,7 +43,7 @@ export default {
 			currentDatesCnt: 0,
 			currentWeeks: 0,
 			currentDates: [],
-			changeMonthList: {},
+			changeMonthObj: {},
 		}
 	},
 	components: {
@@ -57,6 +57,7 @@ export default {
 	},
 	methods: {
 		setCalendar() {
+			this.changeMonthObj = {};
 			this.currentFirstDay = new Date(this.currentYYMM.year, this.currentYYMM.month).getDay();
 			this.currentDatesCnt = this.$parent.getCurrentDates(this.currentYYMM.year, this.currentYYMM.month);
 			this.currentWeeks = Math.ceil((this.currentFirstDay+this.currentDatesCnt)/7);
@@ -93,8 +94,6 @@ export default {
 				for(let _data of list) {
 					const _d = new Date(_data.date),
 						_date = _d.getTime(),
-						// _l = new Date(_data.last),
-						// _last = _l.getTime(),
 						dy = _d.getFullYear(),
 						dm = _d.getMonth(),
 						dym = dy+"-"+dm;
@@ -105,25 +104,18 @@ export default {
 						that.currentDates[_i].ddid.push(_data.did);
 						that.currentDates[_i].ddid = that.$parent.compileArrtoArr(that.currentDates[_i].ddid);
 					}
-					// if(_cstime<=_last && _last<_cetime) {
-					// 	let _i = _l.getDate()+that.currentFirstDay-1;
-					// 	that.currentDates[_i].dcm.push(_data.did);
-					// 	that.currentDates[_i].dcm = that.$parent.compileArrtoArr(that.currentDates[_i].dcm);
-					// 	that.currentDates[_i].ldid.push(_data.did);
-					// 	that.currentDates[_i].ldid = that.$parent.compileArrtoArr(that.currentDates[_i].ldid);
-					// }
-					if(that.changeMonthList[dym]) {
-						if(that.changeMonthList[dym].did) {
-							that.changeMonthList[dym].did.push(_data.did);
-							that.changeMonthList[dym].did = that.$parent.compileArrtoArr(that.changeMonthList[dym].did);
+					if(that.changeMonthObj[dym]) {
+						if(that.changeMonthObj[dym].did) {
+							that.changeMonthObj[dym].did.push(_data.did);
+							that.changeMonthObj[dym].did = that.$parent.compileArrtoArr(that.changeMonthObj[dym].did);
 						} else {
-							that.changeMonthList[dym] = {did: [_data.did]};
-							if(!that.changeMonthList[dym].cid) {
-								that.changeMonthList[dym] = {cid: []};
+							that.changeMonthObj[dym] = {did: [_data.did]};
+							if(!that.changeMonthObj[dym].cid) {
+								that.changeMonthObj[dym] = {cid: []};
 							}
 						}
 					} else {
-						that.changeMonthList = {
+						that.changeMonthObj = {
 							[dym] : {
 								did: [_data.did],
 								cid: []
@@ -132,7 +124,7 @@ export default {
 					}
 				}
 				that.$emit("ANsetCalendarData", that.currentDates);
-				that.$emit("ANsetChangeMonth", that.changeMonthList);
+				that.$emit("ANsetChangeMonth", that.changeMonthObj);
 			});
 			that.db.ctg.toArray().then((list) => {
 				for(let _data of list) {
@@ -147,18 +139,18 @@ export default {
 							that.currentDates[_i].ctg.push(_data.cid);
 						}
 					}
-					if(that.changeMonthList[dym]) {
-						if(that.changeMonthList[dym].cid) {
-							that.changeMonthList[dym].cid.push(_data.cid);
-							that.changeMonthList[dym].cid = that.$parent.compileArrtoArr(that.changeMonthList[dym].cid);
+					if(that.changeMonthObj[dym]) {
+						if(that.changeMonthObj[dym].cid) {
+							that.changeMonthObj[dym].cid.push(_data.cid);
+							that.changeMonthObj[dym].cid = that.$parent.compileArrtoArr(that.changeMonthObj[dym].cid);
 						} else {
-							that.changeMonthList[dym] = {cid: [_data.cid]};
-							if(!that.changeMonthList[dym].did) {
-								that.changeMonthList[dym] = {did: []};
+							that.changeMonthObj[dym] = {cid: [_data.cid]};
+							if(!that.changeMonthObj[dym].did) {
+								that.changeMonthObj[dym] = {did: []};
 							}
 						}
 					} else {
-						that.changeMonthList = {
+						that.changeMonthObj = {
 							[dym] : {
 								cid: [_data.cid],
 								did: []
@@ -167,7 +159,7 @@ export default {
 					}
 				}
 				that.$emit("ANsetCalendarData", that.currentDates);
-				that.$emit("ANsetChangeMonth", that.changeMonthList);
+				that.$emit("ANsetChangeMonth", that.changeMonthObj);
 			});
 		},
 	},

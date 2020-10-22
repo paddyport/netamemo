@@ -62,12 +62,12 @@ export default {
 		},
 		switchPaletteSwatch(e) {
 			const btn = e.target,
-				idx = Number(btn.getAttribute("data-pid"));
+				idx = Number(btn.dataset.pid);
 			this.getPaletteSwatch(this.paletteBarArr[idx].color);
         },
         selectSwatch(e) {
             const btn = e.target,
-				idx = Number(btn.getAttribute("data-pid"));
+				idx = Number(btn.dataset.pid);
             this.$emit("EXchangeSwatch", this.paletteSwatchArr[idx].color);
         }
 	},

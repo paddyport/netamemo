@@ -1,7 +1,7 @@
 <template>
 <div :class="['change', changeMonthFlg ? 'isShown' : '']">
 	<ul>
-		<li v-for="(cm, ym, cmidx) in changeMonthList" :key="cmidx">
+		<li v-for="(cm, ym, cmidx) in changeMonthObj" :key="cmidx">
 			<a :data-year="ym.slice(0, 4)" :data-month="Number(ym.slice(5))+1" @click="onClick">
 				<i>右</i><strong>{{ ym.slice(0, 4) }}年{{ Number(ym.slice(5))+1 }}月</strong>
 				<span class="dcm">{{ cm.did.length }}</span>
@@ -18,7 +18,7 @@ export default {
 	name: 'CalendarChange',
 	props: {
 		changeMonthFlg: Boolean,
-		changeMonthList: Object
+		changeMonthObj: Object,
 	},
 	methods: {
 		onClick: function() {

@@ -16,7 +16,9 @@
 	</view-document-tags>
 	<view-foot
 		:btnClass="'dcm'"
+		:id="viewDcmDcmObj.did"
 		@PTcallopenEdit="callopenEditDcm"
+		@PTCallconfirmRem="$listeners['GPCallconfirmRem']"
 		@PTCallswitchLoader="$listeners['GPCallswitchLoader']">
 	</view-foot>
 	<button type="button" class="icn" @click="closeViewDcm">消</button>

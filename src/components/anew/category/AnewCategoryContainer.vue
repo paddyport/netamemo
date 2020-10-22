@@ -24,6 +24,7 @@
 	</div>
 	<anew-foot
         :btnClass="'ctg'"
+		:AsaveFlg="AsaveFlg"
 		@PTCallcloseAnew="$listeners['GPCallcloseAnew']"
 		@PTsaveAnew="setSaveData"
 		@PTCallswitchLoader="$listeners['GPCallswitchLoader']">
@@ -42,6 +43,7 @@ export default {
 	name: "AnewCategoryContainer",
 	props: {
 		db: Object,
+		saveFlg: Boolean,
 	},
 	components: {
         AnewCategoryColor,
@@ -53,19 +55,24 @@ export default {
 		return {
             anewCtgDcmArr: [],
             anewCtgCtgObj: {},
-            anewCtgTagArr: [],
+			anewCtgTagArr: [],
+			AsaveFlg: this.saveFlg,
 		}
 	},
 	methods: {
+		checkSave(str) {
+			this.AsaveFlg = !str||!str.match(/\S/g) ? false : true;
+		},
 		changeAnewCtgHead(e) {
-			const str = e.target.textContent;
-			this.anewCtgCtgObj.head = str ? str : this.anewCtgCtgObj.head;
-			e.target.textContent = this.anewCtgCtgObj.head;
+			const str = e.target.innerText;
+			this.checkSave(str);
+			this.anewCtgCtgObj.head = !str||!str.match(/\S/g) ? this.$parent.compileNltoBr(str) : "";
+			e.target.innerText = this.$parent.compileBrtoNl(this.anewCtgCtgObj.head);
 		},
 		changeAnewCtgBody(e) {
-			const str = e.target.textContent;
-			this.anewCtgCtgObj.body = str ? str : this.anewCtgCtgObj.body;
-			e.target.textContent = this.anewCtgCtgObj.body;
+			const str = e.target.innerText;
+			this.anewCtgCtgObj.body = !str||!str.match(/\S/g) ? this.$parent.compileNltoBr(str) : "";
+			e.target.innerText = this.$parent.compileBrtoNl(this.anewCtgCtgObj.body);
         },
         changeCtgColor(val) {
             // this.anewCtgCtgObj.color = val;
@@ -115,6 +122,7 @@ export default {
 			}).then(() => {
 				that.setAddremDcmPromise(that.anewCtgDcmArr);
 				that.$parent.setSaveTagPromise(that.anewCtgTagArr);
+				that.checkSave();
 				that.$emit("GPCallcloseAnew");
 				that.$emit("GPCallswitchLoader");
 			});

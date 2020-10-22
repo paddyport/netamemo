@@ -3,10 +3,30 @@
     <ul :class="['list', menuListFlg ? 'isShown' : '']">
 		<li><a class="listItem sch trs"><span>フリーワード検索</span></a></li>
 		<li><a class="listItem tag trs"><span>タグ検索</span></a></li>
-        <menu-anew :dcmNewArr="dcmNewArr"></menu-anew>
-        <menu-edit :dcmEdtArr="dcmEdtArr"></menu-edit>
-        <menu-document :dcmArr="dcmArr"></menu-document>
-        <menu-category :ctgArr="ctgArr"></menu-category>
+        <menu-anew
+			:dcmNewArr="dcmNewArr"
+			@GPCallopenViewDcm="$listeners['ANopenViewDcm']"
+			@GPCallswitchMenuList="$listeners['ANswitchMenuList']"
+			@GPCallswitchLoader="$listeners['ANswitchLoader']">
+		</menu-anew>
+        <menu-edit
+			:dcmEdtArr="dcmEdtArr"
+			@GPCallopenViewDcm="$listeners['ANopenViewDcm']"
+			@GPCallswitchMenuList="$listeners['ANswitchMenuList']"
+			@GPCallswitchLoader="$listeners['ANswitchLoader']">
+		</menu-edit>
+        <menu-document
+			:dcmArr="dcmArr"
+			@GPCallopenViewDcm="$listeners['ANopenViewDcm']"
+			@GPCallswitchMenuList="$listeners['ANswitchMenuList']"
+			@GPCallswitchLoader="$listeners['ANswitchLoader']">
+		</menu-document>
+        <menu-category
+			:ctgArr="ctgArr"
+			@GPCallopenViewCtg="$listeners['ANopenViewCtg']"
+			@GPCallswitchMenuList="$listeners['ANswitchMenuList']"
+			@GPCallswitchLoader="$listeners['ANswitchLoader']">
+		</menu-category>
 	</ul>
 	<button type="button" :class="['btnIcon', 'def', 'nml', 'menuList', menuListBtnFlg ? '' : 'isNoActive']" @click="callswitchMenuList"><span>メニュー</span></button>
 </div>
@@ -79,9 +99,7 @@ export default {
 				}
 			});
 			that.db.ctg.toArray().then((list) => {
-				for(let _data of list) {
-                    that.ctgArr.push(_data);
-                }
+				for(let _data of list) that.ctgArr.push(_data);
 			});
 		},
 		callswitchMenuList() {

@@ -18,6 +18,7 @@
 	</div>
     <anew-foot
         :btnClass="'dcm'"
+		:AsaveFlg="AsaveFlg"
         @PTCallcloseAnew="$listeners['GPCallcloseAnew']"
 		@PTsaveAnew="setSaveData"
         @PTCallswitchLoader="$listeners['GPCallswitchLoader']">
@@ -35,6 +36,7 @@ export default {
 	name: "AnewDocumentContainer",
 	props: {
 		db: Object,
+		saveFlg: Boolean,
 	},
 	components: {
 		AnewDocumentCtgname,
@@ -46,18 +48,23 @@ export default {
 			anewDcmDcmObj: {},
 			anewDcmCtgObj: {},
 			anewDcmTagArr: [],
+			AsaveFlg: this.saveFlg,
 		}
 	},
 	methods: {
+		checkSave(str) {
+			this.AsaveFlg = !str||!str.match(/\S/g) ? false : true;
+		},
 		changeAnewDcmHead(e) {
-			const str = e.target.textContent;
-			this.anewDcmDcmObj.head = str ? str : this.anewDcmDcmObj.head;
-			e.target.textContent = this.anewDcmDcmObj.head;
+			const str = e.target.innerText;
+			this.checkSave(str);
+			this.anewDcmDcmObj.head = !str||!str.match(/\S/g) ? "" : this.$parent.compileNltoBr(str);
+			e.target.innerText = this.$parent.compileBrtoNl(this.anewDcmDcmObj.head);
 		},
 		changeAnewDcmBody(e) {
-			const str = e.target.textContent;
-			this.anewDcmDcmObj.body = str ? str : this.anewDcmDcmObj.body;
-			e.target.textContent = this.anewDcmDcmObj.body;
+			const str = e.target.innerText;
+			this.anewDcmDcmObj.body = !str||!str.match(/\S/g) ? "" : this.$parent.compileNltoBr(str);
+			e.target.innerText = this.$parent.compileBrtoNl(this.anewDcmDcmObj.body);
 		},
 		selectAnewDcmCtg(obj) {
 			this.anewDcmCtgObj = obj;
@@ -89,6 +96,7 @@ export default {
 			}).then(() => {
 				if(that.anewDcmCtgObj.cid) that.db.ctg.put(that.anewDcmCtgObj);
 				that.$parent.setSaveTagPromise(that.anewDcmTagArr);
+				that.checkSave();
 				that.$emit("GPCallcloseAnew");
 				that.$emit("GPCallswitchLoader");
 			});

@@ -34,7 +34,7 @@ export default {
 	methods: {
         callopenViewDcm(e) {
 			const btn = e.target,
-				id = Number(btn.parentNode.getAttribute("data-did"));
+				id = Number(btn.parentNode.dataset.did);
             this.$emit("PTCallopenViewDcm", id);
         },
 	},

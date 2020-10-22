@@ -70,8 +70,8 @@ export default {
         },
         addSelectTag(e) {
 			const btn = e.target,
-				flg = btn.getAttribute("data-tag"),
-                val = flg ? btn.textContent : btn.previousElementSibling.value;
+				flg = btn.dataset.tag,
+                val = flg ? btn.innerText : btn.previousElementSibling.value;
             if(!val || this.DeditDcmTagArr.indexOf(val)>-1) return;
             this.DeditDcmTagArr.push(val);
 			if(!flg) {
@@ -82,7 +82,7 @@ export default {
         },
         remSelectTag(e) {
             const btn = e.target,
-                val = btn.textContent;
+                val = btn.innerText;
             this.DeditDcmTagArr.splice(this.DeditDcmTagArr.indexOf(val), 1);
 			this.$emit("PTselectEditDcmTag", this.DeditDcmTagArr);
         },

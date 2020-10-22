@@ -20,6 +20,7 @@
 	</div>
 	<edit-foot
 		:btnClass="'dcm'"
+		:saveFlg="saveFlg"
 		@PTcloseEdit="$listeners['GPcloseEditDcm']"
 		@PTsaveEdit="setSaveData"
 		@PTCallswitchLoader="$listeners['GPCallswitchLoader']">
@@ -51,18 +52,28 @@ export default {
 			DeditDcmDcmObj: this.editDcmDcmObj,
 			DeditDcmCtgObj: this.editDcmCtgObj,
 			DeditDcmTagArr: this.editDcmTagArr,
+			saveFlg: true,
 		}
 	},
 	methods: {
+		compileNltoBr(_str) {
+			let str = String(_str);
+			return str.replace(/<div>/, "\r\n").replace(/<\/div>/, "");
+		},
+		compileBrtoNl(_str) {
+			let str = String(_str);
+			return str.replace(/<br>/, "\r\n");
+		},
 		changeEditDcmHead(e) {
-			const str = e.target.textContent;
-			this.DeditDcmDcmObj.head = str ? str : this.DeditDcmDcmObj.head;
-			e.target.textContent = this.DeditDcmDcmObj.head;
+			const str = e.target.innerText;
+			this.saveFlg = !str||!str.match(/\S/g) ? false : true;
+			this.DeditDcmDcmObj.head = !str||!str.match(/\S/g) ? "" : this.compileNltoBr(str);
+			e.target.innerText = this.compileBrtoNl(this.DeditDcmDcmObj.head);
 		},
 		changeEditDcmBody(e) {
-			const str = e.target.textContent;
-			this.DeditDcmDcmObj.body = str ? str : this.DeditDcmDcmObj.body;
-			e.target.textContent = this.DeditDcmDcmObj.body;
+			const str = e.target.innerText;
+			this.DeditDcmDcmObj.body = !str||!str.match(/\S/g) ? "" : this.compileNltoBr(str);
+			e.target.innerText = this.compileBrtoNl(this.DeditDcmDcmObj.body);
 		},
 		selectEditDcmCtg(obj) {
 			this.DeditDcmCtgObj = obj;

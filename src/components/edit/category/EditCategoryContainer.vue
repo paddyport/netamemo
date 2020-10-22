@@ -27,6 +27,7 @@
 	</div>
 	<edit-foot
         :btnClass="'ctg'"
+		:saveFlg="saveFlg"
 		@PTcloseEdit="$listeners['GPcloseEditCtg']"
 		@PTsaveEdit="setSaveData"
 		@PTCallswitchLoader="$listeners['GPCallswitchLoader']">
@@ -61,21 +62,31 @@ export default {
             DeditCtgCtgObj: this.editCtgCtgObj,
             DeditCtgTagArr: this.editCtgTagArr,
 			EeditCtgCtgColor: this.editCtgCtgObj.color,
+			saveFlg: true,
 		}
 	},
 	created: function(){
 		this.changeEditCtgDcm(this.editCtgDcmArr);
 	},
 	methods: {
+		compileNltoBr(_str) {
+			let str = String(_str);
+			return str.replace(/<div>/, "\r\n").replace(/<\/div>/, "");
+		},
+		compileBrtoNl(_str) {
+			let str = String(_str);
+			return str.replace(/<br>/, "\r\n");
+		},
 		changeEditCtgHead(e) {
-			const str = e.target.textContent;
-			this.DeditCtgCtgObj.head = str ? str : this.DeditCtgCtgObj.head;
-			e.target.textContent = this.DeditCtgCtgObj.head;
+			const str = e.target.innerText;
+			this.saveFlg = !str||!str.match(/\S/g) ? false : true;
+			this.DeditCtgCtgObj.head = !str||!str.match(/\S/g) ? "" : this.compileNltoBr(str);
+			e.target.innerText = this.compileBrtoNl(this.DeditCtgCtgObj.head);
 		},
 		changeEditCtgBody(e) {
-			const str = e.target.textContent;
-			this.DeditCtgCtgObj.body = str ? str : this.DeditCtgCtgObj.body;
-			e.target.textContent = this.DeditCtgCtgObj.body;
+			const str = e.target.innerText;
+			this.DeditCtgCtgObj.body = !str||!str.match(/\S/g) ? "" : this.compileNltoBr(str);
+			e.target.innerText = this.compileBrtoNl(this.DeditCtgCtgObj.body);
         },
         changeCtgColor(val) {
             this.EeditCtgCtgColor = val;

@@ -19,7 +19,10 @@
 		:db="db"
 		:menuListBtnFlg="menuListBtnFlg"
 		:menuListFlg="menuListFlg"
-		@ANswitchMenuList="switchMenuList">
+		@ANswitchMenuList="switchMenuList"
+		@ANopenViewDcm="openViewDcm"
+		@ANopenViewCtg="openViewCtg"
+		@ANswitchLoader="switchLoader">
 	</menu-container>
 	<posts-container
 		ref="posts"
@@ -31,6 +34,7 @@
 		@ANopenEditCtg="openEditCtg"
 		@ANopenViewDcm="openViewDcm"
 		@ANopenViewCtg="openViewCtg"
+		@ANconfirmRem="confirmRem"
 		@ANswitchLoader="switchLoader">
 	</posts-container>
 	<view-container
@@ -40,6 +44,7 @@
 		@ANopenViewDcm="openViewDcm"
 		@ANopenEditDcm="openEditDcm"
 		@ANopenEditCtg="openEditCtg"
+		@ANconfirmRem="confirmRem"
 		@ANcloseView="closeView"
 		@ANswitchLoader="switchLoader">
 	</view-container>
@@ -58,6 +63,13 @@
 		@ANcloseAnew="closeAnew"
 		@ANswitchLoader="switchLoader">
 	</anew-container>
+	<dialog-container
+		v-if="dialogFlg"
+		:btnClass="dialogBtnClass"
+		@ANcloseDialog="closeDialog"
+		@ANremoveItem="removeItem"
+		@ANswitchLoader="switchLoader">
+	</dialog-container>
 	<loader-container v-if="loaderFlg"></loader-container>
 </div>
 </template>
@@ -66,6 +78,7 @@
 import Vue from "vue"
 import Dexie from "dexie"
 import LoaderContainer from "./components/loader/LoaderContainer"
+import DialogContainer from "./components/dialog/DialogContainer"
 import CalendarContainer from "./components/calendar/CalendarContainer"
 import MenuContainer from "./components/menu/MenuContainer"
 import PostsContainer from "./components/posts/PostsContainer"
@@ -76,11 +89,11 @@ import AnewContainer from "./components/anew/AnewContainer"
 export default Vue.extend({
 // AN Component
 	name: "App",
-	props: {
-	},
 	data() {
 		return {
 			loaderFlg: true,
+			dialogFlg: false,
+			dialogBtnClass: "",
 			dbName: "netamemoDB",
 			db: "",
 			dbData: [],
@@ -100,12 +113,12 @@ export default Vue.extend({
 			viewFlg: false,
 			editFlg: false,
 			currentField: "",
-			currentEdit: "",
 			anewFlg: false,
 		}
 	},
 	components: {
 		LoaderContainer,
+		DialogContainer,
 		CalendarContainer,
 		MenuContainer,
 		PostsContainer,
@@ -195,31 +208,6 @@ export default Vue.extend({
 			this.db.tag.put({head: "徒然"});
 			this.db.tag.put({head: "硯"});
 		},
-		getDataDcm(key) {
-			const that = this;
-			return new Promise(function(resolve){
-				that.db.dcm.get(key).then((obj) => {
-					resolve(obj);
-				});
-			});
-		},
-		async getDataDcmPromise(key) {
-			let res = await this.getDataDcm(key);
-			return res;
-		},
-		getDataCtg(key) {
-			const that = this;
-			return new Promise(function(resolve){
-				that.db.ctg.get(key).then(function(obj){
-					resolve(obj);
-				});
-			});
-		},
-		async getDataCtgPromise(key) {
-			let res = await this.getDataCtg(key);
-			console.log(res);
-			return res;
-		},
 		switchLoader() {
 			this.loaderFlg = this.loaderFlg ? false : true;
 			console.log(this.loaderFlg);
@@ -239,7 +227,7 @@ export default Vue.extend({
 			this.currentDates = arr;
 		},
 		setChangeMonth(obj) {
-			this.changeMonthList = obj;
+			this.changeMonthList = Object.assign(obj);
 			this.changeMonthBtnFlg = !Object.keys(this.changeMonthList).length ? false : true;
 		},
 		switchChangeMonth() {
@@ -298,20 +286,70 @@ export default Vue.extend({
 			this.$refs.menu.setMenuData();
 		},
 		openAnewDcm() {
-			this.currentEdit = "dcm";
-			this.$refs.anew.setAnewDcm();
+			this.$refs.anew.setAnew("dcm");
 			this.anewFlg = true;
 		},
 		openAnewCtg() {
-			this.currentEdit = "ctg";
-			this.$refs.anew.setAnewCtg();
+			this.$refs.anew.setAnew("ctg");
 			this.anewFlg = true;
 		},
 		closeAnew() {
-			this.currentEdit = "";
 			this.anewFlg = false;
 			this.$refs.calendar.setCalendar();
 			this.$refs.menu.setMenuData();
+		},
+		switchDialog() {
+			this.dialogFlg = this.dialogFlg ? false : true;
+		},
+		closeDialog() {
+			const btn = document.getElementsByClassName("isRemove")[0];
+			btn.classList.remove("isRemove");
+			this.dialogBtnClass = "";
+			this.switchDialog();
+		},
+		confirmRem(val) {
+			this.switchDialog();
+			this.dialogBtnClass = val;
+		},
+		async removeItem() {
+			const btn = document.getElementsByClassName("isRemove")[0],
+				item = btn.dataset.did ? "dcm" : "ctg";
+			if(item=="dcm") {
+				await this.removeDcm(Number(btn.dataset.did));
+			} else {
+				await this.setRemoveCtg(Number(btn.dataset.cid));
+			}
+			if(this.postsFlg) this.$refs.posts.setPostsData(this.markDate);
+			if(this.viewFlg) this.closeView();
+			this.switchDialog();
+			this.$refs.calendar.setCalendar();
+			this.$refs.menu.setMenuData();
+			this.switchLoader();
+		},
+		removeDcm(id) {
+			const that = this;
+			return new Promise(function(resolve){
+				that.db.dcm.delete(id).then(() => {
+					resolve(true);
+				});
+			});
+		},
+		removeCtg(key) {
+			const that = this;
+			return new Promise(function(resolve){
+				that.db.dcm.where(key).modify({cid: 0}).then(function(){
+					resolve(true);
+				});
+			});
+		},
+		async setRemoveCtg(id) {
+			const that = this;
+			await that.removeCtg({cid: id});
+			return new Promise(function(resolve){
+				that.db.ctg.delete(id).then(() => {
+					resolve(true);
+				});
+			});
 		},
 	},
 	computed: {
