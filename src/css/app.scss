@@ -197,18 +197,18 @@ button.dcm {
 		content: $file-alt;
 	}
 }
-button.img {
-	@include btnColor($btn-img);
-	&.btnIcon > span::after {
-		content: $image;
-	}
-	&.btnText > span > i::after, &.btnWord > span > i::after {
-		content: $image;
-	}
-	&.switchTab::after {
-		content: $image;
-	}
-}
+// button.img {
+// 	@include btnColor($btn-img);
+// 	&.btnIcon > span::after {
+// 		content: $image;
+// 	}
+// 	&.btnText > span > i::after, &.btnWord > span > i::after {
+// 		content: $image;
+// 	}
+// 	&.switchTab::after {
+// 		content: $image;
+// 	}
+// }
 button.ctg {
 	@include btnColor($btn-ctg);
 	&.btnIcon > span::after {
@@ -219,6 +219,18 @@ button.ctg {
 	}
 	&.switchTab::after {
 		content: $folder;
+	}
+}
+button.tag {
+	@include btnColor($btn-tag);
+	&.btnIcon > span::after {
+		content: $tag;
+	}
+	&.btnText > span > i::after, &.btnWord > span > i::after {
+		content: $tag;
+	}
+	&.switchTab::after {
+		content: $tag;
 	}
 }
 button.menuList {
@@ -247,15 +259,8 @@ button.sch {
 		content: $search;
 	}
 }
-button.tag {
-	&.btnIcon > span::after {
-		content: $tag;
-	}
-	&.btnText > span > i::after, &.btnWord > span > i::after {
-		content: $tag;
-	}
-}
 button.cpr {
+	@include btnColor($btn-pal);
 	&.btnIcon > span::after {
 		content: $palette;
 	}
@@ -428,6 +433,12 @@ a.ctg {
 	&.listItem::before {
 		content: $folder;
 		color: map-get($btn-ctg, "side");
+	}
+}
+a.tag {
+	&.listItem::before {
+		content: $tag;
+		color: map-get($btn-tag, "side");
 	}
 }
 

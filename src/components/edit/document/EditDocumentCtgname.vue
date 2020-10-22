@@ -13,8 +13,8 @@
 			<input type="text" placeholder="シリーズ" @focus="suggestCtgName" @keydown="suggestCtgName">
 			<button type="button" :class="['btnWord', 'def', 'nml', 'widSM', inputCtgnameFlg ? '' : 'isNoActive']" @click="selectCtgName"><span>追加</span></button>
 		</p>
-		<ul v-if="suggestCtgArr.length">
-			<li v-for="(sgctg, sgctgidx) in suggestCtgArr" :key="sgctgidx">
+		<ul v-if="suggestCtgnameArr.length">
+			<li v-for="(sgctg, sgctgidx) in suggestCtgnameArr" :key="sgctgidx">
 				<a :data-cid="sgctg.cid" @click="selectCtgName">{{ sgctg.head }}</a>
 			</li>
 		</ul>
@@ -24,7 +24,7 @@
 
 <script>
 export default {
-	name: "EditTextCtgname",
+	name: "EditDocumentCtgname",
 	props: {
         db: Object,
 		editDcmCtgObj: Object,
@@ -34,7 +34,7 @@ export default {
 			DeditDcmCtgObj: this.editDcmCtgObj,
 			selectCtgnameFlg: false,
 			inputCtgnameFlg: false,
-			suggestCtgArr: [],
+			suggestCtgnameArr: [],
 			ctgLength: 0,
 		}
     },
@@ -44,22 +44,22 @@ export default {
             this.selectCtgnameFlg = this.selectCtgnameFlg ? false : true;
         },
         suggestCtgName(e) {
-            const that = this,
-                val = e.target.value;
-            that.db.ctg.toArray().then(function(list){
-                if(!val) {
-					that.suggestCtgArr = list;
+			const that = this,
+				val = e.target.value;
+			that.db.ctg.toArray().then(function(list){
+				if(!val) {
+					that.suggestCtgnameArr = list;
 					that.inputCtgnameFlg = false;
-					that.ctgLength = that.suggestCtgArr.length;
-                } else {
-					that.suggestCtgArr = [];
+					that.ctgLength = that.suggestCtgnameArr.length;
+				} else {
+					that.suggestCtgnameArr = [];
 					that.inputCtgnameFlg = true;
-                    for(let obj of list) {
-                        if(obj.head.indexOf(val)>-1) that.suggestCtgArr.push(obj);
-                    }
-                }
-            });
-        },
+					for(let obj of list) {
+						if(obj.head.indexOf(val)>-1) that.suggestCtgnameArr.push(obj);
+					}
+				}
+			});
+		},
         selectCtgName(e) {
 			const btn = e.target,
 				flg = btn.getAttribute("data-cid"),
@@ -67,12 +67,10 @@ export default {
 				val = flg ? btn.textContent : btn.previousElementSibling.value;
 			this.DeditDcmCtgObj.cid = id;
 			this.DeditDcmCtgObj.head = val;
-			for(let obj of this.suggestCtgArr) {
-				if(obj.head==val) {
-					this.DeditDcmCtgObj = obj;
-				}
+			for(let obj of this.suggestCtgnameArr) {
+				if(obj.head==val) this.DeditDcmCtgObj = obj;
 			}
-			this.suggestCtgArr = [];
+			this.suggestCtgnameArr = [];
 			this.selectCtgnameFlg = false;
 			this.$emit("PTselectEditDcmCtg", this.DeditDcmCtgObj);
 		},

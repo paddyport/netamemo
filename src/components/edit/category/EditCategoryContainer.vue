@@ -21,6 +21,7 @@
 			:ctgid="editCtgCtgObj.cid"
             :ctgColor="editCtgCtgObj.color"
             :editCtgDcmArr="editCtgDcmArr"
+			@PTSelectEditCtgDcm="selectEditCtgDcm"
             @PTCallswitchLoader="$listeners['GPCallswitchLoader']">
         </edit-category-list>
 	</div>
@@ -56,11 +57,14 @@ export default {
 	},
 	data() {
 		return {
+			DeditCtgDcmArr: [],
             DeditCtgCtgObj: this.editCtgCtgObj,
             DeditCtgTagArr: this.editCtgTagArr,
 			EeditCtgCtgColor: this.editCtgCtgObj.color,
-			editCtgSgTagFlg: false,
 		}
+	},
+	created: function(){
+		this.changeEditCtgDcm(this.editCtgDcmArr);
 	},
 	methods: {
 		changeEditCtgHead(e) {
@@ -77,24 +81,50 @@ export default {
             this.EeditCtgCtgColor = val;
         },
         selectEditCtgTag(arr) {
-            this.DeditCtgTagArr = arr;
-        },
+			let _arr = arr.concat(arr);
+			_arr = new Set(_arr);
+            this.DeditCtgTagArr = Array.from(_arr);
+		},
+		changeEditCtgDcm(arr) {
+			for(let obj of arr) this.DeditCtgDcmArr.push(obj.did);
+		},
+		selectEditCtgDcm(arr) {
+			this.DeditCtgDcmArr = arr;
+		},
+		setRemDcm(key) {
+			const that = this;
+			return new Promise(function(resolve){
+				that.db.dcm.where(key).modify({cid: 0}).then(function(){
+					resolve(true);
+				});
+			});
+		},
+		async setAddDcm(arr) {
+			const that = this,
+				key = {cid: that.DeditCtgCtgObj.cid};
+			await that.setRemDcm(key);
+			return new Promise(function(resolve){
+				for(let did of arr) that.db.dcm.update(did, key);
+				resolve(true);
+			});
+		},
+		async setAddremDcmPromise(arr) {
+			await this.setAddDcm(arr);
+		},
         setSaveData() {
 			const that = this;
-            // dcmもputする
-			// tagもputする -> 多分できた
-			that.db.ctg.put({
-                cid: that.DeditCtgCtgObj.cid,
+			that.db.ctg.update(that.DeditCtgCtgObj.cid, {
 				tag: that.DeditCtgTagArr,
 				date: that.DeditCtgCtgObj.date,
 				head: that.DeditCtgCtgObj.head,
                 body: that.DeditCtgCtgObj.body,
                 color: that.EeditCtgCtgColor,
 			}).then(() => {
+				that.setAddremDcmPromise(this.DeditCtgDcmArr);
 				that.$parent.setSaveTagPromise(that.DeditCtgTagArr);
 				that.$emit("GPcloseEditCtg", that.DeditCtgCtgObj.cid);
 				that.$emit("GPCallswitchLoader");
-            });
+			});
         },
 	},
 }

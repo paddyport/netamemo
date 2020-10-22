@@ -1,7 +1,7 @@
 <template>
 <div class="list">
 	<ul>
-		<li v-for="(art, artidx) in addremCtgDcmArr" v-show="!(art.cid&&art.cid!=ctgid)" :key="artidx">
+		<li v-for="(art, artidx) in addremCtgDcmArr" v-show="!art.cid" :key="artidx">
 			<div class="cardItem">
 				<i v-if="art.color" :style="{color: art.color}"></i>
 				<h2>{{ art.head }}</h2>
@@ -20,30 +20,25 @@
 <script>
 export default {
 // CH Component
-	name: "EditCategoryList",
+	name: "AnewCategoryList",
 	props: {
-		db: Object,
-		ctgid: Number,
-		ctgColor: String,
-		editCtgDcmArr: Array,
+        db: Object,
 	},
 	data() {
 		return {
-            DeditCtgDcmArr: this.editCtgDcmArr,
+            ctgColor: "",
+            anewCtgDcmArr: [],
             defaultDcmArr: [],
 			addremCtgDcmArr: [],
 		}
 	},
 	created: function(){
         this.$emit("PTCallswitchLoader");
-        this.setDcmArr();
         this.getDataDcmPromise();
 	},
 	methods: {
-        setDcmArr() {
-            for(let obj of this.editCtgDcmArr) {
-                this.defaultDcmArr.push(obj.did);
-            }
+        setctgColor(val) {
+            this.ctgColor = val;
         },
 		getDataDcm() {
             const that = this;
@@ -72,30 +67,30 @@ export default {
 				btn = e.target,
 				id = Number(btn.parentNode.getAttribute("data-did"));
 			that.db.dcm.get(id).then((obj) => {
-				that.DeditCtgDcmArr.push(obj);
+				that.anewCtgDcmArr.push(obj);
 			});
 			for(let idx in that.addremCtgDcmArr) {
 				const did = that.addremCtgDcmArr[idx].did;
 				if(did==id) {
 					that.defaultDcmArr.push(did);
-					that.$set(that.addremCtgDcmArr[idx], "color", that.ctgColor);
+                    that.$set(that.addremCtgDcmArr[idx], "color", that.ctgColor);
 				}
 			}
-			that.$emit("PTSelectEditCtgDcm", that.defaultDcmArr);
+			that.$emit("PTselectAnewCtgDcm", that.defaultDcmArr);
 		},
 		remDcmArr(e) {
 			const btn = e.target,
 				id = Number(btn.parentNode.getAttribute("data-did"));
-			for(let idx in this.DeditCtgDcmArr) {
-				const did = this.DeditCtgDcmArr[idx].did;
-				if(did==id) this.DeditCtgDcmArr.splice(idx, 1);
+			for(let idx in this.anewCtgDcmArr) {
+				const did = this.anewCtgDcmArr[idx].did;
+				if(did==id) this.anewCtgDcmArr.splice(idx, 1);
 			}
 			for(let idx in this.addremCtgDcmArr) {
 				const did = this.addremCtgDcmArr[idx].did;
 				if(did==id) this.$set(this.addremCtgDcmArr[idx], "color", "");
 			}
 			this.defaultDcmArr.splice(this.defaultDcmArr.indexOf(id), 1);
-			this.$emit("PTSelectEditCtgDcm", this.defaultDcmArr);
+			this.$emit("PTselectAnewCtgDcm", this.defaultDcmArr);
 		},
 	},
 }

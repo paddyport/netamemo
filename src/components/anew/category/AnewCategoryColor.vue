@@ -17,17 +17,15 @@
 import ColorPicker from '../../parts/ColorPicker'
 
 export default {
-    name: "EditCategoryColor",
-    props: {
-        ctgColor: String,
-    },
+// CH Component
+    name: "AnewCategoryColor",
 	components: {
         ColorPicker,
     },
 	data() {
 		return {
             selectCtgColorFlg: false,
-            selectCtgColor: this.ctgColor,
+            selectCtgColor: "",
             selectCtgPalette: "",
 		}
     },

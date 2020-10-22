@@ -1,13 +1,13 @@
 <template>
-<div class="tags">
-	<button type="button" :class="[!DeditDcmTagArr.length&&!selectTagFlg ? 'btnWord' : 'btnIcon', 'def', 'tag', 'nml']" @click="switchFlg">
-		<span v-if="!DeditDcmTagArr.length&&!selectTagFlg"><i></i>編集</span>
+<div class="tags" >
+	<button type="button" :class="[!anewCtgTagArr.length&&!selectTagFlg ? 'btnWord' : 'btnIcon', 'def', 'tag']" @click="switchFlg">
+		<span v-if="!anewCtgTagArr.length&&!selectTagFlg"><i></i>編集</span>
 		<span v-else><i></i></span>
 	</button>
 	<div v-if="selectTagFlg" class="field">
 		<p>
 			<input type="text" placeholder="タグ" @focus="suggestTags" @keydown="suggestTags">
-			<button type="button" class="btnWord def nml widSM" @click="addSelectTag"><span>追加</span></button>
+			<button type="button" :class="['btnWord', 'def', 'nml', 'widSM', inputTagFlg ? 'isNoActive' : '']" @click="addSelectTag"><span>追加</span></button>
 		</p>
 		<ul v-if="suggestTagArr.length">
 			<li v-for="(sgtag, sgtagidx) in suggestTagArr" :key="sgtagidx">
@@ -15,9 +15,9 @@
 			</li>
 		</ul>
 	</div>
-	<div v-if="DeditDcmTagArr.length" class="area">
+	<div v-if="anewCtgTagArr.length" class="area">
 		<ul>
-			<li v-for="(sltag, sltagidx) in DeditDcmTagArr" :key="sltagidx">
+			<li v-for="(sltag, sltagidx) in anewCtgTagArr" :key="sltagidx">
 				<a :data-tag="sltag" @click="remSelectTag">{{ sltag }}</a>
 			</li>
 		</ul>
@@ -27,25 +27,25 @@
 
 <script>
 export default {
-	name: "EditTextTags",
+// CH Component
+	name: "AnewCategoryTags",
 	props: {
         db: Object,
-		editDcmTagArr: Array,
 	},
 	data() {
 		return {
-            DeditDcmTagArr: this.editDcmTagArr,
+            anewCtgTagArr: [],
 			selectTagFlg: false,
 			inputTagFlg: false,
 			suggestTagArr: [],
-            tagLength: 0,
+			tagLength: 0,
 		}
-    },
+	},
 	methods: {
 		switchFlg() {
-            this.selectTagFlg = this.selectTagFlg ? false : true;
+			this.selectTagFlg = this.selectTagFlg ? false : true;
 			if(!this.selectTagFlg) this.suggestTagArr = [];
-        },
+		},
         suggestTags(e) {
             const that = this,
                 val = e.target.value;
@@ -53,7 +53,7 @@ export default {
             that.db.tag.toArray().then(function(list){
                 if(!val) {
                     for(let obj of list) {
-                        if(that.editDcmTagArr.indexOf(obj.head)<0) {
+                        if(that.anewCtgTagArr.indexOf(obj.head)<0) {
                             that.suggestTagArr.push(obj.head);
                         }
                     }
@@ -62,7 +62,7 @@ export default {
                 } else {
 					that.inputTagFlg = true;
                     for(let obj of list) {
-                        if(that.editDcmTagArr.indexOf(obj.head)<0&&obj.head.indexOf(val)>-1) {
+                        if(that.anewCtgTagArr.indexOf(obj.head)<0&&obj.head.indexOf(val)>-1) {
                             that.suggestTagArr.push(obj.head);
                         }
                     }
@@ -72,20 +72,20 @@ export default {
         addSelectTag(e) {
 			const btn = e.target,
 				flg = btn.getAttribute("data-tag"),
-                val = flg ? btn.textContent : btn.previousElementSibling.value;
-            if(!val || this.DeditDcmTagArr.indexOf(val)>-1) return;
-            this.DeditDcmTagArr.push(val);
+				val = flg ? btn.textContent : btn.previousElementSibling.value;
+            if(!val || this.anewCtgTagArr.indexOf(val)>-1) return;
+            this.anewCtgTagArr.push(val);
 			if(!flg) {
 				btn.previousElementSibling.value = "";
 			}
-			this.suggestTagArr = [];
-			this.$emit("PTselectEditDcmTag", this.DeditDcmTagArr);
+            this.suggestTagArr = [];
+			this.$emit("PTselectAnewCtgTag", this.anewCtgTagArr);
         },
         remSelectTag(e) {
             const btn = e.target,
                 val = btn.textContent;
-            this.DeditDcmTagArr.splice(this.DeditDcmTagArr.indexOf(val), 1);
-			this.$emit("PTselectEditDcmTag", this.DeditDcmTagArr);
+            this.anewCtgTagArr.splice(this.anewCtgTagArr.indexOf(val), 1);
+			this.$emit("PTselectAnewCtgTag", this.anewCtgTagArr);
         },
 	},
 }

@@ -78,7 +78,7 @@ export default {
 						"dcm": [],
 						"ctg": [],
 						"ddid": [],
-						"ldid": [],
+						// "ldid": [],
 					};
 					result.push(obj);
 				}
@@ -93,8 +93,8 @@ export default {
 				for(let _data of list) {
 					const _d = new Date(_data.date),
 						_date = _d.getTime(),
-						_l = new Date(_data.last),
-						_last = _l.getTime(),
+						// _l = new Date(_data.last),
+						// _last = _l.getTime(),
 						dy = _d.getFullYear(),
 						dm = _d.getMonth(),
 						dym = dy+"-"+dm;
@@ -105,13 +105,13 @@ export default {
 						that.currentDates[_i].ddid.push(_data.did);
 						that.currentDates[_i].ddid = that.$parent.compileArrtoArr(that.currentDates[_i].ddid);
 					}
-					if(_cstime<=_last && _last<_cetime) {
-						let _i = _l.getDate()+that.currentFirstDay-1;
-						that.currentDates[_i].dcm.push(_data.did);
-						that.currentDates[_i].dcm = that.$parent.compileArrtoArr(that.currentDates[_i].dcm);
-						that.currentDates[_i].ldid.push(_data.did);
-						that.currentDates[_i].ldid = that.$parent.compileArrtoArr(that.currentDates[_i].ldid);
-					}
+					// if(_cstime<=_last && _last<_cetime) {
+					// 	let _i = _l.getDate()+that.currentFirstDay-1;
+					// 	that.currentDates[_i].dcm.push(_data.did);
+					// 	that.currentDates[_i].dcm = that.$parent.compileArrtoArr(that.currentDates[_i].dcm);
+					// 	that.currentDates[_i].ldid.push(_data.did);
+					// 	that.currentDates[_i].ldid = that.$parent.compileArrtoArr(that.currentDates[_i].ldid);
+					// }
 					if(that.changeMonthList[dym]) {
 						if(that.changeMonthList[dym].did) {
 							that.changeMonthList[dym].did.push(_data.did);

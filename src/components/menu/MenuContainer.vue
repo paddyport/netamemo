@@ -57,7 +57,11 @@ export default {
 			}
 		},
 		setMenuData() {
-			let that = this;
+			const that = this;
+			that.dcmArr = [];
+			that.ctgArr = [];
+			that.dcmNewArr = [];
+			that.dcmEdtArr = [];
 			that.db.dcm.toArray().then((list) => {
 				for(let _data of list) {
                     let obj = _data;

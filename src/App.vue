@@ -1,6 +1,7 @@
 <template>
 <div id="App" :class="[deviceType]">
-	<calendar-container 
+	<calendar-container
+		ref="calendar"
 		:db="db"
 		:currentYYMM="{year: currentYear, month: currentMonth}"
 		:changeMonthBtnFlg="changeMonthBtnFlg"
@@ -14,6 +15,7 @@
 		@ANswitchLoader="switchLoader">
 	</calendar-container>
 	<menu-container
+		ref="menu"
 		:db="db"
 		:menuListBtnFlg="menuListBtnFlg"
 		:menuListFlg="menuListFlg"
@@ -53,7 +55,7 @@
 		ref="anew"
 		:db="db"
 		:anewFlg="anewFlg"
-		@ANcloseAnewDcm="closeAnewDcm"
+		@ANcloseAnew="closeAnew"
 		@ANswitchLoader="switchLoader">
 	</anew-container>
 	<loader-container v-if="loaderFlg"></loader-container>
@@ -285,28 +287,31 @@ export default Vue.extend({
 			this.editFlg = false;
 			if(this.postsFlg) this.$refs.posts.setPostsData(this.markDate);
 			if(id && this.viewFlg) this.$refs.view.setDcmData(Number(id), true);
+			this.$refs.calendar.setCalendar();
+			this.$refs.menu.setMenuData();
 		},
 		closeEditCtg(id) {
 			this.editFlg = false;
 			if(this.postsFlg) this.$refs.posts.setPostsData(this.markDate);
 			if(id && this.viewFlg) this.$refs.view.setCtgData(Number(id), true);
-		},
-		openAnew() {
-			this.anewFlg = true;
-			console.log("anew", this.currentEdit);
+			this.$refs.calendar.setCalendar();
+			this.$refs.menu.setMenuData();
 		},
 		openAnewDcm() {
 			this.currentEdit = "dcm";
 			this.$refs.anew.setAnewDcm();
-			this.openAnew();
+			this.anewFlg = true;
 		},
 		openAnewCtg() {
 			this.currentEdit = "ctg";
-			this.openAnew();
+			this.$refs.anew.setAnewCtg();
+			this.anewFlg = true;
 		},
-		closeAnewDcm() {
-			this.anewFlg = false;
+		closeAnew() {
 			this.currentEdit = "";
+			this.anewFlg = false;
+			this.$refs.calendar.setCalendar();
+			this.$refs.menu.setMenuData();
 		},
 	},
 	computed: {

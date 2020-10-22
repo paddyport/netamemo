@@ -2,7 +2,7 @@
 <ul v-if="markDcmArr.length" class="list">
 	<li v-for="(mt, mtidx) in markDcmArr" :key="mtidx">
 		<div class="cardItem">
-			<i v-if="mt.color" :style="{color: mt.color}"></i>
+			<i v-if="mt.cid" :style="{color: mt.color}"></i>
 			<h2>{{ mt.head }}</h2>
 			<time class="date">{{ new Date(mt.date).getFullYear() }}年{{ new Date(mt.date).getMonth()+1 }}月{{ new Date(mt.date).getDate() }}日</time>
 			<time class="last">{{ new Date(mt.last).getFullYear() }}年{{ new Date(mt.last).getMonth()+1 }}月{{ new Date(mt.last).getDate() }}日</time>

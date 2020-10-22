@@ -1,13 +1,13 @@
 <template>
-<div class="tags" >
-	<button type="button" :class="[!DeditCtgTagArr.length&&!selectTagFlg ? 'btnWord' : 'btnIcon', 'def', 'tag']" @click="switchFlg">
-		<span v-if="!DeditCtgTagArr.length&&!selectTagFlg"><i></i>編集</span>
+<div class="tags">
+	<button type="button" :class="[!DeditDcmTagArr.length&&!selectTagFlg ? 'btnWord' : 'btnIcon', 'def', 'tag']" @click="switchFlg">
+		<span v-if="!DeditDcmTagArr.length&&!selectTagFlg"><i></i>編集</span>
 		<span v-else><i></i></span>
 	</button>
 	<div v-if="selectTagFlg" class="field">
 		<p>
 			<input type="text" placeholder="タグ" @focus="suggestTags" @keydown="suggestTags">
-			<button type="button" :class="['btnWord', 'def', 'nml', 'widSM', inputTagFlg ? 'isNoActive' : '']" @click="addSelectTag"><span>追加</span></button>
+			<button type="button" class="btnWord def nml widSM" @click="addSelectTag"><span>追加</span></button>
 		</p>
 		<ul v-if="suggestTagArr.length">
 			<li v-for="(sgtag, sgtagidx) in suggestTagArr" :key="sgtagidx">
@@ -15,9 +15,9 @@
 			</li>
 		</ul>
 	</div>
-	<div v-if="DeditCtgTagArr.length" class="area">
+	<div v-if="DeditDcmTagArr.length" class="area">
 		<ul>
-			<li v-for="(sltag, sltagidx) in DeditCtgTagArr" :key="sltagidx">
+			<li v-for="(sltag, sltagidx) in DeditDcmTagArr" :key="sltagidx">
 				<a :data-tag="sltag" @click="remSelectTag">{{ sltag }}</a>
 			</li>
 		</ul>
@@ -28,42 +28,40 @@
 <script>
 export default {
 // CH Component
-	name: "EditCategoryTags",
+	name: "EditDocumentTags",
 	props: {
         db: Object,
-		editCtgTagArr: Array,
+		editDcmTagArr: Array,
 	},
 	data() {
 		return {
-            DeditCtgTagArr: this.editCtgTagArr,
+            DeditDcmTagArr: this.editDcmTagArr,
 			selectTagFlg: false,
 			inputTagFlg: false,
 			suggestTagArr: [],
-			tagLength: 0,
 		}
-	},
+    },
 	methods: {
 		switchFlg() {
 			this.selectTagFlg = this.selectTagFlg ? false : true;
 			if(!this.selectTagFlg) this.suggestTagArr = [];
 		},
-        suggestTags(e) {
-            const that = this,
+		suggestTags(e) {
+			const that = this,
                 val = e.target.value;
             that.suggestTagArr = [];
             that.db.tag.toArray().then(function(list){
                 if(!val) {
                     for(let obj of list) {
-                        if(that.editCtgTagArr.indexOf(obj.head)<0) {
+                        if(that.editDcmTagArr.indexOf(obj.head)<0) {
                             that.suggestTagArr.push(obj.head);
                         }
                     }
 					that.inputTagFlg = false;
-					that.tagLength = that.suggestTagArr.length;
                 } else {
 					that.inputTagFlg = true;
                     for(let obj of list) {
-                        if(that.editCtgTagArr.indexOf(obj.head)<0&&obj.head.indexOf(val)>-1) {
+                        if(that.editDcmTagArr.indexOf(obj.head)<0&&obj.head.indexOf(val)>-1) {
                             that.suggestTagArr.push(obj.head);
                         }
                     }
@@ -73,20 +71,20 @@ export default {
         addSelectTag(e) {
 			const btn = e.target,
 				flg = btn.getAttribute("data-tag"),
-				val = flg ? btn.textContent : btn.previousElementSibling.value;
-            if(!val || this.DeditCtgTagArr.indexOf(val)>-1) return;
-            this.DeditCtgTagArr.push(val);
+                val = flg ? btn.textContent : btn.previousElementSibling.value;
+            if(!val || this.DeditDcmTagArr.indexOf(val)>-1) return;
+            this.DeditDcmTagArr.push(val);
 			if(!flg) {
 				btn.previousElementSibling.value = "";
 			}
-            this.suggestTagArr = [];
-			this.$emit("PTselectEditCtgTag", this.DeditCtgTagArr);
+			this.suggestTagArr = [];
+			this.$emit("PTselectEditDcmTag", this.DeditDcmTagArr);
         },
         remSelectTag(e) {
             const btn = e.target,
                 val = btn.textContent;
-            this.DeditCtgTagArr.splice(this.DeditCtgTagArr.indexOf(val), 1);
-			this.$emit("PTselectEditCtgTag", this.DeditCtgTagArr);
+            this.DeditDcmTagArr.splice(this.DeditDcmTagArr.indexOf(val), 1);
+			this.$emit("PTselectEditDcmTag", this.DeditDcmTagArr);
         },
 	},
 }

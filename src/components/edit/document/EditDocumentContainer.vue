@@ -4,16 +4,16 @@
 		<div class="head">
 			<div contenteditable="true" @blur="changeEditDcmHead">{{ editDcmDcmObj.head }}</div>
 		</div>
-		<edit-text-ctgname
+		<edit-document-ctgname
 			:db="db"
 			:editDcmCtgObj="editDcmCtgObj"
 			@PTselectEditDcmCtg="selectEditDcmCtg">
-		</edit-text-ctgname>
-		<edit-text-tags
+		</edit-document-ctgname>
+		<edit-document-tags
 			:db="db"
 			:editDcmTagArr="editDcmTagArr"
 			@PTselectEditDcmTag="selectEditDcmTag">
-		</edit-text-tags>
+		</edit-document-tags>
 		<div class="body">
 			<div contenteditable="true" @blur="changeEditDcmBody">{{ editDcmDcmObj.body }}</div>
 		</div>
@@ -28,8 +28,8 @@
 </template>
 
 <script>
-import EditTextCtgname from './EditTextCtgname'
-import EditTextTags from './EditTextTags'
+import EditDocumentCtgname from './EditDocumentCtgname'
+import EditDocumentTags from './EditDocumentTags'
 import EditFoot from '../EditFoot'
 
 export default {
@@ -42,8 +42,8 @@ export default {
 		editDcmTagArr: Array,
 	},
 	components: {
-		EditTextCtgname,
-		EditTextTags,
+		EditDocumentCtgname,
+		EditDocumentTags,
 		EditFoot,
 	},
 	data() {
@@ -68,23 +68,31 @@ export default {
 			this.DeditDcmCtgObj = obj;
 		},
 		selectEditDcmTag(arr) {
-			let _arr = this.DeditDcmTagArr.concat(arr);
+			let _arr = arr.concat(arr);
 			_arr = new Set(_arr);
 			this.DeditDcmTagArr = Array.from(_arr);
 		},
 		setSaveData() {
 			const that = this,
-				_d = new Date();
-			// tagもputする -> 多分できた
-			that.db.dcm.put({
-				did: that.DeditDcmDcmObj.did,
-				cid: that.DeditDcmCtgObj.cid ? that.DeditDcmCtgObj.cid : null,
+				_d = new Date(),
+				last = _d.getFullYear()+"/"+(_d.getMonth()+1)+"/"+_d.getDate(),
+				ctgObj = {
+					date: last,
+					color: "",
+					body: "",
+				};
+			if(that.DeditDcmCtgObj.date) {
+				that.DeditDcmCtgObj = Object.assign(that.DeditDcmCtgObj, ctgObj);
+			}
+			that.db.dcm.update(that.DeditDcmDcmObj.did, {
+				cid: that.DeditDcmCtgObj.cid ? that.DeditDcmCtgObj.cid : 0,
 				tag: that.DeditDcmTagArr,
 				date: that.DeditDcmDcmObj.date,
-				last: _d.getFullYear()+"/"+(_d.getMonth()+1)+"/"+_d.getDate(),
+				last: last,
 				head: that.DeditDcmDcmObj.head,
 				body: that.DeditDcmDcmObj.body,
 			}).then(() => {
+				if(that.DeditDcmCtgObj.cid) that.db.ctg.put(that.DeditDcmCtgObj);
 				that.$parent.setSaveTagPromise(that.DeditDcmTagArr);
 				that.$emit("GPcloseEditDcm", that.DeditDcmDcmObj.did);
 				that.$emit("GPCallswitchLoader");
