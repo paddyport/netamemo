@@ -25,9 +25,9 @@ export default {
 		callopenViewDcm(e) {
 			const btn = e.target,
 				id = Number(btn.dataset.did);
+			this.$emit("GPCallshownLoader");
 			this.$emit("GPCallopenViewDcm", id);
 			this.$emit("GPCallswitchMenuList");
-			this.$emit("GPCallswitchLoader");
 		},
 	},
 }

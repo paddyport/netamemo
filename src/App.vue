@@ -22,8 +22,9 @@
 		:menuListFlg="menuListFlg"
 		@ANopenViewDcm="openViewDcm"
 		@ANopenPosts="openPosts"
+		@ANopenSearch="openSearch"
 		@ANswitchMenuList="switchMenuList"
-		@ANswitchLoader="switchLoader">
+		@ANshownLoader="shownLoader">
 	</menu-container>
 	<posts-container
 		ref="posts"
@@ -67,14 +68,8 @@
 	</anew-container>
 	<search-container
 		:db="db"
-		@ANopenArchive="openArchive">
+		@ANopenPosts="openPosts">
 	</search-container>
-	<archive-container
-		:archiveFlg="archiveFlg"
-		:archiveHead="archiveHead"
-		:archiveArr="archiveArr"
-		@ANswitchLoader="switchLoader">
-	</archive-container>
 	<dialog-container
 		v-if="dialogFlg"
 		:btnClass="dialogBtnClass"
@@ -98,7 +93,6 @@ import ViewContainer from "./components/view/ViewContainer"
 import EditContainer from "./components/edit/EditContainer"
 import AnewContainer from "./components/anew/AnewContainer"
 import SearchContainer from "./components/search/SearchContainer"
-import ArchiveContainer from "./components/archive/ArchiveContainer"
 
 export default Vue.extend({
 // AN Component
@@ -145,7 +139,6 @@ export default Vue.extend({
 		EditContainer,
 		AnewContainer,
 		SearchContainer,
-		ArchiveContainer,
 	},
 	created: function(){
 		this.checkDevice();
@@ -156,7 +149,7 @@ export default Vue.extend({
 		// this.addDataDcm();
 		// this.addDataCtg();
 		// this.addDataTag();
-		this.switchLoader();
+		this.hiddenLoader();
 	},
 	methods: {
 		checkDevice() {
@@ -232,6 +225,14 @@ export default Vue.extend({
 		},
 		switchLoader() {
 			this.loaderFlg = this.loaderFlg ? false : true;
+			console.log("s", this.loaderFlg);
+		},
+		shownLoader() {
+			this.loaderFlg = true;
+			console.log(this.loaderFlg);
+		},
+		hiddenLoader() {
+			this.loaderFlg = false;
 			console.log(this.loaderFlg);
 		},
 		setToday() {
@@ -273,7 +274,7 @@ export default Vue.extend({
 			this.postsHead = str;
 			this.$refs.posts.setPosts(arr);
 			this.postsFlg = true;
-			this.switchLoader();
+			this.hiddenLoader();
 		},
 		closePosts() {
 			this.postsFlg = false;
@@ -281,12 +282,12 @@ export default Vue.extend({
 		openViewDcm(id) {
 			this.$refs.view.setDcmData(id);
 			this.viewFlg = true;
-			this.switchLoader();
+			this.hiddenLoader();
 		},
 		openViewCtg(id) {
 			this.$refs.view.setCtgData(id);
 			this.viewFlg = true;
-			this.switchLoader();
+			this.hiddenLoader();
 		},
 		closeView() {
 			this.viewFlg = this.viewFlg ? false : true;
@@ -305,7 +306,7 @@ export default Vue.extend({
 			if(id && this.viewFlg) this.$refs.view.setDcmData(Number(id));
 			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
 			this.$refs.menu.setMenuData();
-			this.switchLoader();
+			this.hiddenLoader();
 		},
 		closeEditCtg(id) {
 			this.editFlg = false;
@@ -313,7 +314,7 @@ export default Vue.extend({
 			if(id && this.viewFlg) this.$refs.view.setCtgData(Number(id), true);
 			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
 			this.$refs.menu.setMenuData();
-			this.switchLoader();
+			this.hiddenLoader();
 		},
 		openAnewDcm() {
 			this.$refs.anew.setAnew("dcm");
@@ -354,7 +355,7 @@ export default Vue.extend({
 			this.switchDialog();
 			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
 			this.$refs.menu.setMenuData();
-			this.switchLoader();
+			this.hiddenLoader();
 		},
 		removeDcm(id) {
 			const that = this;
@@ -381,12 +382,8 @@ export default Vue.extend({
 				});
 			});
 		},
-		openArchive(arr, str) {
-			this.archiveArr = this.archiveArr.concat(arr);
-			this.archiveArr = this.compileArrtoArr(this.archiveArr);
-			this.archiveHead = str;
-			this.archiveFlg = true;
-			this.switchLoader();
+		openSearch(arr, str) {
+			console.log(arr, str);
 		},
 	},
 	computed: {

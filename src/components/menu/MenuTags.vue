@@ -1,20 +1,20 @@
 <template>
 <li>
-	<a class="listItem dcm trs" @click="setPostsDcmData"><span>{{ dcmStr }}</span></a>
+	<a class="listItem tag trs"><span>{{ tagStr }}</span></a>
 </li>
 </template>
 
 <script>
 export default {
 // PT Component
-	name: "MenuDocument",
+	name: "MenuTags",
 	props: {
-		dcmStr: String,
+		tagStr: String,
 	},
 	methods: {
 		setPostsDcmData() {
 			this.$emit("GPCallshownLoader");
-			this.$emit("GPsetPostsDcmData");
+			this.$emit("GPopenSearchTags");
 		},
 	},
 }

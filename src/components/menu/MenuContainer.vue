@@ -1,21 +1,36 @@
 <template>
 <div id="Menu" class="menu">
     <ul :class="['list', menuListFlg ? 'isShown' : '']">
-        <li><a class="listItem dcm trs" @click="setPostsDcmData"><span>テキスト一覧</span></a></li>
-        <li><a class="listItem ctg trs" @click="setPostsCtgData"><span>カテゴリ一覧</span></a></li>
+		<menu-button
+			:btnStr="dcmStr"
+			:btnCls="'dcm'"
+			@GPmenuBtnClick="setPostsDcmData"
+			@GPCallshownLoader="$listeners['ANshownLoader']">
+		</menu-button>
+		<menu-button
+			:btnStr="ctgStr"
+			:btnCls="'ctg'"
+			@GPmenuBtnClick="setPostsCtgData"
+			@GPCallshownLoader="$listeners['ANshownLoader']">
+		</menu-button>
 		<li v-if="false"><a class="listItem sch trs"><span>フリーワード検索</span></a></li>
-		<li><a class="listItem tag trs"><span>タグ検索</span></a></li>
+		<menu-button
+			:btnStr="tagStr"
+			:btnCls="'tag'"
+			@GPmenuBtnClick="openSearchTags"
+			@GPCallshownLoader="$listeners['ANshownLoader']">
+		</menu-button>
         <menu-anew
 			:dcmNewArr="dcmNewArr"
 			@GPCallopenViewDcm="$listeners['ANopenViewDcm']"
 			@GPCallswitchMenuList="$listeners['ANswitchMenuList']"
-			@GPCallswitchLoader="$listeners['ANswitchLoader']">
+			@GPCallshownLoader="$listeners['ANshownLoader']">
 		</menu-anew>
         <menu-edit
 			:dcmEdtArr="dcmEdtArr"
 			@GPCallopenViewDcm="$listeners['ANopenViewDcm']"
 			@GPCallswitchMenuList="$listeners['ANswitchMenuList']"
-			@GPCallswitchLoader="$listeners['ANswitchLoader']">
+			@GPCallshownLoader="$listeners['ANshownLoader']">
 		</menu-edit>
 	</ul>
 	<button type="button" :class="['btnIcon', 'def', 'nml', 'menuList', menuListBtnFlg ? '' : 'isNoActive']" @click="$listeners['ANswitchMenuList']"><span>メニュー</span></button>
@@ -23,6 +38,7 @@
 </template>
 
 <script>
+import MenuButton from './MenuButton'
 import MenuAnew from './MenuAnew'
 import MenuEdit from './MenuEdit'
 
@@ -36,11 +52,15 @@ export default {
 	},
 	data() {
 		return {
+			dcmStr: "テキスト一覧",
+			ctgStr: "カテゴリ一覧",
+			tagStr: "タグ検索",
             dcmNewArr: [],
             dcmEdtArr: [],
 		}
 	},
 	components: {
+		MenuButton,
 		MenuAnew,
 		MenuEdit,
 	},
@@ -88,27 +108,30 @@ export default {
 				});
 			});
 		},
-		async setPostsDcmData(e) {
+		async setPostsDcmData() {
 			const that = this,
-				str = e.target.innerText,
 				ctgArr = await that.getPostsDcmDataCtg();
 			that.db.dcm.toArray().then((list) => {
 				for(let obj of list) {
 					const c = obj.cid&&ctgArr[obj.cid] ? ctgArr[obj.cid] : "";
 					that.$set(obj, "color", c);
 				}
-				that.$emit("ANopenPosts", list, str);
+				that.$emit("ANopenPosts", list, that.dcmStr);
 				that.$emit("ANswitchMenuList");
-				that.$emit("ANswitchLoader");
 			});
 		},
-		setPostsCtgData(e) {
-			const that = this,
-				str = e.target.innerText;
+		setPostsCtgData() {
+			const that = this;
 			that.db.ctg.toArray().then((list) => {
-				that.$emit("ANopenPosts", list, str);
+				that.$emit("ANopenPosts", list, that.ctgStr);
 				that.$emit("ANswitchMenuList");
-				that.$emit("ANswitchLoader");
+			});
+		},
+		openSearchTags() {
+			const that = this;
+			that.db.tag.toArray().then((list) => {
+				that.$emit("ANopenSearch", list, that.ctgStr);
+				that.$emit("ANswitchMenuList");
 			});
 		},
 	},
