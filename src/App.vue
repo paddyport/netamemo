@@ -17,12 +17,15 @@
 	</calendar-container>
 	<menu-container
 		ref="menu"
-		:db="db"
 		:menuListBtnFlg="menuListBtnFlg"
 		:menuListFlg="menuListFlg"
+		:dcmNewArr="dcmNewArr"
+		:dcmEdtArr="dcmEdtArr"
+		@ANaccordionNext="accordionNext"
 		@ANopenViewDcm="openViewDcm"
-		@ANopenPosts="openPosts"
-		@ANopenSearch="openSearch"
+		@ANopenPostsDcmAllData="openPostsDcmAllData"
+		@ANopenPostsCtgAllData="openPostsCtgAllData"
+		@ANopenSearchTags="openSearchTags"
 		@ANswitchMenuList="switchMenuList"
 		@ANshownLoader="shownLoader">
 	</menu-container>
@@ -116,6 +119,8 @@ export default Vue.extend({
 			changeMonthFlg: false,
 			menuListBtnFlg: true,
 			menuListFlg: false,
+			dcmNewArr: [],
+			dcmEdtArr: [],
 			markDate: 0,
 			postsFlg: false,
 			postsDate: 0,
@@ -145,6 +150,7 @@ export default Vue.extend({
 		this.setToday();
 		this.createDB();
 		this.createTable();
+		this.setMenuData();
 		this.markDate = this.now.getDate();
 		// this.addDataDcm();
 		// this.addDataCtg();
@@ -194,6 +200,18 @@ export default Vue.extend({
 				return 0;
 			};
 		},
+		accordionNext(e) {
+			const btn = e.target,
+				acc = btn.nextElementSibling;
+			if(btn.classList.contains("isOpen")) {
+				acc.removeAttribute("style");
+				btn.classList.remove("isOpen")
+			} else {
+				const h = acc.children.length*btn.clientHeight;
+				acc.style.height = h+"px";
+				btn.classList.add("isOpen")
+			}
+		},
 		createDB() {
 			this.db = new Dexie(this.dbName);
 		},
@@ -222,6 +240,30 @@ export default Vue.extend({
 			this.db.tag.put({head: "日暮らし"});
 			this.db.tag.put({head: "徒然"});
 			this.db.tag.put({head: "硯"});
+		},
+		getDcmAllData() {
+			const that = this;
+			return new Promise(function(resolve){
+				that.db.dcm.toArray().then((list) => {
+					resolve(list);
+				});
+			});
+		},
+		getCtgAllData() {
+			const that = this;
+			return new Promise(function(resolve){
+				that.db.ctg.toArray().then((list) => {
+					resolve(list);
+				});
+			});
+		},
+		getTagAllData() {
+			const that = this;
+			return new Promise(function(resolve){
+				that.db.tag.toArray().then((list) => {
+					resolve(list);
+				});
+			});
 		},
 		switchLoader() {
 			this.loaderFlg = this.loaderFlg ? false : true;
@@ -261,6 +303,24 @@ export default Vue.extend({
 			this.changeMonthList = Object.assign(obj);
 			this.changeMonthBtnFlg = !Object.keys(this.changeMonthList).length ? false : true;
 		},
+		setMenuData() {
+			const that = this;
+			that.dcmNewArr = [];
+			that.dcmEdtArr = [];
+			that.db.dcm.toArray().then((list) => {
+				for(let _data of list) {
+                    let obj = _data;
+                    obj.date = _data.date;
+                    obj.last = _data.last;
+					that.dcmNewArr.push(obj);
+					that.dcmNewArr.sort(that.sortDESC("date"));
+					that.dcmEdtArr.push(obj);
+					that.dcmEdtArr.sort(that.sortDESC("last"));
+				}
+				that.dcmNewArr.slice(0, 4);
+				that.dcmEdtArr.slice(0, 4);
+			});
+		},
 		switchChangeMonth() {
 			this.menuListBtnFlg = this.changeMonthFlg ? true : false;
 			this.changeMonthFlg = this.changeMonthFlg ? false : true;
@@ -269,8 +329,25 @@ export default Vue.extend({
 			this.changeMonthBtnFlg = this.menuListFlg&&Object.keys(this.changeMonthList).length  ? true : false;
 			this.menuListFlg = this.menuListFlg ? false : true;
 		},
+		async openPostsDcmAllData(str) {
+			const ctgAllData = await this.getCtgAllData(),
+				dcmAllData = await this.getDcmAllData(),
+				cidArr = ctgAllData.map(function(val) {
+					return val.cid;
+				});
+			for(let obj of dcmAllData) {
+				const cid = obj.cid ? obj.cid : false,
+					col = cid ? ctgAllData[cidArr.indexOf(cid)].color : "";
+				this.$set(obj, "color", col);
+			}
+			this.openPosts(dcmAllData, str);
+		},
+		async openPostsCtgAllData(str) {
+			const ctgAllData = await this.getCtgAllData();
+			this.openPosts(ctgAllData, str);
+		},
 		openPosts(arr, str, date) {
-			this.postsDate = date;
+			this.postsDate = date ? date : this.postsDate;
 			this.postsHead = str;
 			this.$refs.posts.setPosts(arr);
 			this.postsFlg = true;
@@ -278,6 +355,14 @@ export default Vue.extend({
 		},
 		closePosts() {
 			this.postsFlg = false;
+		},
+		async openSearchTags(str) {
+			const tagAllData = await this.getTagAllData();
+			this.openSearch(tagAllData, str);
+		},
+		openSearch(arr, str) {
+			console.log(arr, str);
+			this.hiddenLoader();
 		},
 		openViewDcm(id) {
 			this.$refs.view.setDcmData(id);
@@ -305,7 +390,7 @@ export default Vue.extend({
 			if(this.postsFlg) this.$refs.calendar.setPostsData(this.postsDate);
 			if(id && this.viewFlg) this.$refs.view.setDcmData(Number(id));
 			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
-			this.$refs.menu.setMenuData();
+			this.setMenuData();
 			this.hiddenLoader();
 		},
 		closeEditCtg(id) {
@@ -313,7 +398,7 @@ export default Vue.extend({
 			if(this.postsFlg) this.$refs.calendar.setPostsData(this.postsDate);
 			if(id && this.viewFlg) this.$refs.view.setCtgData(Number(id), true);
 			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
-			this.$refs.menu.setMenuData();
+			this.setMenuData();
 			this.hiddenLoader();
 		},
 		openAnewDcm() {
@@ -327,7 +412,7 @@ export default Vue.extend({
 		closeAnew() {
 			this.anewFlg = false;
 			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
-			this.$refs.menu.setMenuData();
+			this.setMenuData();
 		},
 		switchDialog() {
 			this.dialogFlg = this.dialogFlg ? false : true;
@@ -354,7 +439,7 @@ export default Vue.extend({
 			if(this.viewFlg) this.closeView();
 			this.switchDialog();
 			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
-			this.$refs.menu.setMenuData();
+			this.setMenuData();
 			this.hiddenLoader();
 		},
 		removeDcm(id) {
@@ -382,11 +467,6 @@ export default Vue.extend({
 				});
 			});
 		},
-		openSearch(arr, str) {
-			console.log(arr, str);
-		},
-	},
-	computed: {
 	},
 });
 </script>

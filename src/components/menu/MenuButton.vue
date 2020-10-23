@@ -15,7 +15,18 @@ export default {
 	methods: {
 		checkClick() {
             this.$emit("GPCallshownLoader");
-            this.$emit("GPmenuBtnClick");
+			this.$emit("GPCallswitchMenuList");
+			switch(this.btnCls) {
+				case "dcm":
+					this.$emit("GPCallopenPostsDcmAllData", this.btnStr);
+					break;
+				case "ctg":
+					this.$emit("GPCallopenPostsCtgAllData", this.btnStr);
+					break;
+				case "tag":
+					this.$emit("GPCallopenSearchTags", this.btnStr);
+					break;
+			}
 		},
 	},
 }

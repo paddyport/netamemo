@@ -15,11 +15,20 @@
 		:currentDates="currentDates"
 		:currentFirstDay="currentFirstDay"
 		@GPsetPostsData="setPostsData"
-		@GPCallswitchLoader="$listeners['ANswitchLoader']"></calendar-body>
-	<calendar-foot
-		@GPCallopenAnewDcm="$listeners['ANopenAnewDcm']"
-		@GPCallopenAnewCtg="$listeners['ANopenAnewCtg']">
-	</calendar-foot>
+		@GPCallswitchLoader="$listeners['ANswitchLoader']">
+	</calendar-body>
+	<footer class="footer">
+		<calendar-foot-button
+			:btnStr="'新規作成'"
+			:btnCls="'dcm'"
+			@GPCallopenAnewDcm="$listeners['ANopenAnewDcm']">
+		</calendar-foot-button>
+		<calendar-foot-button
+			:btnStr="'新規作成'"
+			:btnCls="'ctg'"
+			@GPCallopenAnewCtg="$listeners['ANopenAnewCtg']">
+		</calendar-foot-button>
+	</footer>
 </div>
 </template>
 
@@ -27,7 +36,7 @@
 import CalendarHead from './CalendarHead'
 import CalendarChange from './CalendarChange'
 import CalendarBody from './CalendarBody'
-import CalendarFoot from './CalendarFoot'
+import CalendarFootButton from './CalendarFootButton'
 
 export default {
 // GP Component
@@ -53,7 +62,7 @@ export default {
 		CalendarHead,
 		CalendarChange,
 		CalendarBody,
-		CalendarFoot,
+		CalendarFootButton,
 	},
 	created: function(){
 		this.setCalendar(this.currentYYMM);
