@@ -66,17 +66,15 @@ export default {
 		changeAnewCtgHead(e) {
 			const str = e.target.innerText;
 			this.checkSave(str);
-			this.anewCtgCtgObj.head = !str||!str.match(/\S/g) ? this.$parent.compileNltoBr(str) : "";
+			this.anewCtgCtgObj.head = !str||!str.match(/\S/g) ? "" : this.$parent.compileNltoBr(str);
 			e.target.innerText = this.$parent.compileBrtoNl(this.anewCtgCtgObj.head);
 		},
 		changeAnewCtgBody(e) {
 			const str = e.target.innerText;
-			this.anewCtgCtgObj.body = !str||!str.match(/\S/g) ? this.$parent.compileNltoBr(str) : "";
+			this.anewCtgCtgObj.body = !str||!str.match(/\S/g) ? "" : this.$parent.compileNltoBr(str);
 			e.target.innerText = this.$parent.compileBrtoNl(this.anewCtgCtgObj.body);
         },
         changeCtgColor(val) {
-            // this.anewCtgCtgObj.color = val;
-            console.log(val, this.anewCtgCtgObj);
             this.$set(this.anewCtgCtgObj, "color", val);
             this.$refs.list.setctgColor(val);
         },
@@ -112,7 +110,7 @@ export default {
         setSaveData() {
             const that = this,
 				_d = new Date(),
-				date = _d.getFullYear()+"/"+(_d.getMonth()+1)+"/"+_d.getDate();
+				date = new Date(_d.getFullYear(), _d.getMonth(), _d.getDate()).getTime();
 			that.db.ctg.add({
 				tag: that.anewCtgTagArr,
 				date: date,

@@ -18,7 +18,7 @@
 	</view-category-tags>
 	<view-foot
 		:btnClass="'ctg'"
-		:id="viewDcmDcmObj.cid"
+		:id="viewCtgCtgObj.cid"
 		@PTcallopenEdit="callopenEditCtg"
 		@PTCallconfirmRem="$listeners['GPCallconfirmRem']"
 		@PTCallswitchLoader="$listeners['GPCallswitchLoader']">

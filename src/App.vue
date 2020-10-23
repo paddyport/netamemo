@@ -8,6 +8,7 @@
 		:changeMonthFlg="changeMonthFlg"
 		@ANsetCalendarData="setCalendarData"
 		@ANsetChangeMonth="setChangeMonth"
+		@ANsetCurrent="setCurrent"
 		@ANswitchChangeMonth="switchChangeMonth"
 		@ANopenPosts="openPosts"
 		@ANopenAnewDcm="openAnewDcm"
@@ -19,9 +20,9 @@
 		:db="db"
 		:menuListBtnFlg="menuListBtnFlg"
 		:menuListFlg="menuListFlg"
-		@ANswitchMenuList="switchMenuList"
 		@ANopenViewDcm="openViewDcm"
-		@ANopenViewCtg="openViewCtg"
+		@ANopenPosts="openPosts"
+		@ANswitchMenuList="switchMenuList"
 		@ANswitchLoader="switchLoader">
 	</menu-container>
 	<posts-container
@@ -29,6 +30,7 @@
 		:db="db"
 		:currentYYMM="{year: currentYear, month: currentMonth}"
 		:postsFlg="postsFlg"
+		:postsHead="postsHead"
 		@ANclosePosts="closePosts"
 		@ANopenEditDcm="openEditDcm"
 		@ANopenEditCtg="openEditCtg"
@@ -63,6 +65,16 @@
 		@ANcloseAnew="closeAnew"
 		@ANswitchLoader="switchLoader">
 	</anew-container>
+	<search-container
+		:db="db"
+		@ANopenArchive="openArchive">
+	</search-container>
+	<archive-container
+		:archiveFlg="archiveFlg"
+		:archiveHead="archiveHead"
+		:archiveArr="archiveArr"
+		@ANswitchLoader="switchLoader">
+	</archive-container>
 	<dialog-container
 		v-if="dialogFlg"
 		:btnClass="dialogBtnClass"
@@ -85,6 +97,8 @@ import PostsContainer from "./components/posts/PostsContainer"
 import ViewContainer from "./components/view/ViewContainer"
 import EditContainer from "./components/edit/EditContainer"
 import AnewContainer from "./components/anew/AnewContainer"
+import SearchContainer from "./components/search/SearchContainer"
+import ArchiveContainer from "./components/archive/ArchiveContainer"
 
 export default Vue.extend({
 // AN Component
@@ -110,10 +124,15 @@ export default Vue.extend({
 			menuListFlg: false,
 			markDate: 0,
 			postsFlg: false,
+			postsDate: 0,
+			postsHead: "",
 			viewFlg: false,
 			editFlg: false,
 			currentField: "",
 			anewFlg: false,
+			archiveFlg: false,
+			archiveHead: "",
+			archiveArr: [],
 		}
 	},
 	components: {
@@ -125,6 +144,8 @@ export default Vue.extend({
 		ViewContainer,
 		EditContainer,
 		AnewContainer,
+		SearchContainer,
+		ArchiveContainer,
 	},
 	created: function(){
 		this.checkDevice();
@@ -189,19 +210,20 @@ export default Vue.extend({
 				ctg: `++cid, tag, date, color, head, body`,
 				tag: `++gid, head`,
 			});
-			// did: Number, cid: Number, tag: Array, date: Date, last: Date, head: String, body: String
-			// cid: Number, tag: Array, date: Date, color: #***, head: String, body: String
-			// gid: Number, head: String
+			// did: num, cid: num(null=0), tag: arr, date: num(ms), last: num(ms), head: str, body: str
+			// cid: num, tag: arr, date: num(ms), color: #***, head: str, body: str
+			// gid: num, head: str
 		},
 		addDataDcm() {
-			this.db.dcm.put({cid: 0, tag: ["日暮らし"], date: "2020/10/10", last: "2020/10/25", head: "徒然なるまゝに", body: "つれづれなるまゝに、日暮らし、硯にむかひて、心にうつりゆくよしなし事を、そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。つれづれなるまゝに、日暮らし、硯にむかひて、心にうつりゆくよしなし事を、そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。"});
-			this.db.dcm.put({cid: 1, tag: ["徒然", "日暮らし"], date: "2020/10/20", last: "2020/10/21", head: "日暮らし", body: "いでや、この世に生れては、願はしかるべき事こそ多かンめれ。<br>御門(みかど)の御位は、いともかしこし。竹の園生(そのふ)の、末葉(すゑば)まで人間の種ならぬぞ、やんごとなき。一(いち)の人の御有様はさらなり、たゞ人(びと)も、舎人(とねり)など給はるきはは、ゆゝしと見ゆ。その子・孫(むまご)までは、はふれにたれど、なほなまめかし。それより下(しも)つかたは、ほどにつけつゝ、時にあひ、したり顔なるも、みづからはいみじと思ふらめど、いとくちをし。"});
-			this.db.dcm.put({cid: 2, tag: [], date: "2020/10/30", last: "2020/10/30", head: "硯にむかひて", body: "因幡国(いなばのくに)に、何の入道とかやいふ者の娘、かたちよしと聞きて、人あまた言ひわたりけれども、この娘、たゞ、栗をのみ食ひて、更に、米(よね)の類を食はざりれば、「かゝる異様(ことやう)の者、人に見ゆべきにあらず」とて、親許さざりけり。"});
-			this.db.dcm.put({cid: 2, tag: ["硯"], date: "2020/10/31", last: "2020/10/31", head: "因幡国", body: "因幡国(いなばのくに)に、何の入道とかやいふ者の娘、かたちよしと聞きて、人あまた言ひわたりけれども、この娘、たゞ、栗をのみ食ひて、更に、米(よね)の類を食はざりれば、「かゝる異様(ことやう)の者、人に見ゆべきにあらず」とて、親許さざりけり。"});
+			this.db.dcm.put({cid: 2, tag: ["硯"], date: new Date(2020,8,25).getTime(), last: new Date(2020,8,30).getTime(), head: "徒然なるまゝに", body: "つれづれなるまゝに、日暮らし、硯にむかひて、心にうつりゆくよしなし事を、そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。つれづれなるまゝに、日暮らし、硯にむかひて、心にうつりゆくよしなし事を、そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。"});
+			this.db.dcm.put({cid: 0, tag: ["日暮らし"], date: new Date(2020,9,10).getTime(), last: new Date(2020,9,25).getTime(), head: "徒然なるまゝに", body: "つれづれなるまゝに、日暮らし、硯にむかひて、心にうつりゆくよしなし事を、そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。つれづれなるまゝに、日暮らし、硯にむかひて、心にうつりゆくよしなし事を、そこはかとなく書きつくれば、あやしうこそものぐるほしけれ。"});
+			this.db.dcm.put({cid: 1, tag: ["徒然", "日暮らし"], date: new Date(2020,9,20).getTime(), last: new Date(2020,9,22).getTime(), head: "日暮らし", body: "いでや、この世に生れては、願はしかるべき事こそ多かンめれ。<br>御門(みかど)の御位は、いともかしこし。竹の園生(そのふ)の、末葉(すゑば)まで人間の種ならぬぞ、やんごとなき。一(いち)の人の御有様はさらなり、たゞ人(びと)も、舎人(とねり)など給はるきはは、ゆゝしと見ゆ。その子・孫(むまご)までは、はふれにたれど、なほなまめかし。それより下(しも)つかたは、ほどにつけつゝ、時にあひ、したり顔なるも、みづからはいみじと思ふらめど、いとくちをし。"});
+			this.db.dcm.put({cid: 2, tag: [], date: new Date(2020,9,30).getTime(), last: new Date(2020,9,30).getTime(), head: "硯にむかひて", body: "因幡国(いなばのくに)に、何の入道とかやいふ者の娘、かたちよしと聞きて、人あまた言ひわたりけれども、この娘、たゞ、栗をのみ食ひて、更に、米(よね)の類を食はざりれば、「かゝる異様(ことやう)の者、人に見ゆべきにあらず」とて、親許さざりけり。"});
+			this.db.dcm.put({cid: 2, tag: ["硯"], date: new Date(2020,9,1).getTime(), last: new Date(2020,9,11).getTime(), head: "因幡国", body: "因幡国(いなばのくに)に、何の入道とかやいふ者の娘、かたちよしと聞きて、人あまた言ひわたりけれども、この娘、たゞ、栗をのみ食ひて、更に、米(よね)の類を食はざりれば、「かゝる異様(ことやう)の者、人に見ゆべきにあらず」とて、親許さざりけり。"});
 		},
 		addDataCtg() {
-			this.db.ctg.put({tag: ["徒然", "日暮らし"], date: "2020/10/22", color: "#fdcfdb", head: "心にうつりゆく", body: "公世(きんよ)の二位にゐのせうとに、良覚僧正(りやうがくそうじやう)と聞えしは、極(きは)めて腹あしき人なりけり。"});
-			this.db.ctg.put({tag: ["硯"], date: "2020/10/20", color: "#145c8a", head: "よしなし事を", body: "能(のう)をつかんとする人、「よくせざらんほどは、なまじひに人に知(し)られじ。うちうちよく習ひ得(え)て、さし出(い)でたらんこそ、いと心にくからめ」と常に言ふめれど、かく言ふ人、一芸も習(なら)ひ得(う)ることなし。"});
+			this.db.ctg.put({tag: ["徒然", "日暮らし"], date: new Date(2020,9,22).getTime(), color: "#fdcfdb", head: "心にうつりゆく", body: "公世(きんよ)の二位にゐのせうとに、良覚僧正(りやうがくそうじやう)と聞えしは、極(きは)めて腹あしき人なりけり。"});
+			this.db.ctg.put({tag: ["硯"], date: new Date(2020,9,10).getTime(), color: "#145c8a", head: "よしなし事を", body: "能(のう)をつかんとする人、「よくせざらんほどは、なまじひに人に知(し)られじ。うちうちよく習ひ得(え)て、さし出(い)でたらんこそ、いと心にくからめ」と常に言ふめれど、かく言ふ人、一芸も習(なら)ひ得(う)ることなし。"});
 		},
 		addDataTag() {
 			this.db.tag.put({head: "日暮らし"});
@@ -216,12 +238,20 @@ export default Vue.extend({
 			this.now = new Date();
 			this.now = new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate());
 			this.nowTime = this.now.getTime();
+			this.current = new Date(this.now.getFullYear(), this.now.getMonth());
 			this.setCurrent({year: this.now.getFullYear(), month: this.now.getMonth()});
 		},
 		setCurrent(yymm) {
+			let pt = this.current.getTime(),
+				ct = new Date(yymm.year, yymm.month).getTime(),
+				flg = Boolean(pt==ct);
 			this.current = new Date(yymm.year, yymm.month);
 			this.currentYear = this.current.getFullYear();
 			this.currentMonth = this.current.getMonth();
+			if(!flg) {
+				this.$refs.calendar.setCalendar(yymm);
+				this.switchChangeMonth();
+			}
 		},
 		setCalendarData(arr) {
 			this.currentDates = arr;
@@ -238,9 +268,10 @@ export default Vue.extend({
 			this.changeMonthBtnFlg = this.menuListFlg&&Object.keys(this.changeMonthList).length  ? true : false;
 			this.menuListFlg = this.menuListFlg ? false : true;
 		},
-		openPosts(obj) {
-			this.markDate = obj.date;
-			this.$refs.posts.setPostsData(this.markDate);
+		openPosts(arr, str, date) {
+			this.postsDate = date;
+			this.postsHead = str;
+			this.$refs.posts.setPosts(arr);
 			this.postsFlg = true;
 			this.switchLoader();
 		},
@@ -248,12 +279,12 @@ export default Vue.extend({
 			this.postsFlg = false;
 		},
 		openViewDcm(id) {
-			this.$refs.view.setDcmData(Number(id), true);
+			this.$refs.view.setDcmData(id);
 			this.viewFlg = true;
 			this.switchLoader();
 		},
 		openViewCtg(id) {
-			this.$refs.view.setCtgData(Number(id), true);
+			this.$refs.view.setCtgData(id);
 			this.viewFlg = true;
 			this.switchLoader();
 		},
@@ -261,29 +292,28 @@ export default Vue.extend({
 			this.viewFlg = this.viewFlg ? false : true;
 		},
 		openEditDcm(obj) {
-			console.log(obj);
 			this.$refs.edit.setEditDcmData(obj);
 			this.editFlg = true;
-			this.switchLoader();
 		},
 		openEditCtg(obj) {
 			this.$refs.edit.setEditCtgData(obj);
 			this.editFlg = true;
-			this.switchLoader();
 		},
 		closeEditDcm(id) {
 			this.editFlg = false;
-			if(this.postsFlg) this.$refs.posts.setPostsData(this.markDate);
-			if(id && this.viewFlg) this.$refs.view.setDcmData(Number(id), true);
-			this.$refs.calendar.setCalendar();
+			if(this.postsFlg) this.$refs.calendar.setPostsData(this.postsDate);
+			if(id && this.viewFlg) this.$refs.view.setDcmData(Number(id));
+			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
 			this.$refs.menu.setMenuData();
+			this.switchLoader();
 		},
 		closeEditCtg(id) {
 			this.editFlg = false;
-			if(this.postsFlg) this.$refs.posts.setPostsData(this.markDate);
+			if(this.postsFlg) this.$refs.calendar.setPostsData(this.postsDate);
 			if(id && this.viewFlg) this.$refs.view.setCtgData(Number(id), true);
-			this.$refs.calendar.setCalendar();
+			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
 			this.$refs.menu.setMenuData();
+			this.switchLoader();
 		},
 		openAnewDcm() {
 			this.$refs.anew.setAnew("dcm");
@@ -295,7 +325,7 @@ export default Vue.extend({
 		},
 		closeAnew() {
 			this.anewFlg = false;
-			this.$refs.calendar.setCalendar();
+			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
 			this.$refs.menu.setMenuData();
 		},
 		switchDialog() {
@@ -319,10 +349,10 @@ export default Vue.extend({
 			} else {
 				await this.setRemoveCtg(Number(btn.dataset.cid));
 			}
-			if(this.postsFlg) this.$refs.posts.setPostsData(this.markDate);
+			if(this.postsFlg) this.$refs.calendar.setPostsData(this.postsDate);
 			if(this.viewFlg) this.closeView();
 			this.switchDialog();
-			this.$refs.calendar.setCalendar();
+			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
 			this.$refs.menu.setMenuData();
 			this.switchLoader();
 		},
@@ -350,6 +380,13 @@ export default Vue.extend({
 					resolve(true);
 				});
 			});
+		},
+		openArchive(arr, str) {
+			this.archiveArr = this.archiveArr.concat(arr);
+			this.archiveArr = this.compileArrtoArr(this.archiveArr);
+			this.archiveHead = str;
+			this.archiveFlg = true;
+			this.switchLoader();
 		},
 	},
 	computed: {

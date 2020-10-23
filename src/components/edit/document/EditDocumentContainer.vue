@@ -86,7 +86,7 @@ export default {
 		setSaveData() {
 			const that = this,
 				_d = new Date(),
-				last = _d.getFullYear()+"/"+(_d.getMonth()+1)+"/"+_d.getDate(),
+				last = new Date(_d.getFullYear(), _d.getMonth(), _d.getDate()).getTime(),
 				ctgObj = {
 					date: last,
 					color: "",

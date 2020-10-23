@@ -83,7 +83,6 @@ export default {
 			const btn = e.target,
 				val = btn.innerText;
 			this.editDcmTagArr.splice(this.editDcmTagArr.indexOf(val), 1);
-			console.log(val, this.editDcmTagArr.indexOf(val));
 			this.$emit("PTselectAnewDcmTag", this.editDcmTagArr);
 		},
 	},

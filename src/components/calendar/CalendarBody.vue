@@ -2,8 +2,8 @@
 <div class="body">
 	<div class="month">
 		<div v-for="(cd, cdidx) in currentDates" class="day" :key="cdidx">
-			<a v-if="cd.dcm.length || cd.ctg.length" class="content" :data-date="cd.date" @click="callopenPosts">
-				<p v-if="cd.dcm.length" class="dcm">文</p>
+			<a v-if="cd.dcm.length || cd.ctg.length" class="content" :data-date="cd.date" @click="setPostsData">
+				<p v-if="cd.dcm.length" class="dcm">記</p>
 				<p v-if="cd.ctg.length" class="ctg">類</p>
 			</a>
 			<div v-if="cd.date" class="index">{{ cd.number }}</div>
@@ -21,12 +21,11 @@ export default {
 		currentFirstDay: Number,
 	},
 	methods: {
-		callopenPosts(e) {
+		setPostsData(e) {
 			const btn = e.target,
-				date = Number(btn.dataset.date),
-				idx = date-1+this.currentFirstDay;
+				date = Number(btn.dataset.date);
 			this.$emit("GPCallswitchLoader");
-			this.$emit("GPCallopenPosts", {date: date, idx: idx});
+			this.$emit("GPsetPostsData", date);
 		},
 	},
 }

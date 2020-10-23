@@ -7,7 +7,7 @@
 	<p v-if="Object.keys(anewDcmCtgnameObj).length&&!selectCtgnameFlg" :data-sid="anewDcmCtgnameObj.cid">{{ anewDcmCtgnameObj.head }}<button type="button" class="icn" @click="remCtgName">消</button></p>
 	<div v-if="selectCtgnameFlg" class="field">
 		<p>
-			<input type="text" placeholder="シリーズ" @focus="suggestCtgname" @keydown="suggestCtgname">
+			<input type="text" placeholder="シリーズ" @focus="suggestCtgname" @keydown="suggestCtgname" @paste="pasteCtgname">
 			<button type="button" :class="['btnWord', 'def', 'nml', 'widSM', inputCtgnameFlg ? '' : 'isNoActive']" @click="selectCtgname"><span>追加</span></button>
 		</p>
 		<ul v-if="suggestCtgnameArr.length">
@@ -37,7 +37,10 @@ export default {
 	methods: {
 		switchFlg() {
             this.selectCtgnameFlg = this.selectCtgnameFlg ? false : true;
-        },
+		},
+		pasteCtgname() {
+			this.inputCtgnameFlg = true;
+		},
 		suggestCtgname(e) {
 			const that = this,
 				val = e.target.value;

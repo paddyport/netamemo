@@ -10,7 +10,7 @@
 	</p>
 	<div v-if="selectCtgnameFlg" class="field">
 		<p>
-			<input type="text" placeholder="シリーズ" @focus="suggestCtgName" @keydown="suggestCtgName">
+			<input type="text" placeholder="シリーズ" @focus="suggestCtgName" @keydown="suggestCtgName" @paste="pasteCtgname">
 			<button type="button" :class="['btnWord', 'def', 'nml', 'widSM', inputCtgnameFlg ? '' : 'isNoActive']" @click="selectCtgName"><span>追加</span></button>
 		</p>
 		<ul v-if="suggestCtgnameArr.length">
@@ -43,6 +43,9 @@ export default {
 		switchFlg() {
             this.selectCtgnameFlg = this.selectCtgnameFlg ? false : true;
         },
+		pasteCtgname() {
+			this.inputCtgnameFlg = true;
+		},
         suggestCtgName(e) {
 			const that = this,
 				val = e.target.value;

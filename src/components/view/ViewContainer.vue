@@ -63,49 +63,47 @@ export default {
 			let str = String(_str);
 			return str.replace(/<br>/, "\r\n");
 		},
-		setDcmData(id, flg) {
-			const that = this,
-				key = {did: id};
-			that.db.dcm.get(key).then((obj) => {
-				if(flg) {
-					that.viewDcmCtgObj = {};
-					if(obj.cid) that.setCtgData(Number(obj.cid));
-					that.viewDcmDcmObj = obj;
-					that.viewDcmBody = that.compileBrtoNl(obj.body);
-					that.viewDcmTagArr = obj.tag;
-					that.viewDcmFlg = true;
-					that.frontFlg = "dcm";
-				} else {
-					that.viewCtgDcmArr.push(obj);
-				}
+		getDcmData(id) {
+			const that = this;
+			return new Promise(function(resolve){
+				that.db.dcm.get(id).then((obj) => {
+					resolve(obj);
+				});
 			});
 		},
-		getCtgDataDcm(id) {
+		async setDcmData(id) {
 			const that = this,
-				key = {cid: id};
-			that.viewCtgDcmArr = [];
+				obj = await that.getDcmData(id);
+			if(obj.cid) {
+				that.db.ctg.get(obj.cid).then((data) => {
+					that.viewDcmCtgObj = data;
+				});
+			}
+			that.viewDcmDcmObj = obj;
+			that.viewDcmBody = that.compileBrtoNl(obj.body);
+			that.viewDcmTagArr = obj.tag;
+			that.viewDcmFlg = true;
+			that.frontFlg = "dcm";
+		},
+		getCtgDataDcm(key) {
+			const that = this;
 			return new Promise(function(resolve){
 				that.db.dcm.where(key).toArray().then((list) => {
 					resolve(list);
 				});
 			});
 		},
-		async setCtgData(id, flg) {
+		async setCtgData(id) { 
 			const that = this,
 				key = {cid: id};
+			that.viewCtgDcmArr = await that.getCtgDataDcm(key);
 			that.db.ctg.get(key).then((obj) => {
-				if(flg) {
-					that.viewSCtgDcmArr = [];
-					that.viewCtgCtgObj = obj;
-					that.viewCtgBody = that.compileBrtoNl(obj.body);
-					that.viewCtgTagArr = obj.tag;
-					that.viewCtgFlg = true;
-					that.frontFlg = "ctg";
-				} else {
-					that.viewDcmCtgObj = obj;
-				}
+				that.viewCtgCtgObj = obj;
+				that.viewCtgBody = that.compileBrtoNl(obj.body);
+				that.viewCtgTagArr = obj.tag;
+				that.viewCtgFlg = true;
+				that.frontFlg = "ctg";
 			});
-			that.viewCtgDcmArr = await that.getCtgDataDcm(id);
 		},
 		checkCloseView() {
 			if(!this.viewDcmFlg && !this.viewCtgFlg) {

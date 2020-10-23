@@ -77,13 +77,13 @@ export default {
 		setSaveData() {
 			const that = this,
 				_d = new Date(),
-				date = _d.getFullYear()+"/"+(_d.getMonth()+1)+"/"+_d.getDate(),
+				date = new Date(_d.getFullYear(), _d.getMonth(), _d.getDate()).getTime(),
 				ctgObj = {
 					date: date,
 					color: "",
 					body: "",
 				};
-			if(that.anewDcmCtgObj.date) {
+			if(!that.anewDcmCtgObj.date) {
 				that.anewDcmCtgObj = Object.assign(that.anewDcmCtgObj, ctgObj);
 			}
 			that.db.dcm.add({

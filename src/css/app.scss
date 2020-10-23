@@ -188,13 +188,13 @@ button.heiMN {
 button.dcm {
 	@include btnColor($btn-dcm);
 	&.btnIcon > span::after {
-		content: $file-alt;
+		content: $file;
 	}
 	&.btnText > span > i::after, &.btnWord > span > i::after {
-		content: $file-alt;
+		content: $file;
 	}
 	&.switchTab::after {
-		content: $file-alt;
+		content: $file;
 	}
 }
 // button.img {
@@ -415,7 +415,7 @@ a.tag {
 }
 a.hst {
 	&.listItem::before {
-		content: $history;
+		content: $plus-circle;
 	}
 }
 a.edt {
@@ -425,7 +425,7 @@ a.edt {
 }
 a.dcm {
 	&.listItem::before {
-		content: $file-alt;
+		content: $file;
 		color: map-get($btn-dcm, "side");
 	}
 }

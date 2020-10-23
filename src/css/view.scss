@@ -121,7 +121,7 @@
 				transform: translate(0, -50%);
 			}
 			&.date::before {
-				content: $history;
+				content: $plus-circle;
 			}
 			&.last::before {
 				content: $pen;

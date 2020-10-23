@@ -1,7 +1,9 @@
 <template>
 <div id="Menu" class="menu">
     <ul :class="['list', menuListFlg ? 'isShown' : '']">
-		<li><a class="listItem sch trs"><span>フリーワード検索</span></a></li>
+        <li><a class="listItem dcm trs" @click="setPostsDcmData"><span>テキスト一覧</span></a></li>
+        <li><a class="listItem ctg trs" @click="setPostsCtgData"><span>カテゴリ一覧</span></a></li>
+		<li v-if="false"><a class="listItem sch trs"><span>フリーワード検索</span></a></li>
 		<li><a class="listItem tag trs"><span>タグ検索</span></a></li>
         <menu-anew
 			:dcmNewArr="dcmNewArr"
@@ -15,28 +17,14 @@
 			@GPCallswitchMenuList="$listeners['ANswitchMenuList']"
 			@GPCallswitchLoader="$listeners['ANswitchLoader']">
 		</menu-edit>
-        <menu-document
-			:dcmArr="dcmArr"
-			@GPCallopenViewDcm="$listeners['ANopenViewDcm']"
-			@GPCallswitchMenuList="$listeners['ANswitchMenuList']"
-			@GPCallswitchLoader="$listeners['ANswitchLoader']">
-		</menu-document>
-        <menu-category
-			:ctgArr="ctgArr"
-			@GPCallopenViewCtg="$listeners['ANopenViewCtg']"
-			@GPCallswitchMenuList="$listeners['ANswitchMenuList']"
-			@GPCallswitchLoader="$listeners['ANswitchLoader']">
-		</menu-category>
 	</ul>
-	<button type="button" :class="['btnIcon', 'def', 'nml', 'menuList', menuListBtnFlg ? '' : 'isNoActive']" @click="callswitchMenuList"><span>メニュー</span></button>
+	<button type="button" :class="['btnIcon', 'def', 'nml', 'menuList', menuListBtnFlg ? '' : 'isNoActive']" @click="$listeners['ANswitchMenuList']"><span>メニュー</span></button>
 </div>
 </template>
 
 <script>
 import MenuAnew from './MenuAnew'
 import MenuEdit from './MenuEdit'
-import MenuDocument from './MenuDocument'
-import MenuCategory from './MenuCategory'
 
 export default {
 // GP Component
@@ -50,15 +38,11 @@ export default {
 		return {
             dcmNewArr: [],
             dcmEdtArr: [],
-            dcmArr: [],
-            ctgArr: [],
 		}
 	},
 	components: {
 		MenuAnew,
 		MenuEdit,
-		MenuDocument,
-		MenuCategory,
 	},
 	created: function(){
 		this.setMenuData();
@@ -78,32 +62,54 @@ export default {
 		},
 		setMenuData() {
 			const that = this;
-			that.dcmArr = [];
-			that.ctgArr = [];
 			that.dcmNewArr = [];
 			that.dcmEdtArr = [];
 			that.db.dcm.toArray().then((list) => {
 				for(let _data of list) {
                     let obj = _data;
-                    that.dcmArr.push(_data);
-                    obj.datetime = new Date(_data.date).getTime();
-                    obj.lasttime = new Date(_data.last).getTime();
+                    obj.date = _data.date;
+                    obj.last = _data.last;
 					that.dcmNewArr.push(obj);
-					that.dcmNewArr.sort(that.$parent.sortDESC("datetime"));
+					that.dcmNewArr.sort(that.$parent.sortDESC("date"));
 					that.dcmEdtArr.push(obj);
-					that.dcmEdtArr.sort(that.$parent.sortDESC("lasttime"));
+					that.dcmEdtArr.sort(that.$parent.sortDESC("last"));
 				}
-				if(list.length === that.dcmArr.length) {
-					that.dcmNewArr.slice(0, 4);
-					that.dcmEdtArr.slice(0, 4);
-				}
-			});
-			that.db.ctg.toArray().then((list) => {
-				for(let _data of list) that.ctgArr.push(_data);
+				that.dcmNewArr.slice(0, 4);
+				that.dcmEdtArr.slice(0, 4);
 			});
 		},
-		callswitchMenuList() {
-			this.$emit("ANswitchMenuList");
+		getPostsDcmDataCtg() {
+			let cols = {};
+			const that = this;
+			return new Promise(function(resolve){
+				that.db.ctg.toArray().then((list) => {
+					for(let obj of list) cols[Number(obj.cid)] = obj.color;
+					resolve(cols);
+				});
+			});
+		},
+		async setPostsDcmData(e) {
+			const that = this,
+				str = e.target.innerText,
+				ctgArr = await that.getPostsDcmDataCtg();
+			that.db.dcm.toArray().then((list) => {
+				for(let obj of list) {
+					const c = obj.cid&&ctgArr[obj.cid] ? ctgArr[obj.cid] : "";
+					that.$set(obj, "color", c);
+				}
+				that.$emit("ANopenPosts", list, str);
+				that.$emit("ANswitchMenuList");
+				that.$emit("ANswitchLoader");
+			});
+		},
+		setPostsCtgData(e) {
+			const that = this,
+				str = e.target.innerText;
+			that.db.ctg.toArray().then((list) => {
+				that.$emit("ANopenPosts", list, str);
+				that.$emit("ANswitchMenuList");
+				that.$emit("ANswitchLoader");
+			});
 		},
 	},
 }
