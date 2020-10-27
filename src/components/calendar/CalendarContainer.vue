@@ -46,18 +46,19 @@ export default {
 		currentYYMM: Object,
 		changeMonthBtnFlg: Boolean,
 		changeMonthFlg: Boolean,
+		currentDates: Array,
 	},
-	data() {
-		return {
-			weekLen: 7,
-			currentFirstDay: 0,
-			currentDatesCnt: 0,
-			currentWeeks: 0,
-			currentDates: [],
-			changeMonthObj: {},
-			setpostsArr: [],
-		}
-	},
+	// data() {
+	// 	return {
+	// 		weekLen: 7,
+	// 		currentFirstDay: 0,
+	// 		currentDatesCnt: 0,
+	// 		currentWeeks: 0,
+	// 		currentDates: [],
+	// 		changeMonthObj: {},
+	// 		setpostsArr: [],
+	// 	}
+	// },
 	components: {
 		CalendarHead,
 		CalendarChange,
@@ -65,7 +66,7 @@ export default {
 		CalendarFootButton,
 	},
 	created: function(){
-		this.setCalendar(this.currentYYMM);
+		// this.setCalendar(this.currentYYMM);
 	},
 	methods: {
 		setCalendar(yymm) {

@@ -6,7 +6,7 @@
 		:currentYYMM="{year: currentYear, month: currentMonth}"
 		:changeMonthBtnFlg="changeMonthBtnFlg"
 		:changeMonthFlg="changeMonthFlg"
-		@ANsetCalendarData="setCalendarData"
+		:currentDates="currentDates"
 		@ANsetChangeMonth="setChangeMonth"
 		@ANsetCurrent="setCurrent"
 		@ANswitchChangeMonth="switchChangeMonth"
@@ -114,6 +114,12 @@ export default Vue.extend({
 			currentYear: 0,
 			currentMonth: 0,
 			currentDates: [],
+			weekLen: 7,
+			currentFirstDay: 0,
+			currentDatesCnt: 0,
+			currentWeeks: 0,
+			changeMonthObj: {},
+			setpostsArr: [],
 			changeMonthList: {},
 			changeMonthBtnFlg: false,
 			changeMonthFlg: false,
@@ -147,9 +153,9 @@ export default Vue.extend({
 	},
 	created: function(){
 		this.checkDevice();
-		this.setToday();
 		this.createDB();
 		this.createTable();
+		this.setToday();
 		this.setMenuData();
 		this.markDate = this.now.getDate();
 		// this.addDataDcm();
@@ -212,6 +218,18 @@ export default Vue.extend({
 				btn.classList.add("isOpen")
 			}
 		},
+		switchLoader() {
+			this.loaderFlg = this.loaderFlg ? false : true;
+			console.log("s", this.loaderFlg);
+		},
+		shownLoader() {
+			this.loaderFlg = true;
+			console.log(this.loaderFlg);
+		},
+		hiddenLoader() {
+			this.loaderFlg = false;
+			console.log(this.loaderFlg);
+		},
 		createDB() {
 			this.db = new Dexie(this.dbName);
 		},
@@ -265,18 +283,6 @@ export default Vue.extend({
 				});
 			});
 		},
-		switchLoader() {
-			this.loaderFlg = this.loaderFlg ? false : true;
-			console.log("s", this.loaderFlg);
-		},
-		shownLoader() {
-			this.loaderFlg = true;
-			console.log(this.loaderFlg);
-		},
-		hiddenLoader() {
-			this.loaderFlg = false;
-			console.log(this.loaderFlg);
-		},
 		setToday() {
 			this.now = new Date();
 			this.now = new Date(this.now.getFullYear(), this.now.getMonth(), this.now.getDate());
@@ -291,13 +297,93 @@ export default Vue.extend({
 			this.current = new Date(yymm.year, yymm.month);
 			this.currentYear = this.current.getFullYear();
 			this.currentMonth = this.current.getMonth();
+			this.setCalendar(yymm);
 			if(!flg) {
-				this.$refs.calendar.setCalendar(yymm);
 				this.switchChangeMonth();
 			}
 		},
-		setCalendarData(arr) {
-			this.currentDates = arr;
+		// setCalendarData(arr) {
+		// 	this.currentDates = arr;
+		// },
+		setCalendar(yymm) {
+			this.changeMonthObj = {};
+			this.currentFirstDay = new Date(yymm.year, yymm.month).getDay();
+			this.currentDatesCnt = this.getCurrentDates(yymm.year, yymm.month);
+			this.currentWeeks = Math.ceil((this.currentFirstDay+this.currentDatesCnt)/7);
+			// this.currentDates.push(this.setCalendarArr(yymm));
+			this.setCalendarArr(yymm);
+			this.setDataCtg(yymm);
+			console.log(this.currentDates);
+		},
+		setCalendarArr(yymm) {
+			// let result = [];
+			for(let w=0;w<this.currentWeeks;w++) {
+				for(let d=0;d<this.weekLen;d++) {
+					let obj,
+						_d = !w&&d<this.currentFirstDay ? null : w*this.weekLen+(d+1)-this.currentFirstDay,
+						_t = new Date(yymm.year, yymm.month, _d).getTime();
+					_d = _d&&this.currentDatesCnt<_d ? null : _d;
+					obj = {
+						"date": _d,
+						"number": !_d ? null : this.zeroPad(_d, 2),
+						"time": _t,
+						"dcm": [],
+						"ctg": [],
+					};
+					this.currentDates.push(obj);
+				}
+			}
+			// return result;
+		},
+		setDataDcm(cs, ce) {
+			const that = this;
+			return new Promise(function(resolve){
+				that.db.dcm.toArray().then((list) => {
+					for(let obj of list) {
+						const time = obj.date,
+							dy = new Date(time).getFullYear(),
+							dm = new Date(time).getMonth()+1,
+							dym = dy+"-"+dm;
+						if(cs<=time && time<ce) {
+							let _i = new Date(time).getDate()+that.currentFirstDay-1;
+							that.currentDates[_i].dcm.push(obj.did);
+							that.currentDates[_i].dcm = that.compileArrtoArr(that.currentDates[_i].dcm);
+						}
+						if(!that.changeMonthObj[dym]) {
+							that.$set(that.changeMonthObj, dym, {did: [], cid: []});
+						}
+						that.changeMonthObj[dym].did.push(obj.did);
+						that.changeMonthObj[dym].did = that.compileArrtoArr(that.changeMonthObj[dym].did);
+					}
+					resolve(true);
+				});
+			});
+		},
+		async setDataCtg(yymm) {
+			const that = this,
+				cstime = new Date(yymm.year, yymm.month).getTime(),
+				cetime = new Date(yymm.year, yymm.month+1).getTime();
+			await this.setDataDcm(cstime, cetime);
+			that.db.ctg.toArray().then((list) => {
+				for(let obj of list) {
+					const time = obj.date,
+						dy = new Date(time).getFullYear(),
+						dm = new Date(time).getMonth()+1,
+						dym = dy+"-"+dm;
+					if(cstime<=time && time<cetime) {
+						let _i = new Date(time).getDate()+that.currentFirstDay-1;
+						if(that.currentDates[_i].ctg.indexOf(obj.cid)<0) {
+							that.currentDates[_i].ctg.push(obj.cid);
+						}
+					}
+					if(!that.changeMonthObj[dym]) {
+						that.$set(that.changeMonthObj, dym, {did: [], cid: []});
+					}
+					that.changeMonthObj[dym].cid.push(obj.cid);
+					that.changeMonthObj[dym].cid = that.compileArrtoArr(that.changeMonthObj[dym].cid);
+				}
+				that.setChangeMonth(that.changeMonthObj);
+			});
 		},
 		setChangeMonth(obj) {
 			this.changeMonthList = Object.assign(obj);
@@ -427,21 +513,6 @@ export default Vue.extend({
 			this.switchDialog();
 			this.dialogBtnClass = val;
 		},
-		async removeItem() {
-			const btn = document.getElementsByClassName("isRemove")[0],
-				item = btn.dataset.did ? "dcm" : "ctg";
-			if(item=="dcm") {
-				await this.removeDcm(Number(btn.dataset.did));
-			} else {
-				await this.setRemoveCtg(Number(btn.dataset.cid));
-			}
-			if(this.postsFlg) this.$refs.calendar.setPostsData(this.postsDate);
-			if(this.viewFlg) this.closeView();
-			this.switchDialog();
-			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
-			this.setMenuData();
-			this.hiddenLoader();
-		},
 		removeDcm(id) {
 			const that = this;
 			return new Promise(function(resolve){
@@ -457,6 +528,21 @@ export default Vue.extend({
 					resolve(true);
 				});
 			});
+		},
+		async removeItem() {
+			const btn = document.getElementsByClassName("isRemove")[0],
+				item = btn.dataset.did ? "dcm" : "ctg";
+			if(item=="dcm") {
+				await this.removeDcm(Number(btn.dataset.did));
+			} else {
+				await this.setRemoveCtg(Number(btn.dataset.cid));
+			}
+			if(this.postsFlg) this.$refs.calendar.setPostsData(this.postsDate);
+			if(this.viewFlg) this.closeView();
+			this.switchDialog();
+			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
+			this.setMenuData();
+			this.hiddenLoader();
 		},
 		async setRemoveCtg(id) {
 			const that = this;
