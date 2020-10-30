@@ -34,13 +34,15 @@
 		:currentYYMM="{year: currentYear, month: currentMonth}"
 		:postsFlg="postsFlg"
 		:postsHead="postsHead"
+		:postsArr="postsArr"
 		@ANclosePosts="closePosts"
 		@ANopenEditDcm="openEditDcm"
 		@ANopenEditCtg="openEditCtg"
 		@ANopenViewDcm="openViewDcm"
 		@ANopenViewCtg="openViewCtg"
 		@ANconfirmRem="confirmRem"
-		@ANswitchLoader="switchLoader">
+		@ANswitchLoader="switchLoader"
+		@ANshownLoader="shownLoader">
 	</posts-container>
 	<view-container
 		ref="view"
@@ -118,7 +120,6 @@ export default Vue.extend({
 			currentDatesCnt: 0,
 			currentWeeks: 0,
 			changeMonthObj: {},
-			setpostsArr: [],
 			changeMonthList: {},
 			changeMonthBtnFlg: false,
 			changeMonthFlg: false,
@@ -130,6 +131,7 @@ export default Vue.extend({
 			postsFlg: false,
 			postsDate: 0,
 			postsHead: "",
+			postsArr: [],
 			viewFlg: false,
 			editFlg: false,
 			currentField: "",
@@ -258,6 +260,14 @@ export default Vue.extend({
 			this.db.tag.put({head: "徒然"});
 			this.db.tag.put({head: "硯"});
 		},
+		getDcmArrData(key) {
+			const that = this;
+			return new Promise(function(resolve){
+				that.db.dcm.where(key).toArray().then(function(list){
+					resolve(list);
+				});
+			});
+		},
 		getDcmAllData() {
 			const that = this;
 			return new Promise(function(resolve){
@@ -266,17 +276,11 @@ export default Vue.extend({
 				});
 			});
 		},
-		getSetCtgData(ct) {
-			let one = [],
-				all = {};
+		getCtgOneData(key) {
 			const that = this;
 			return new Promise(function(resolve){
-				that.db.ctg.toArray().then(function(list){
-					for(let obj of list) {
-						if(obj.date==ct) one.push(obj);
-						that.$set(all, obj.cid, obj);
-					}
-					resolve({one: one, all: all});
+				that.db.ctg.get(key).then((obj) => {
+					resolve(obj);
 				});
 			});
 		},
@@ -423,20 +427,27 @@ export default Vue.extend({
 			this.menuListFlg = this.menuListFlg ? false : true;
 		},
 		async setPostsData(date) {
-			let arr = [];
+			let arr = [],
+				_one = [],
+				_all = {};
 			const that = this,
 				head = `${this.currentYear}年${(this.currentMonth+1)}月${date}日`,
 				ct = new Date(this.currentYear, this.currentMonth, date).getTime(),
-				ctgArr = await this.getSetCtgData(ct);
+				allCtgArr = await this.getCtgAllData();
+			for(let obj of allCtgArr) {
+				if(obj.date==ct) _one.push(obj);
+				that.$set(_all, obj.cid, obj);
+			}
+			const ctgObj = {one: _one, all: _all};
 			that.db.dcm.where({date: ct}).toArray().then(function(list){
 				for(let obj of list) {
-					const c = obj.cid&&ctgArr["all"][obj.cid].color ? ctgArr["all"][obj.cid].color : "";
+					const c = obj.cid&&ctgObj["all"][obj.cid].color ? ctgObj["all"][obj.cid].color : "";
 					that.$set(obj, "color", c);
 					arr.push(obj);
 				}
-				that.setpostsArr = arr.concat(ctgArr.one);
-				that.setpostsArr = that.compileArrtoArr(that.setpostsArr);
-				that.openPosts(that.setpostsArr, head, date);
+				that.postsArr = arr.concat(ctgObj.one);
+				that.postsArr = that.compileArrtoArr(that.postsArr);
+				that.openPosts(that.postsArr, head, date);
 			});
 		},
 		async openPostsDcmAllData(str) {
@@ -459,7 +470,9 @@ export default Vue.extend({
 		openPosts(arr, str, date) {
 			this.postsDate = date ? date : this.postsDate;
 			this.postsHead = str;
-			this.$refs.posts.setPosts(arr);
+			this.postsArr = [];
+			this.postsArr = arr;
+			console.log(this.postsArr);
 			this.postsFlg = true;
 			this.hiddenLoader();
 		},
@@ -487,13 +500,39 @@ export default Vue.extend({
 		closeView() {
 			this.viewFlg = this.viewFlg ? false : true;
 		},
-		openEditDcm(obj) {
-			this.$refs.edit.setEditDcmData(obj);
+		openEdit() {
 			this.editFlg = true;
+			this.hiddenLoader();
 		},
-		openEditCtg(obj) {
+		async openEditDcm(_id) {
+			const that = this,
+				id = Number(_id);
+			let obj = {dcm: {}, ctg: {}, tag: []};
+			for(let data of that.postsArr) {
+				if(data.did == id) {
+					obj.dcm = data;
+					obj.dcm.body = that.compileBrtoNl(data.body);
+					obj.tag = data.tag;
+					if(data.cid) obj.ctg = await that.getCtgOneData(data.cid);
+				}
+			}
+			this.$refs.edit.setEditDcmData(obj);
+			this.openEdit();
+		},
+		async openEditCtg(_id) {
+			const that = this,
+				id = Number(_id);
+			let obj = {dcm: [], ctg: {}, tag: []};
+			for(let data of that.postsArr) {
+				if(data.cid == id) {
+					obj.ctg = data;
+					obj.ctg.body = that.compileBrtoNl(data.body);
+					obj.tag = data.tag;
+					obj.dcm = await that.getDcmArrData({cid: data.cid});
+				}
+			}
 			this.$refs.edit.setEditCtgData(obj);
-			this.editFlg = true;
+			this.openEdit();
 		},
 		closeEditDcm(id) {
 			this.editFlg = false;
