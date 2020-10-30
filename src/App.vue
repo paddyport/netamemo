@@ -1,22 +1,21 @@
 <template>
 <div id="App" :class="[deviceType]">
 	<calendar-container
-		ref="calendar"
-		:db="db"
 		:currentYYMM="{year: currentYear, month: currentMonth}"
 		:changeMonthBtnFlg="changeMonthBtnFlg"
 		:changeMonthFlg="changeMonthFlg"
+		:changeMonthObj="changeMonthObj"
 		:currentDates="currentDates"
 		@ANsetChangeMonth="setChangeMonth"
 		@ANsetCurrent="setCurrent"
 		@ANswitchChangeMonth="switchChangeMonth"
+		@ANsetPostsData="setPostsData"
 		@ANopenPosts="openPosts"
 		@ANopenAnewDcm="openAnewDcm"
 		@ANopenAnewCtg="openAnewCtg"
 		@ANswitchLoader="switchLoader">
 	</calendar-container>
 	<menu-container
-		ref="menu"
 		:menuListBtnFlg="menuListBtnFlg"
 		:menuListFlg="menuListFlg"
 		:dcmNewArr="dcmNewArr"
@@ -267,6 +266,20 @@ export default Vue.extend({
 				});
 			});
 		},
+		getSetCtgData(ct) {
+			let one = [],
+				all = {};
+			const that = this;
+			return new Promise(function(resolve){
+				that.db.ctg.toArray().then(function(list){
+					for(let obj of list) {
+						if(obj.date==ct) one.push(obj);
+						that.$set(all, obj.cid, obj);
+					}
+					resolve({one: one, all: all});
+				});
+			});
+		},
 		getCtgAllData() {
 			const that = this;
 			return new Promise(function(resolve){
@@ -302,21 +315,16 @@ export default Vue.extend({
 				this.switchChangeMonth();
 			}
 		},
-		// setCalendarData(arr) {
-		// 	this.currentDates = arr;
-		// },
 		setCalendar(yymm) {
 			this.changeMonthObj = {};
 			this.currentFirstDay = new Date(yymm.year, yymm.month).getDay();
 			this.currentDatesCnt = this.getCurrentDates(yymm.year, yymm.month);
 			this.currentWeeks = Math.ceil((this.currentFirstDay+this.currentDatesCnt)/7);
-			// this.currentDates.push(this.setCalendarArr(yymm));
 			this.setCalendarArr(yymm);
 			this.setDataCtg(yymm);
-			console.log(this.currentDates);
 		},
 		setCalendarArr(yymm) {
-			// let result = [];
+			this.currentDates = [];
 			for(let w=0;w<this.currentWeeks;w++) {
 				for(let d=0;d<this.weekLen;d++) {
 					let obj,
@@ -333,7 +341,6 @@ export default Vue.extend({
 					this.currentDates.push(obj);
 				}
 			}
-			// return result;
 		},
 		setDataDcm(cs, ce) {
 			const that = this;
@@ -415,6 +422,23 @@ export default Vue.extend({
 			this.changeMonthBtnFlg = this.menuListFlg&&Object.keys(this.changeMonthList).length  ? true : false;
 			this.menuListFlg = this.menuListFlg ? false : true;
 		},
+		async setPostsData(date) {
+			let arr = [];
+			const that = this,
+				head = `${this.currentYear}年${(this.currentMonth+1)}月${date}日`,
+				ct = new Date(this.currentYear, this.currentMonth, date).getTime(),
+				ctgArr = await this.getSetCtgData(ct);
+			that.db.dcm.where({date: ct}).toArray().then(function(list){
+				for(let obj of list) {
+					const c = obj.cid&&ctgArr["all"][obj.cid].color ? ctgArr["all"][obj.cid].color : "";
+					that.$set(obj, "color", c);
+					arr.push(obj);
+				}
+				that.setpostsArr = arr.concat(ctgArr.one);
+				that.setpostsArr = that.compileArrtoArr(that.setpostsArr);
+				that.openPosts(that.setpostsArr, head, date);
+			});
+		},
 		async openPostsDcmAllData(str) {
 			const ctgAllData = await this.getCtgAllData(),
 				dcmAllData = await this.getDcmAllData(),
@@ -473,17 +497,17 @@ export default Vue.extend({
 		},
 		closeEditDcm(id) {
 			this.editFlg = false;
-			if(this.postsFlg) this.$refs.calendar.setPostsData(this.postsDate);
+			if(this.postsFlg) this.setPostsData(this.postsDate);
 			if(id && this.viewFlg) this.$refs.view.setDcmData(Number(id));
-			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
+			this.setCalendar({year: this.currentYear, month: this.currentMonth});
 			this.setMenuData();
 			this.hiddenLoader();
 		},
 		closeEditCtg(id) {
 			this.editFlg = false;
-			if(this.postsFlg) this.$refs.calendar.setPostsData(this.postsDate);
+			if(this.postsFlg) this.setPostsData(this.postsDate);
 			if(id && this.viewFlg) this.$refs.view.setCtgData(Number(id), true);
-			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
+			this.setCalendar({year: this.currentYear, month: this.currentMonth});
 			this.setMenuData();
 			this.hiddenLoader();
 		},
@@ -497,7 +521,7 @@ export default Vue.extend({
 		},
 		closeAnew() {
 			this.anewFlg = false;
-			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
+			this.setCalendar({year: this.currentYear, month: this.currentMonth});
 			this.setMenuData();
 		},
 		switchDialog() {
@@ -537,10 +561,10 @@ export default Vue.extend({
 			} else {
 				await this.setRemoveCtg(Number(btn.dataset.cid));
 			}
-			if(this.postsFlg) this.$refs.calendar.setPostsData(this.postsDate);
+			if(this.postsFlg) this.setPostsData(this.postsDate);
 			if(this.viewFlg) this.closeView();
 			this.switchDialog();
-			this.$refs.calendar.setCalendar({year: this.currentYear, month: this.currentMonth});
+			this.setCalendar({year: this.currentYear, month: this.currentMonth});
 			this.setMenuData();
 			this.hiddenLoader();
 		},

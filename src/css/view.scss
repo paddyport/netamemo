@@ -39,11 +39,10 @@
 .content {
 	height: calc(100% - #{divceil(50, 16, "em")});
 	margin: 0 0 divceil(50, 16, "em");
-	padding: divceil(4, 16, "em") divceil(16, 16, "em") divceil(10, 16, "em");
+	padding: divceil(40+10, 16, "em") divceil(16, 16, "em") divceil(16, 16, "em");
 	overflow-y: scroll;
 }
 .head {
-	padding: divceil(50, 20, "em") 0 0;
 	letter-spacing: 0.03em;
 	line-height: divceil(26, 20, "em");
 	font-size: divceil(20, 16, "em");
@@ -148,7 +147,7 @@
 .series {
 	position: absolute;
 	background: rgba(#fff, 0.9);
-	height: divceil(32, 16, "em");
+	height: divceil(40, 16, "em");
 	left: 0;
 	right: 0;
 	top: 0;

@@ -39,9 +39,9 @@
 	}
 }
 .content {
-	height: calc(100% - #{divceil(50+4+4, 16, "em")});
-	margin: divceil(50+4, 16, "em") 0 divceil(4, 16, "em");
-	padding: 0 divceil(16, 16, "em");
+	height: calc(100% - #{divceil(50, 16, "em")});
+	margin: divceil(50, 16, "em") 0 0;
+	padding: divceil(8, 16, "em") divceil(16, 16, "em") divceil(16, 16, "em");
 	overflow-y: scroll;
 }
 .list {

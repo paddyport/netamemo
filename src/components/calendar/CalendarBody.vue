@@ -18,14 +18,13 @@ export default {
 	name: 'CalendarBody',
 	props: {
 		currentDates: Array,
-		currentFirstDay: Number,
 	},
 	methods: {
 		setPostsData(e) {
 			const btn = e.target,
 				date = Number(btn.dataset.date);
 			this.$emit("GPCallswitchLoader");
-			this.$emit("GPsetPostsData", date);
+			this.$emit("GPCallsetPostsData", date);
 		},
 	},
 }
