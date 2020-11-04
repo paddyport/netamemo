@@ -18,9 +18,14 @@
 	<menu-container
 		:menuListBtnFlg="menuListBtnFlg"
 		:menuListFlg="menuListFlg"
+		:menuCurFlg="String(currentYear)+String(currentMonth)!=String(now.getFullYear())+String(now.getMonth())"
+		:menuDcmFlg="menuDcmFlg"
+		:menuCtgFlg="menuCtgFlg"
+		:menuTagFlg="menuTagFlg"
 		:dcmNewArr="dcmNewArr"
 		:dcmEdtArr="dcmEdtArr"
 		@ANaccordionNext="accordionNext"
+		@ANsetToday="setToday"
 		@ANopenViewDcm="openViewDcm"
 		@ANopenPostsDcmAllData="openPostsDcmAllData"
 		@ANopenPostsCtgAllData="openPostsCtgAllData"
@@ -125,6 +130,9 @@ export default Vue.extend({
 			changeMonthFlg: false,
 			menuListBtnFlg: true,
 			menuListFlg: false,
+			menuDcmFlg: false,
+			menuCtgFlg: false,
+			menuTagFlg: false,
 			dcmNewArr: [],
 			dcmEdtArr: [],
 			markDate: 0,
@@ -395,16 +403,22 @@ export default Vue.extend({
 				}
 				that.setChangeMonth(that.changeMonthObj);
 			});
+			that.hiddenLoader();
 		},
 		setChangeMonth(obj) {
 			this.changeMonthList = Object.assign(obj);
 			this.changeMonthBtnFlg = !Object.keys(this.changeMonthList).length ? false : true;
 		},
-		setMenuData() {
-			const that = this;
+		async setMenuData() {
+			const that = this,
+				_ctg = await that.getCtgAllData(),
+				_tag = await that.getTagAllData();
+			that.menuCtgFlg = _ctg.length ? true : false;
+			that.menuTagFlg = _tag.length ? true : false;
 			that.dcmNewArr = [];
 			that.dcmEdtArr = [];
 			that.db.dcm.toArray().then((list) => {
+				if(list.length) that.menuDcmFlg = true;
 				for(let _data of list) {
                     let obj = _data;
                     obj.date = _data.date;

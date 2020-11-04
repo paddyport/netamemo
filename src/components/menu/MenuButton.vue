@@ -1,6 +1,6 @@
 <template>
 <li>
-	<a :class="['listItem', btnCls, 'trs']" @click="checkClick"><span>{{ btnStr }}</span></a>
+	<a :class="['listItem', btnCls, 'trs', btnFlg ? '' : 'isNoActive']" @click="checkClick"><span>{{ btnStr }}</span></a>
 </li>
 </template>
 
@@ -10,13 +10,17 @@ export default {
 	name: "MenuButton",
 	props: {
         btnStr: String,
-        btnCls: String,
+		btnCls: String,
+		btnFlg: Boolean,
 	},
 	methods: {
 		checkClick() {
             this.$emit("GPCallshownLoader");
 			this.$emit("GPCallswitchMenuList");
 			switch(this.btnCls) {
+				case "cur":
+					this.$emit("GPCallsetToday", this.btnStr);
+					break;
 				case "dcm":
 					this.$emit("GPCallopenPostsDcmAllData", this.btnStr);
 					break;

@@ -403,6 +403,12 @@ a.cardItem {
 		}
 	}
 }
+a.cur {
+	&.listItem::before {
+		content: $calendar-check;
+		color: map-get($btn-cur, "side");
+	}
+}
 a.sch {
 	&.listItem::before {
 		content: $search;

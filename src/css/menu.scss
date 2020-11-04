@@ -48,11 +48,8 @@
 				}
 				&.isNoActive {
 					pointer-events: none;
-					&::before, > span {
+					&::before, &::after, > span {
 						opacity: 0.25;
-					}
-					&::after {
-						opacity: 0;
 					}
 				}
 			}

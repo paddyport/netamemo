@@ -12,9 +12,6 @@
 	<posts-head
 		:postsHead="postsHead">
 	</posts-head>
-	<div class="head">
-		<h1>{{ postsHead }}</h1>
-	</div>
 	<button type="button" class="icn" @click="callclosePosts">消</button>
 </div>
 </template>
