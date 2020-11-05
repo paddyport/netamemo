@@ -1,9 +1,12 @@
 <template>
 <div id="Calendar" class="calendar">
 	<calendar-head
+		:nowYYMM="nowYYMM"
 		:currentYYMM="currentYYMM"
 		:changeMonthBtnFlg="changeMonthBtnFlg"
-		@GPCallswitchChangeMonth="$listeners['ANswitchChangeMonth']">
+		@GPCallswitchChangeMonth="$listeners['ANswitchChangeMonth']"
+		@GPCallsetToday="$listeners['ANsetToday']"
+		@GPCallhiddenChangeMonthMenuList="$listeners['ANhiddenChangeMonthMenuList']">
 	</calendar-head>
 	<calendar-change
 		:currentYYMM="currentYYMM"
@@ -16,18 +19,11 @@
 		@GPCallsetPostsData="$listeners['ANsetPostsData']"
 		@GPCallswitchLoader="$listeners['ANswitchLoader']">
 	</calendar-body>
-	<footer class="footer">
-		<calendar-foot-button
-			:btnStr="'新規作成'"
-			:btnCls="'dcm'"
-			@GPCallopenAnewDcm="$listeners['ANopenAnewDcm']">
-		</calendar-foot-button>
-		<calendar-foot-button
-			:btnStr="'新規作成'"
-			:btnCls="'ctg'"
-			@GPCallopenAnewCtg="$listeners['ANopenAnewCtg']">
-		</calendar-foot-button>
-	</footer>
+	<calendar-foot
+		:btnStr="'新規作成'"
+		@GPCallopenAnewDcm="$listeners['ANopenAnewDcm']"
+		@GPCallopenAnewCtg="$listeners['ANopenAnewCtg']">
+	</calendar-foot>
 </div>
 </template>
 
@@ -35,12 +31,13 @@
 import CalendarHead from './CalendarHead'
 import CalendarChange from './CalendarChange'
 import CalendarBody from './CalendarBody'
-import CalendarFootButton from './CalendarFootButton'
+import CalendarFoot from './CalendarFoot'
 
 export default {
 // GP Component
 	name: "CalendarContainer",
 	props: {
+		nowYYMM: Object,
 		currentYYMM: Object,
 		changeMonthBtnFlg: Boolean,
 		changeMonthFlg: Boolean,
@@ -51,7 +48,7 @@ export default {
 		CalendarHead,
 		CalendarChange,
 		CalendarBody,
-		CalendarFootButton,
+		CalendarFoot,
 	},
 }
 </script>

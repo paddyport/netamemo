@@ -1,31 +1,32 @@
 <template>
 <div id="App" :class="[deviceType]">
 	<calendar-container
+		:nowYYMM ="{year: now.getFullYear(), month: now.getMonth()}" 
 		:currentYYMM="{year: currentYear, month: currentMonth}"
 		:changeMonthBtnFlg="changeMonthBtnFlg"
 		:changeMonthFlg="changeMonthFlg"
 		:changeMonthObj="changeMonthObj"
 		:currentDates="currentDates"
 		@ANsetChangeMonth="setChangeMonth"
+		@ANsetToday="setToday"
 		@ANsetCurrent="setCurrent"
 		@ANswitchChangeMonth="switchChangeMonth"
 		@ANsetPostsData="setPostsData"
 		@ANopenPosts="openPosts"
 		@ANopenAnewDcm="openAnewDcm"
 		@ANopenAnewCtg="openAnewCtg"
+		@ANhiddenChangeMonthMenuList="hiddenChangeMonthMenuList"
 		@ANswitchLoader="switchLoader">
 	</calendar-container>
 	<menu-container
 		:menuListBtnFlg="menuListBtnFlg"
 		:menuListFlg="menuListFlg"
-		:menuCurFlg="String(currentYear)+String(currentMonth)!=String(now.getFullYear())+String(now.getMonth())"
 		:menuDcmFlg="menuDcmFlg"
 		:menuCtgFlg="menuCtgFlg"
 		:menuTagFlg="menuTagFlg"
 		:dcmNewArr="dcmNewArr"
 		:dcmEdtArr="dcmEdtArr"
 		@ANaccordionNext="accordionNext"
-		@ANsetToday="setToday"
 		@ANopenViewDcm="openViewDcm"
 		@ANopenPostsDcmAllData="openPostsDcmAllData"
 		@ANopenPostsCtgAllData="openPostsCtgAllData"
@@ -81,10 +82,10 @@
 	</search-container>
 	<dialog-container
 		v-if="dialogFlg"
-		:btnClass="dialogBtnClass"
+		:btnCls="dialogBtnClass"
 		@ANcloseDialog="closeDialog"
 		@ANremoveItem="removeItem"
-		@ANswitchLoader="switchLoader">
+		@ANshownLoader="shownLoader">
 	</dialog-container>
 	<loader-container v-if="loaderFlg"></loader-container>
 </div>
@@ -431,6 +432,10 @@ export default Vue.extend({
 				that.dcmNewArr.slice(0, 4);
 				that.dcmEdtArr.slice(0, 4);
 			});
+		},
+		hiddenChangeMonthMenuList() {
+			this.changeMonthFlg = false;
+			this.menuListFlg = false;
 		},
 		switchChangeMonth() {
 			this.menuListBtnFlg = this.changeMonthFlg ? true : false;

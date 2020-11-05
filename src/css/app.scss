@@ -308,6 +308,15 @@ button.mns {
 		content: $minus;
 	}
 }
+button.cur {
+	@include btnColor($btn-cur);
+	&.btnIcon > span::after {
+		content: $calendar-check;
+	}
+	&.btnText > span > i::after, &.btnWord > span > i::after {
+		content: $calendar-check;
+	}
+}
 
 button.nml {
 	@include btnColor($btn-nml);

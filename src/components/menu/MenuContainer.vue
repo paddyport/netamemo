@@ -1,39 +1,31 @@
 <template>
 <div id="Menu" class="menu">
     <ul :class="['list', menuListFlg ? 'isShown' : '']">
-		<menu-button
-			:btnStr="curStr"
-			:btnCls="'cur'"
-			:btnFlg="menuCurFlg"
-			@GPCallsetToday="$listeners['ANsetToday']"
-			@GPCallswitchMenuList="$listeners['ANswitchMenuList']"
-			@GPCallshownLoader="$listeners['ANshownLoader']">
-		</menu-button>
-		<menu-button
+		<menu-link
 			:btnStr="dcmStr"
 			:btnCls="'dcm'"
 			:btnFlg="menuDcmFlg"
 			@GPCallopenPostsDcmAllData="$listeners['ANopenPostsDcmAllData']"
 			@GPCallswitchMenuList="$listeners['ANswitchMenuList']"
 			@GPCallshownLoader="$listeners['ANshownLoader']">
-		</menu-button>
-		<menu-button
+		</menu-link>
+		<menu-link
 			:btnStr="ctgStr"
 			:btnCls="'ctg'"
 			:btnFlg="menuCtgFlg"
 			@GPCallopenPostsCtgAllData="$listeners['ANopenPostsCtgAllData']"
 			@GPCallswitchMenuList="$listeners['ANswitchMenuList']"
 			@GPCallshownLoader="$listeners['ANshownLoader']">
-		</menu-button>
+		</menu-link>
 		<li v-if="false"><a class="listItem sch trs"><span>フリーワード検索</span></a></li>
-		<menu-button
+		<menu-link
 			:btnStr="tagStr"
 			:btnCls="'tag'"
 			:btnFlg="menuTagFlg"
 			@GPCallopenSearchTags="$listeners['ANopenSearchTags']"
 			@GPCallswitchMenuList="$listeners['ANswitchMenuList']"
 			@GPCallshownLoader="$listeners['ANshownLoader']">
-		</menu-button>
+		</menu-link>
         <menu-accordion
 			:listArr="dcmNewArr"
 			:listStr="'最近新規作成したテキスト'"
@@ -53,18 +45,18 @@
 			@GPCallshownLoader="$listeners['ANshownLoader']">
 		</menu-accordion>
 	</ul>
-	<menu-switch
+	<menu-button
 		:menuStr="'メニュー'"
 		:menuListBtnFlg="menuListBtnFlg"
 		@GPCallswitchMenuList="$listeners['ANswitchMenuList']">
-	</menu-switch>
+	</menu-button>
 </div>
 </template>
 
 <script>
-import MenuButton from './MenuButton'
+import MenuLink from './MenuLink'
 import MenuAccordion from './MenuAccordion'
-import MenuSwitch from './MenuSwitch'
+import MenuButton from './MenuButton'
 
 export default {
 // GP Component
@@ -72,7 +64,6 @@ export default {
 	props: {
         menuListBtnFlg: Boolean,
 		menuListFlg: Boolean,
-		menuCurFlg: Boolean,
 		menuDcmFlg: Boolean,
 		menuCtgFlg: Boolean,
 		menuTagFlg: Boolean,
@@ -88,9 +79,9 @@ export default {
 		}
 	},
 	components: {
-		MenuButton,
+		MenuLink,
 		MenuAccordion,
-		MenuSwitch,
+		MenuButton,
 	},
 }
 </script>

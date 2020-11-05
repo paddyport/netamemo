@@ -13,16 +13,20 @@
 .head {
 	flex-shrink: 0;
 	display: flex;
+	justify-content: space-between;
+	align-items: center;
 	position: relative;
 	background: $gray1;
 	height: divceil(50, 16, "em");
 	top: 0;
-	padding: 0 0 0 divceil(10, 16, "em");
+	padding: 0 divceil(10+34+10, 16, "em") 0 divceil(10, 16, "em");
 	@include fontWeight("bold");
 	text-align: left;
 	z-index: 1500;
 	> button {
-		margin: divceil(8, 16, "em") 0 0;
+		&.cur {
+			margin: 0 0 0 auto;
+		}
 	}
 	> h1 {
 		margin: 0 0 0 divceil(10, 20, "em");

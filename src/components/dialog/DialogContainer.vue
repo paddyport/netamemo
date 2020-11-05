@@ -3,28 +3,35 @@
     <div class="content">
         <p>選択したデータを削除しますか？</p>
         <p>
-            <button type="button" :class="['btnText', 'def', btnClass, 'rem', 'widMD']" @click="removeItem"><span><i></i>削除</span></button>
-            <button type="button" class="btnText def nml widMD" @click="closeDialog"><span><span>キャンセル</span></span></button>
+            <dialog-button
+                :btnType="true"
+                :btnStr="'削除'"
+                :btnCls="btnCls"
+                @GPCallremoveItem="$listeners['ANremoveItem']"
+                @GPCallshownLoader="$listeners['ANshownLoader']">
+            </dialog-button>
+            <dialog-button
+                :btnType="false"
+                :btnStr="'キャンセル'"
+                :btnCls="'nml'"
+                @GPCallcloseDialog="$listeners['ANcloseDialog']">
+            </dialog-button>
         </p>
     </div>
 </div>
 </template>
 
 <script>
+import DialogButton from './DialogButton'
+
 export default {
 // GP Component
     name: "DialogContainer",
     props: {
-        btnClass: String,
+        btnCls: String,
     },
-	methods: {
-        closeDialog() {
-            this.$emit("ANcloseDialog");
-        },
-        removeItem() {
-			this.$emit("ANswitchLoader");
-            this.$emit("ANremoveItem");
-        },
+	components: {
+		DialogButton,
 	},
 }
 </script>
