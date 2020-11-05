@@ -3,26 +3,28 @@
     <div class="content">
         <p>選択したデータを削除しますか？</p>
         <p>
-            <dialog-button
-                :btnType="true"
+            <text-button
+                :iconFlg="true"
                 :btnStr="'削除'"
-                :btnCls="btnCls"
-                @GPCallremoveItem="$listeners['ANremoveItem']"
-                @GPCallshownLoader="$listeners['ANshownLoader']">
-            </dialog-button>
-            <dialog-button
-                :btnType="false"
+                :btnCls="btnCls+' rem'"
+                :btnSize="'widMD'"
+                @TextButtonClick="checkClick">
+            </text-button>
+            <text-button
+                :iconFlg="false"
                 :btnStr="'キャンセル'"
                 :btnCls="'nml'"
-                @GPCallcloseDialog="$listeners['ANcloseDialog']">
-            </dialog-button>
+                :btnSize="'widMD'"
+                @TextButtonClick="$listeners['ANcloseDialog']">
+            </text-button>
         </p>
     </div>
 </div>
 </template>
 
 <script>
-import DialogButton from './DialogButton'
+// import DialogButton from './DialogButton'
+import TextButton from '../parts/TextButton'
 
 export default {
 // GP Component
@@ -31,7 +33,14 @@ export default {
         btnCls: String,
     },
 	components: {
-		DialogButton,
+        // DialogButton,
+        TextButton,
+	},
+	methods: {
+		checkClick() {
+            this.$emit("ANshownLoader");
+			this.$emit("ANremoveItem");
+		},
 	},
 }
 </script>

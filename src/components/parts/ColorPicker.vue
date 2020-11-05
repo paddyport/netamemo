@@ -11,6 +11,7 @@
 
 <script>
 export default {
+// SU Component
 	name: "ColorPicker",
 	data() {
 		return {
