@@ -1,24 +1,26 @@
 <template>
 <footer class="footer">
-	<calendar-button
-        :btnType="true"
+	<text-button
+        :iconFlg="true"
         :btnFlg="true"
 		:btnStr="btnStr"
 		:btnCls="'dcm'"
-		@PTCallopenAnewDcm="$listeners['GPCallopenAnewCtg']">
-	</calendar-button>
-	<calendar-button
-        :btnType="true"
+		:btnSize="'widLG'"
+		@TextButtonClick="$listeners['GPCallopenAnewDcm']">
+	</text-button>
+	<text-button
+        :iconFlg="true"
         :btnFlg="true"
 		:btnStr="btnStr"
 		:btnCls="'ctg'"
-		@PTCallopenAnewDcm="$listeners['GPCallopenAnewCtg']">
-	</calendar-button>
+		:btnSize="'widLG'"
+		@TextButtonClick="$listeners['GPCallopenAnewCtg']">
+	</text-button>
 </footer>
 </template>
 
 <script>
-import CalendarButton from './CalendarButton'
+import TextButton from '../parts/TextButton'
 
 export default {
 // PT Component
@@ -27,7 +29,7 @@ export default {
 		btnStr: String,
 	},
 	components: {
-		CalendarButton,
+		TextButton,
 	},
 }
 </script>

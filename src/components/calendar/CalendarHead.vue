@@ -1,26 +1,23 @@
 <template>
 <header class="head">
-	<calendar-button
-        :btnType="false"
+	<icon-button
 		:btnFlg="changeMonthBtnFlg"
 		:btnStr="'替'"
 		:btnCls="'nml cng'"
-		@PTCallswitchChangeMonth="$listeners['GPCallswitchChangeMonth']">
-	</calendar-button>
+		@IconButtonClick="$listeners['GPCallswitchChangeMonth']">
+	</icon-button>
 	<h1>{{ currentYYMM.year }}年{{ currentYYMM.month+1 }}月</h1>
-	<calendar-button
-        :btnType="false"
+	<icon-button
 		:btnFlg="!(nowYYMM.year==currentYYMM.year&&nowYYMM.month==currentYYMM.month)"
 		:btnStr="'今月'"
-		:btnCls="'cur'"
-		@PTCallsetToday="$listeners['GPCallsetToday']"
-		@PTCallhiddenChangeMonthMenuList="$listeners['GPCallhiddenChangeMonthMenuList']">
-	</calendar-button>
+		:btnCls="'now'"
+		@IconButtonClick="changeNowMonth">
+	</icon-button>
 </header>
 </template>
 
 <script>
-import CalendarButton from './CalendarButton'
+import IconButton from '../parts/IconButton'
 
 export default {
 // PT Component
@@ -31,7 +28,13 @@ export default {
 		changeMonthBtnFlg: Boolean,
 	},
 	components: {
-		CalendarButton,
+		IconButton,
+	},
+	methods: {
+		changeNowMonth() {
+            this.$emit("GPCallsetToday");
+            this.$emit("GPCallhiddenChangeMonthMenuList");
+		},
 	},
 }
 </script>

@@ -308,8 +308,8 @@ button.mns {
 		content: $minus;
 	}
 }
-button.cur {
-	@include btnColor($btn-cur);
+button.now {
+	@include btnColor($btn-now);
 	&.btnIcon > span::after {
 		content: $calendar-check;
 	}
@@ -410,14 +410,14 @@ a.cardItem {
 				}
 			}
 		}
-	}
+	} 
 }
-a.cur {
-	&.listItem::before {
-		content: $calendar-check;
-		color: map-get($btn-cur, "side");
-	}
-}
+// a.now {
+// 	&.listItem::before {
+// 		content: $calendar-check;
+// 		color: map-get($btn-now, "side");
+// 	}
+// }
 a.sch {
 	&.listItem::before {
 		content: $search;

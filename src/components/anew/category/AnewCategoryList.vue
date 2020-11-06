@@ -33,7 +33,7 @@ export default {
 		}
 	},
 	created: function(){
-        this.$emit("PTCallswitchLoader");
+        this.$emit("PTCallshownLoader");
         this.getDataDcmPromise();
 	},
 	methods: {
@@ -60,7 +60,7 @@ export default {
                     });
                 }
             }
-            this.$emit("PTCallswitchLoader");
+            this.$emit("PTCallhiddenLoader");
 		},
 		addDcmArr(e) {
 			const that = this,

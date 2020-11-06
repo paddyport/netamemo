@@ -1,5 +1,5 @@
 <template>
-<button type="button" :class="['btnText', 'def', btnCls, btnSize ? btnSize : '']" @click="onClick">
+<button type="button" :class="['btnText', 'def', btnCls, btnSize ? btnSize : '', btnFlg ? '' : 'isNoActive']" @click="onClick">
     <span v-if="iconFlg"><i></i>{{ btnStr }}</span>
     <span v-else><span>{{ btnStr }}</span></span>
 </button>
@@ -14,6 +14,7 @@ export default {
 		btnStr: String,
         btnCls: String,
         btnSize: String,
+        btnFlg: Boolean,
     },
 	methods: {
 		onClick() {

@@ -19,15 +19,16 @@
             :db="db"
             :ctgColor="anewCtgCtgObj.color"
             @PTselectAnewCtgDcm="selectAnewCtgDcm"
-            @PTCallswitchLoader="$listeners['GPCallswitchLoader']">
+            @PTCallhiddenLoader="$listeners['GPCallhiddenLoader']"
+            @PTCallshownLoader="$listeners['GPCallshownLoader']">
         </anew-category-list>
 	</div>
 	<anew-foot
-        :btnClass="'ctg'"
+        :btnCls="'ctg'"
 		:AsaveFlg="AsaveFlg"
 		@PTCallcloseAnew="$listeners['GPCallcloseAnew']"
 		@PTsaveAnew="setSaveData"
-		@PTCallswitchLoader="$listeners['GPCallswitchLoader']">
+		@PTCallshownLoader="$listeners['GPCallshownLoader']">
 	</anew-foot>
 </div>
 </template>

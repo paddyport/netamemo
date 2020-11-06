@@ -45,18 +45,19 @@
 			@GPCallshownLoader="$listeners['ANshownLoader']">
 		</menu-accordion>
 	</ul>
-	<menu-button
-		:menuStr="'メニュー'"
-		:menuListBtnFlg="menuListBtnFlg"
-		@GPCallswitchMenuList="$listeners['ANswitchMenuList']">
-	</menu-button>
+	<icon-button
+		:btnFlg="menuListBtnFlg"
+		:btnStr="'メニュー'"
+		:btnCls="'nml menuList'"
+		@IconButtonClick="$listeners['ANswitchMenuList']">
+	</icon-button>
 </div>
 </template>
 
 <script>
 import MenuLink from './MenuLink'
 import MenuAccordion from './MenuAccordion'
-import MenuButton from './MenuButton'
+import IconButton from '../parts/IconButton'
 
 export default {
 // GP Component
@@ -72,7 +73,6 @@ export default {
 	},
 	data() {
 		return {
-			curStr: "今月に戻る",
 			dcmStr: "テキスト一覧",
 			ctgStr: "カテゴリ一覧",
 			tagStr: "タグ検索",
@@ -81,7 +81,7 @@ export default {
 	components: {
 		MenuLink,
 		MenuAccordion,
-		MenuButton,
+		IconButton,
 	},
 }
 </script>

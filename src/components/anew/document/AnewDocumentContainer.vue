@@ -17,11 +17,11 @@
 		</div>
 	</div>
     <anew-foot
-        :btnClass="'dcm'"
+        :btnCls="'dcm'"
 		:AsaveFlg="AsaveFlg"
         @PTCallcloseAnew="$listeners['GPCallcloseAnew']"
 		@PTsaveAnew="setSaveData"
-        @PTCallswitchLoader="$listeners['GPCallswitchLoader']">
+        @PTCallshownLoader="$listeners['GPCallshownLoader']">
     </anew-foot>
 </div>
 </template>

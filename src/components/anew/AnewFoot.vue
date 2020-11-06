@@ -1,24 +1,40 @@
 <template>
 <div class="foot">
-	<button type="button" class="btnText def nml widLG" @click="callcloseAnew"><span><span>キャンセル</span></span></button>
-	<button type="button" :class="['btnText', 'def', btnClass, 'widLG', AsaveFlg ? '' : 'isNoActive']" @click="clickSave"><span><i></i>保存</span></button>
+    <text-button
+        :iconFlg="false"
+        :btnStr="'キャンセル'"
+        :btnCls="'nml'"
+        :btnSize="'widLG'"
+        :btnFlg="true"
+        @TextButtonClick="$listeners['PTCallcloseAnew']">
+    </text-button>
+    <text-button
+        :iconFlg="true"
+        :btnStr="'保存'"
+        :btnCls="btnCls"
+        :btnSize="'widLG'"
+        :btnFlg="AsaveFlg"
+        @TextButtonClick="clickSave">
+    </text-button>
 </div>
 </template>
 
 <script>
+import TextButton from '../parts/TextButton'
+
 export default {
 // CH Component
     name: "AnewFoot",
     props: {
-        btnClass: String,
+        btnCls: String,
         AsaveFlg: Boolean,
     },
+	components: {
+        TextButton,
+	},
 	methods: {
-        callcloseAnew() {
-            this.$emit("PTCallcloseAnew");
-        },
         clickSave() {
-			this.$emit("PTCallswitchLoader");
+			this.$emit("PTCallshownLoader");
             this.$emit("PTsaveAnew");
         },
 	},

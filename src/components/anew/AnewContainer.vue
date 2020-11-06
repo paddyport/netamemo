@@ -5,14 +5,15 @@
 		:db="db"
 		:saveFlg="saveFlg"
         @GPCallcloseAnew="$listeners['ANcloseAnew']"
-        @GPCallswitchLoader="$listeners['ANswitchLoader']">
+        @GPCallshownLoader="$listeners['ANshownLoader']">
 	</anew-document-container>
 	<anew-category-container
 		v-if="anewCtgFlg"
 		:db="db"
 		:saveFlg="saveFlg"
         @GPCallcloseAnew="$listeners['ANcloseAnew']"
-        @GPCallswitchLoader="$listeners['ANswitchLoader']">
+        @GPCallshownLoader="$listeners['ANshownLoader']"
+        @GPCallhiddenLoader="$listeners['ANhiddenLoader']">
 	</anew-category-container>
 </div>
 </template>

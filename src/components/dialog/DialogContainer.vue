@@ -23,7 +23,6 @@
 </template>
 
 <script>
-// import DialogButton from './DialogButton'
 import TextButton from '../parts/TextButton'
 
 export default {
@@ -33,7 +32,6 @@ export default {
         btnCls: String,
     },
 	components: {
-        // DialogButton,
         TextButton,
 	},
 	methods: {

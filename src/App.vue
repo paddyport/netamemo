@@ -74,6 +74,8 @@
 		:db="db"
 		:anewFlg="anewFlg"
 		@ANcloseAnew="closeAnew"
+		@ANshownLoader="shownLoader"
+		@ANhiddenLoader="hiddenLoader"
 		@ANswitchLoader="switchLoader">
 	</anew-container>
 	<search-container
